@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 · Página no encontrada</title>
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#08090d" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%2308090d'/%3E%3Ctext x='50' y='68' font-family='monospace' font-size='52' font-weight='700' fill='%236366f1' text-anchor='middle'%3EE%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Estilos propios de la página 404 */
+    .nf {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 24px;
+    }
+    .nf__code {
+      font-family: var(--font-display);
+      font-size: clamp(6rem, 22vw, 13rem);
+      font-weight: 700;
+      line-height: 1;
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.04em;
+    }
+    .nf h1 { font-size: clamp(1.4rem, 4vw, 2rem); margin: 8px 0 14px; }
+    .nf p { color: var(--text-dim); max-width: 420px; margin: 0 auto 32px; }
+  </style>
+</head>
+<body>
+  <!-- Fondo animado (mismo del sitio) -->
+  <div class="bg-fx" aria-hidden="true">
+    <div class="bg-fx__blob bg-fx__blob--1"></div>
+    <div class="bg-fx__blob bg-fx__blob--2"></div>
+    <div class="bg-fx__blob bg-fx__blob--3"></div>
+    <div class="bg-fx__grid"></div>
+  </div>
+
+  <main class="nf">
+    <div>
+      <div class="nf__code">404</div>
+      <h1>Esta página se perdió en el código</h1>
+      <p>El enlace que seguiste no existe o fue movido. Volvamos a un lugar conocido.</p>
+      <a href="/" class="btn btn--primary">
+        Volver al inicio
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </a>
+    </div>
+  </main>
+</body>
+</html>
