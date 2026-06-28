@@ -1082,16 +1082,34 @@ h1, h2, h3, h4 {
   align-items: start;
 }
 /* Columna izquierda: canales de contacto */
-.contact__channels { display: grid; gap: 14px; }
+/* === Arreglo: canales de contacto en columna === */
+
+
 .contact-channel {
+  position: relative;        /* nada de absolute */
+  inset: auto;               /* anula top/left/right que los encimaban */
+  transform: none;           /* anula desplazamientos */
+  margin: 0;                 /* saca márgenes que los superponían */
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 18px 20px;
-  border-radius: var(--radius-sm);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  transition: transform var(--t-fast), border-color var(--t-fast);
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem 1.25rem;
+  box-sizing: border-box;
+}
+
+.contact-channel__icon {
+  flex: 0 0 auto;            /* el ícono no se deforma */
+}
+
+.contact-channel__txt {
+  display: flex;
+  flex-direction: column;   /* título arriba, dato abajo */
+  min-width: 0;             /* evita que el texto se desborde */
+}
+
+.contact-channel__copy {
+  margin-left: auto;        /* el botón "Copiar" se va a la derecha */
 }
 .contact-channel:hover { transform: translateX(5px); border-color: var(--border-2); }
 .contact-channel__icon {
@@ -1391,4 +1409,39 @@ h1, h2, h3, h4 {
   outline: 2px solid var(--accent-1);
   outline-offset: 3px;
   border-radius: 4px;
+}
+/* === Arreglo: canales de contacto en columna === */
+.contact__channels {
+  display: flex;
+  flex-direction: column;   /* uno debajo del otro */
+  gap: 1rem;                 /* separación entre cajones */
+  width: 100%;
+  position: static;
+}
+
+.contact-channel {
+  position: relative;        /* nada de absolute */
+  inset: auto;               /* anula top/left/right que los encimaban */
+  transform: none;           /* anula desplazamientos */
+  margin: 0;                 /* saca márgenes que los superponían */
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem 1.25rem;
+  box-sizing: border-box;
+}
+
+.contact-channel__icon {
+  flex: 0 0 auto;            /* el ícono no se deforma */
+}
+
+.contact-channel__txt {
+  display: flex;
+  flex-direction: column;   /* título arriba, dato abajo */
+  min-width: 0;             /* evita que el texto se desborde */
+}
+
+.contact-channel__copy {
+  margin-left: auto;        /* el botón "Copiar" se va a la derecha */
 }
