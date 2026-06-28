@@ -204,6 +204,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }, { threshold: 0.15, rootMargin: "0px 0px -60px 0px" });
 
     revealEls.forEach((el) => revealObserver.observe(el));
+
+    /* Red de seguridad: si por cualquier motivo el observer no llega a
+       disparar para algún elemento (scroll restaurado, navegadores raros,
+       etc.), forzamos que todo aparezca. Así ninguna tarjeta queda
+       "trabada" a medio camino encimándose con la de al lado. */
+    window.setTimeout(() => {
+      revealEls.forEach((el) => el.classList.add("is-visible"));
+    }, 1600);
   }
 
 
