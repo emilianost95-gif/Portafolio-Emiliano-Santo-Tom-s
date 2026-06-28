@@ -1082,8 +1082,13 @@ h1, h2, h3, h4 {
   align-items: start;
 }
 /* Columna izquierda: canales de contacto */
-.contact__channels { display: grid; gap: 14px; }
+/* Flex en columna (más robusto que grid acá): garantiza que cada
+   tarjeta ocupe su propia fila y nunca se encime, incluso durante
+   la animación de entrada o en navegadores quisquillosos. */
+.contact__channels { display: flex; flex-direction: column; gap: 14px; }
 .contact-channel {
+  position: relative;      /* nunca queda fuera de flujo */
+  min-height: 64px;        /* alto garantizado: la fila no se colapsa */
   display: flex;
   align-items: center;
   gap: 16px;
