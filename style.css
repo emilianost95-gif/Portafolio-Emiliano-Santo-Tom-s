@@ -665,8 +665,10 @@ h1, h2, h3, h4 {
 .scroll-indicator {
   position: absolute;
   bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  width: fit-content;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1444,4 +1446,36 @@ h1, h2, h3, h4 {
 
 .contact-channel__copy {
   margin-left: auto;        /* el botón "Copiar" se va a la derecha */
+}
+/* === Terminal animado dentro de la profile-card === */
+.profile-card__terminal {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1rem;
+  width: 100%;
+  min-height: 2.75rem;      /* reserva altura para que no salte el layout */
+  border-radius: 10px;      /* usá tu var de radio si tenés, ej: var(--radius-sm) */
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: "Courier New", monospace;  /* o tu fuente mono si tenés */
+  font-size: 0.85rem;
+  line-height: 1.6;
+  text-align: left;
+  color: #a5b4fc;           /* violeta clarito, cambialo por tu acento */
+  display: flex;
+  align-items: center;
+}
+
+.terminal__cursor {
+  display: inline-block;
+  width: 8px;
+  height: 1.1em;
+  margin-left: 2px;
+  background: #a5b4fc;      /* mismo color que el texto */
+  animation: terminalBlink 1s step-end infinite;
+  vertical-align: middle;
+}
+
+@keyframes terminalBlink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0; }
 }
