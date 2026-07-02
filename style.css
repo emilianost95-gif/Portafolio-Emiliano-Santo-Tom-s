@@ -50,6 +50,148 @@
   --accent-2:    #6366f1;   /* índigo */
   --accent-3:    #a855f7;   /* violeta */
   --accent-soft: rgba(99, 102, 241, 0.15);
+  /* ===== Preloader cyberpunk ===== */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #05060a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: var(--font-mono);
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+.preloader.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.preloader__grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  background-image:
+    linear-gradient(rgba(139,92,246,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139,92,246,0.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+.preloader__scan {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  background: linear-gradient(rgba(255,255,255,0) 50%, rgba(0,0,0,0.25) 50%);
+  background-size: 100% 4px;
+}
+
+.preloader__boot {
+  position: absolute;
+  top: 15%;
+  left: 8%;
+  right: 8%;
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--accent-1);
+  text-shadow: 0 0 8px rgba(34, 211, 238, 0.4);
+}
+.preloader__boot div { white-space: pre; }
+
+.preloader__logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+}
+
+/* logo EST con degradado firma */
+.preloader__est {
+  font-family: var(--font-sans, sans-serif);
+  font-weight: 800;
+  font-size: clamp(4rem, 12vw, 7rem);
+  letter-spacing: 4px;
+  position: relative;
+
+  background: linear-gradient(120deg,
+    var(--accent-1) 0%,
+    var(--accent-2) 50%,
+    var(--accent-3) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+
+  filter: drop-shadow(0 0 22px rgba(99, 102, 241, 0.55));
+}
+
+/* capas fantasma para el glitch RGB */
+.preloader__est::before,
+.preloader__est::after {
+  content: "EST";
+  position: absolute;
+  top: 0;
+  left: 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  opacity: 0;
+}
+.preloader__est::before {
+  background: linear-gradient(120deg, var(--accent-1), var(--accent-1));
+}
+.preloader__est::after {
+  background: linear-gradient(120deg, var(--accent-3), var(--accent-3));
+}
+
+.preloader__tag {
+  margin-top: 16px;
+  font-size: 12px;
+  letter-spacing: 0.4em;
+  color: var(--text-faint);
+  opacity: 0;
+}
+
+/* glitch: capa cian a la izquierda, violeta a la derecha */
+@keyframes glitchCyan {
+  0%, 100% { opacity: 0; transform: translate(0); }
+  20% { opacity: 0.9; transform: translate(-4px, 2px); }
+  40% { opacity: 0.9; transform: translate(-2px, -2px); }
+  60% { opacity: 0.9; transform: translate(-5px, 1px); }
+  80% { opacity: 0.9; transform: translate(-1px, -1px); }
+}
+@keyframes glitchViolet {
+  0%, 100% { opacity: 0; transform: translate(0); }
+  20% { opacity: 0.9; transform: translate(4px, -2px); }
+  40% { opacity: 0.9; transform: translate(2px, 2px); }
+  60% { opacity: 0.9; transform: translate(5px, -1px); }
+  80% { opacity: 0.9; transform: translate(1px, 1px); }
+}
+@keyframes glitchShake {
+  0%, 100% { transform: translate(0); }
+  25% { transform: translate(-2px, 1px); }
+  50% { transform: translate(2px, -1px); }
+  75% { transform: translate(-1px, -1px); }
+}
+
+.preloader__est.is-glitching {
+  animation: glitchShake 0.4s steps(2) 3;
+}
+.preloader__est.is-glitching::before {
+  animation: glitchCyan 0.4s steps(2) 3;
+}
+.preloader__est.is-glitching::after {
+  animation: glitchViolet 0.4s steps(2) 3;
+}
+
+/* accesibilidad: respeta a quien prefiere menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  .preloader__est.is-glitching,
+  .preloader__est.is-glitching::before,
+  .preloader__est.is-glitching::after { animation: none; }
+}
 
   /* Degradado firma reutilizable */
   --gradient: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 50%, var(--accent-3) 100%);

@@ -26,21 +26,63 @@ const REDUCE_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matc
 /* Espera a que el DOM esté listo antes de ejecutar todo */
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* ===========================================================
-     1. LOADER INICIAL
-     Lo ocultamos cuando la página terminó de cargar.
+/* ===========================================================
+     1. PRELOADER CYBERPUNK (boot + glitch)
      =========================================================== */
-  const loader = document.getElementById("loader");
-  window.addEventListener("load", () => {
-    setTimeout(() => {
-      loader.classList.add("is-hidden");
-      document.body.classList.remove("no-scroll");
-    }, 600);
-  });
-  // Bloquea el scroll mientras carga
-  document.body.classList.add("no-scroll");
+  const preloader = document.getElementById("preloader");
+  const bootEl = document.getElementById("preloaderBoot");
+  const logoWrap = document.getElementById("preloaderLogo");
+  const est = document.getElementById("preloaderEst");
+  const tag = document.getElementById("preloaderTag");
 
+  if (preloader) {
+    const lines = [
+      "> booting portfolio.exe ...",
+      "> loading modules [JS] [CSS] [React] .... ok",
+      "> mounting components ............... ok",
+      "> establishing connection: Chile ... ok",
+      "> status: DISPONIBLE ✓"
+    ];
 
+    const typeLine = (text, cb) => {
+      let i = 0;
+      const span = document.createElement("div");
+      bootEl.appendChild(span);
+      (function step() {
+        span.textContent = text.slice(0, i) + (i < text.length ? "█" : "");
+        i++;
+        if (i <= text.length) setTimeout(step, 18);
+        else { span.textContent = text; cb && cb(); }
+      })();
+    };
+
+    const runBoot = (idx) => {
+      if (idx >= lines.length) { setTimeout(showLogo, 350); return; }
+      typeLine(lines[idx], () => setTimeout(() => runBoot(idx + 1), 90));
+    };
+
+    function showLogo() {
+      bootEl.style.transition = "opacity 0.4s";
+      bootEl.style.opacity = "0";
+      setTimeout(() => {
+        logoWrap.style.transition = "opacity 0.3s";
+        logoWrap.style.opacity = "1";
+        est.classList.add("is-glitching");
+        setTimeout(() => {
+          est.classList.remove("is-glitching");
+          tag.style.transition = "opacity 0.6s";
+          tag.style.opacity = "1";
+          setTimeout(() => {
+            preloader.classList.add("is-hidden");
+            document.body.classList.remove("no-scroll");
+          }, 700);
+        }, 1350);
+      }, 400);
+    }
+
+    document.body.classList.add("no-scroll");
+    setTimeout(() => runBoot(0), 300);
+  }
   /* ===========================================================
      2. CURSOR PERSONALIZADO
      Un punto que sigue el mouse al instante y un anillo que lo
