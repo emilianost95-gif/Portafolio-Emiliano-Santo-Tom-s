@@ -472,3 +472,22 @@ function toast(type, message) {
 
   tick();
 })();
+/* ===== Cards de proyecto: encender color por scroll en móvil ===== */
+(function () {
+  const cards = document.querySelectorAll(".project-card");
+  if (!cards.length) return;
+
+  // Solo en móvil; en desktop manda el :hover
+  if (!window.matchMedia("(max-width: 640px)").matches) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        entry.target.classList.toggle("is-live", entry.isIntersecting);
+      });
+    },
+    { threshold: 0.5 }
+  );
+
+  cards.forEach((card) => observer.observe(card));
+})();
