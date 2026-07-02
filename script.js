@@ -383,3 +383,50 @@ function toast(type, message) {
     setTimeout(() => el.remove(), 400);
   }, 3500);
 }
+/* === Typewriter para el terminal de la profile-card === */
+(function () {
+  const el = document.getElementById("terminalText");
+  if (!el) return; // si no existe el elemento, no hace nada
+
+  const lines = [
+    'const dev = "Emiliano";',
+    'stack = ["JS", "React", "CSS"];',
+    'status = "disponible ✓";'
+  ];
+
+  let lineIndex = 0;   // qué línea estamos escribiendo
+  let charIndex = 0;   // qué caracter dentro de la línea
+  let deleting = false; // ¿estamos borrando o escribiendo?
+
+  function tick() {
+    const current = lines[lineIndex];
+
+    if (!deleting) {
+      // escribiendo: agrego un caracter
+      el.textContent = current.slice(0, charIndex + 1);
+      charIndex++;
+
+      if (charIndex === current.length) {
+        // terminó de escribir la línea → espera y empieza a borrar
+        deleting = true;
+        setTimeout(tick, 1400); // pausa con la línea completa
+        return;
+      }
+    } else {
+      // borrando: saco un caracter
+      el.textContent = current.slice(0, charIndex - 1);
+      charIndex--;
+
+      if (charIndex === 0) {
+        // terminó de borrar → paso a la siguiente línea
+        deleting = false;
+        lineIndex = (lineIndex + 1) % lines.length; // vuelve a 0 al final
+      }
+    }
+
+    // velocidad: más rápido borrando que escribiendo
+    setTimeout(tick, deleting ? 40 : 90);
+  }
+
+  tick();
+})();
