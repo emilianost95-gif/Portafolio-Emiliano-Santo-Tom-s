@@ -33,7 +33,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
 
   <!-- ===================== Estilos ===================== -->
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=1" />
 
   <!-- ============ Datos estructurados (SEO avanzado) ============ -->
   <script type="application/ld+json">
@@ -113,55 +113,44 @@
   <main>
 
     <!-- ========================================================= -->
-    <!-- HERO                                                      -->
+    <!-- HERO · Sinapsis neuronal                                  -->
     <!-- ========================================================= -->
     <section class="hero section" id="hero">
+
+      <!-- Canvas de la red neuronal (script.js, sección 14).
+           Si JS falla, queda invisible y el fondo aurora hace de fallback -->
+      <canvas id="heroCanvas" class="hero__canvas" aria-hidden="true"></canvas>
+
       <div class="container">
-        <div class="hero__grid">
-          <!-- Columna de texto -->
-          <div class="hero__content">
-            <span class="hero__badge" data-reveal>
-              <span class="dot"></span> Disponible para nuevos proyectos
-            </span>
+        <div class="hero__content">
+          <span class="hero__badge" data-reveal>EST</span>
 
-            <h1 class="hero__title" data-reveal data-reveal-delay="1">
-              <span class="hero__name">Emiliano Samir<br>Santo Tomás</span>
-            </h1>
+          <h1 class="hero__title" data-reveal data-reveal-delay="1">
+            <span class="hero__name">Emiliano Samir</span>
+            <span class="hero__name hero__name--glow">Santo Tomás</span>
+          </h1>
 
-            <p class="hero__role" data-reveal data-reveal-delay="1">
-              &lt;Desarrollador Web Front-End /&gt;
-            </p>
+          <p class="hero__role" data-reveal data-reveal-delay="1">
+            <span class="hero__bracket">&lt;</span>Desarrollador Web Front-End <span class="hero__bracket">/&gt;</span>
+          </p>
 
-            <!-- Frase con efecto typing (el texto lo arma script.js) -->
-            <p class="hero__typed" data-reveal data-reveal-delay="2">
-              <span id="typed"></span><span class="type-cursor" aria-hidden="true"></span>
-            </p>
+          <!-- Frase con efecto typing (el texto lo arma script.js) -->
+          <p class="hero__typed" data-reveal data-reveal-delay="2">
+            <span id="typed"></span><span class="type-cursor" aria-hidden="true"></span>
+          </p>
 
-            <p class="hero__desc" data-reveal data-reveal-delay="2">
-              Sitios web modernos, rápidos y optimizados. Construyo proyectos
-              reales y aprendo cada día para entregar experiencias que se vean
-              —y funcionen— de primer nivel.
-            </p>
+          <p class="hero__desc" data-reveal data-reveal-delay="2">
+            Sitios web modernos, rápidos y optimizados. Construyo proyectos
+            reales y aprendo cada día para entregar experiencias que se vean
+            —y funcionen— de primer nivel.
+          </p>
 
-            <div class="hero__cta" data-reveal data-reveal-delay="3">
-              <a href="#projects" class="btn btn--primary">
-                Ver proyectos
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </a>
-              <a href="#contact" class="btn btn--ghost">Contactar</a>
-            </div>
-          </div>
-
-          <!-- Columna visual: foto de perfil (placeholder) -->
-          <div class="hero__visual" data-reveal data-reveal-delay="2">
-            <div class="profile-card">
-              <div class="profile-card__inner">
-                <span class="profile-card__avatar">EST</span>
-                <div class="profile-card__terminal" aria-hidden="true">
-                  <span class="terminal__text" id="terminalText"></span><span class="terminal__cursor"></span>
-                </div>
-              </div>
-            </div>
+          <div class="hero__cta" data-reveal data-reveal-delay="3">
+            <a href="#projects" class="btn btn--primary">
+              Ver proyectos
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="#contact" class="btn btn--ghost">Contactame</a>
           </div>
         </div>
       </div>
@@ -305,7 +294,7 @@
             <div class="project-card__body">
               <h3 class="project-card__title">VIKINGO'S BarberShop</h3>
               <p class="project-card__desc">
-                Landing page con estética vikinga (inspiración God of War):
+                Landing page con estética vikinga para barbería. Incluye:
                 formulario de reservas, botón flotante de WhatsApp y diseño
                 100% responsive.
               </p>
@@ -363,12 +352,12 @@
                 <span>ESP32</span><span>Arduino</span><span>IoT</span><span>Dashboard</span>
               </div>
               <div class="project-card__actions">
-                <a href="https://github.com/emilianost95-gif/smart-grow" class="btn btn--primary btn--sm" target="_blank" rel="noopener">Ver proyecto</a>
+                <a href="https://emilianost95-gif.github.io/smart-grow/" class="btn btn--primary btn--sm" target="_blank" rel="noopener">Ver demo</a>
                 <a href="https://github.com/emilianost95-gif/smart-grow" class="btn btn--ghost btn--sm" target="_blank" rel="noopener">GitHub</a>
               </div>
             </div>
           </article>
-          
+
           <!-- Espacio para proyectos futuros -->
           <article class="project-card project-card--soon" data-reveal data-reveal-delay="3">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -679,6 +668,6 @@
   <div class="toasts" id="toasts" aria-live="polite"></div>
 
   <!-- ===================== Scripts ===================== -->
-  <script src="script.js" defer></script>
+  <script src="script.js?v=1" defer></script>
 </body>
 </html>

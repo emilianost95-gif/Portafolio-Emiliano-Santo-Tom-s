@@ -491,3 +491,395 @@ function toast(type, message) {
 
   cards.forEach((card) => observer.observe(card));
 })();
+/* =============================================================
+   14. SINAPSIS NEURONAL (fondo del hero)
+   -------------------------------------------------------------
+   Red de neuronas conectadas por axones curvos. Cada tanto una
+   dispara: se ilumina y manda un impulso que viaja hasta sus
+   vecinas; al llegar, la vecina puede disparar en cadena. El
+   período refractario y la probabilidad de propagación hacen
+   que las ondas se expandan y se apaguen solas.
+
+   Integración con el sitio:
+   - El canvas es TRANSPARENTE (clearRect): la aurora de .bg-fx
+     se ve a través de la red.
+   - Respeta el toggle de tema: un MutationObserver detecta el
+     cambio de data-theme y cambia la paleta al instante.
+   - Reusa la constante global REDUCE_MOTION (línea ~24).
+   - Pausa fuera de pantalla (IntersectionObserver) y con la
+     pestaña oculta (visibilitychange).
+   ============================================================= */
+(function () {
+  const canvas = document.getElementById("heroCanvas");
+  if (!canvas || !canvas.getContext) return; // sin canvas → fondo aurora
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  /* --- Paletas por tema (r, g, b como string para armar rgba) --- */
+  const PALETAS = {
+    dark: {
+      cyan:    "0, 240, 255",
+      magenta: "255, 0, 160",
+      cabeza:  "240, 240, 245",  // cabeza del pulso y soma al disparar
+      alphaAxon: 0.06,           // opacidad base de los axones
+      alphaHalo: 0.05            // halo mínimo de neuronas en reposo
+    },
+    light: {
+      cyan:    "0, 130, 150",    // tonos más profundos: contrastan en claro
+      magenta: "180, 0, 115",
+      cabeza:  "20, 22, 40",
+      alphaAxon: 0.12,
+      alphaHalo: 0.08
+    }
+  };
+
+  function paletaActual() {
+    const tema = document.documentElement.getAttribute("data-theme");
+    return tema === "light" ? PALETAS.light : PALETAS.dark;
+  }
+  let paleta = paletaActual();
+
+  /* Cambio de tema en vivo: la red se recolorea al instante
+     porque cada neurona guarda su TIPO ("cyan"/"magenta") y el
+     color real se resuelve recién al dibujar */
+  new MutationObserver(() => {
+    paleta = paletaActual();
+    if (REDUCE_MOTION) dibujarFrame(0); // refresca el frame estático
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+  let esMovil = window.matchMedia("(max-width: 768px)").matches;
+
+  /* --- CONFIGURACIÓN CENTRAL ---
+     El "carácter" de la red vive acá. Valores clave para lo
+     hipnótico: velocidades bajas, refractario largo (evita el
+     caos) y propagación moderada (las ondas mueren solas). */
+  const CONFIG = {
+    numNeuronas:     esMovil ? 16 : 34,
+    maxConexiones:   3,       // axones máximos por neurona
+    radioConexion:   esMovil ? 180 : 240, // distancia máx. para conectar (px)
+    velPulso:        0.006,   // avance del pulso por frame (0→1)
+    probPropagacion: 0.75,    // chance de seguir la cadena
+    refractarioMs:   1600,    // pausa mínima entre disparos de una neurona
+    disparoCadaMs:   900,     // marcapasos: disparo espontáneo aleatorio
+    maxPulsos:       esMovil ? 25 : 60,
+    curvatura:       0.22     // 0 = axones rectos, 0.4 = serpenteantes
+  };
+
+  let neuronas = [];
+  let conexiones = [];
+  let pulsos = [];
+  let ancho = 0, alto = 0;
+  let animando = false;
+  let visible = true;
+  let rafId = null;
+  let ultimoDisparoGlobal = 0;
+
+  /* ============ NEURONA ============
+     Posición base fija + vaivén orgánico (suma de dos senos con
+     frecuencias distintas → nunca se repite a la vista).
+     `activacion` va de 0 (reposo) a 1 (disparo) y decae sola. */
+  class Neurona {
+    constructor(x, y) {
+      this.baseX = x;
+      this.baseY = y;
+      this.x = x;
+      this.y = y;
+      this.radio = 2.2 + Math.random() * 1.8;
+      this.tipo = Math.random() < 0.7 ? "cyan" : "magenta"; // 70% cian
+      this.activacion = 0;
+      this.ultimoDisparo = -99999;
+      this.fase1 = Math.random() * Math.PI * 2;
+      this.fase2 = Math.random() * Math.PI * 2;
+      this.vel1 = 0.004 + Math.random() * 0.004;
+      this.vel2 = 0.006 + Math.random() * 0.005;
+      this.amp = esMovil ? 6 : 10;
+      this.vecinas = []; // { conexion, invertido }
+    }
+
+    actualizar() {
+      this.fase1 += this.vel1;
+      this.fase2 += this.vel2;
+      this.x = this.baseX + Math.sin(this.fase1) * this.amp + Math.cos(this.fase2) * this.amp * 0.6;
+      this.y = this.baseY + Math.cos(this.fase1) * this.amp * 0.7 + Math.sin(this.fase2) * this.amp * 0.5;
+      this.activacion *= 0.96; // decaimiento exponencial hacia el reposo
+    }
+
+    disparar(ahora, esEco) {
+      if (ahora - this.ultimoDisparo < CONFIG.refractarioMs) return;
+      this.ultimoDisparo = ahora;
+      this.activacion = 1;
+      for (const v of this.vecinas) {
+        if (pulsos.length >= CONFIG.maxPulsos) break;
+        // Los "ecos" (disparos en cadena) propagan con menos
+        // probabilidad → las ondas se apagan solas
+        const prob = esEco ? CONFIG.probPropagacion * 0.6 : CONFIG.probPropagacion;
+        if (Math.random() < prob) pulsos.push(new Pulso(v.conexion, v.invertido, this.tipo));
+      }
+    }
+
+    dibujar() {
+      const act = this.activacion;
+      const rgb = paleta[this.tipo];
+
+      // Halo: crece y brilla con la activación (mínimo siempre visible)
+      const radioHalo = this.radio * (4 + act * 7);
+      const alphaHalo = paleta.alphaHalo + act * 0.35;
+      const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, radioHalo);
+      grad.addColorStop(0, `rgba(${rgb}, ${alphaHalo.toFixed(3)})`);
+      grad.addColorStop(1, `rgba(${rgb}, 0)`);
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, radioHalo, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Soma: casi blanco al disparar (efecto sobreexposición)
+      const alphaSoma = 0.5 + act * 0.5;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radio + act * 1.5, 0, Math.PI * 2);
+      ctx.fillStyle = act > 0.5
+        ? `rgba(${paleta.cabeza}, ${alphaSoma.toFixed(3)})`
+        : `rgba(${rgb}, ${alphaSoma.toFixed(3)})`;
+      ctx.fill();
+    }
+  }
+
+  /* ============ CONEXIÓN (AXÓN) ============
+     Curva Bézier cuadrática. El punto de control se desplaza
+     perpendicular a la recta con un offset fijo por conexión →
+     cada axón tiene su curvatura característica. Como las
+     neuronas flotan, la curva se deforma orgánicamente. */
+  class Conexion {
+    constructor(a, b) {
+      this.a = a;
+      this.b = b;
+      this.offset = (Math.random() - 0.5) * 2 * CONFIG.curvatura;
+    }
+
+    control() {
+      const mx = (this.a.x + this.b.x) / 2;
+      const my = (this.a.y + this.b.y) / 2;
+      const dx = this.b.x - this.a.x;
+      const dy = this.b.y - this.a.y;
+      return { x: mx - dy * this.offset, y: my + dx * this.offset };
+    }
+
+    /* Punto sobre la curva: P(t) = (1-t)²·A + 2(1-t)t·C + t²·B */
+    punto(t) {
+      const c = this.control();
+      const it = 1 - t;
+      return {
+        x: it * it * this.a.x + 2 * it * t * c.x + t * t * this.b.x,
+        y: it * it * this.a.y + 2 * it * t * c.y + t * t * this.b.y
+      };
+    }
+
+    dibujar() {
+      // El axón se enciende un poco cuando alguna punta está activa
+      const act = Math.max(this.a.activacion, this.b.activacion);
+      const alpha = paleta.alphaAxon + act * 0.18;
+      const c = this.control();
+      ctx.strokeStyle = `rgba(${paleta[this.a.tipo]}, ${alpha.toFixed(3)})`;
+      ctx.lineWidth = 0.7;
+      ctx.beginPath();
+      ctx.moveTo(this.a.x, this.a.y);
+      ctx.quadraticCurveTo(c.x, c.y, this.b.x, this.b.y);
+      ctx.stroke();
+    }
+  }
+
+  /* ============ PULSO (IMPULSO ELÉCTRICO) ============
+     Viaja por una conexión de t=0 a t=1. `invertido` = va de B
+     hacia A (los axones son de ida y vuelta). Se dibuja como
+     cometa: cabeza brillante + cola de puntos que se apagan. */
+  class Pulso {
+    constructor(conexion, invertido, tipo) {
+      this.conexion = conexion;
+      this.invertido = invertido;
+      this.tipo = tipo;
+      this.t = 0;
+      this.vel = CONFIG.velPulso * (0.8 + Math.random() * 0.5);
+      this.muerto = false;
+    }
+
+    actualizar(ahora) {
+      this.t += this.vel;
+      if (this.t >= 1) {
+        this.muerto = true;
+        const destino = this.invertido ? this.conexion.a : this.conexion.b;
+        destino.disparar(ahora, true); // dispara en cadena como "eco"
+      }
+    }
+
+    dibujar() {
+      for (let i = 0; i < 5; i++) {
+        const tCola = this.t - i * 0.025;
+        if (tCola < 0) break;
+        const tReal = this.invertido ? 1 - tCola : tCola;
+        const p = this.conexion.punto(tReal);
+        const alpha = (1 - i / 5) * 0.9;
+        const radio = 2.2 - i * 0.35;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, radio, 0, Math.PI * 2);
+        ctx.fillStyle = i === 0
+          ? `rgba(${paleta.cabeza}, ${alpha.toFixed(3)})`
+          : `rgba(${paleta[this.tipo]}, ${alpha.toFixed(3)})`;
+        if (i === 0) {
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = `rgb(${paleta[this.tipo]})`;
+        }
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+    }
+  }
+
+  /* ============ GENERACIÓN DE LA RED ============ */
+
+  /* Grilla con jitter: cobertura pareja sin verse cuadriculado */
+  function generarNeuronas() {
+    neuronas = [];
+    const n = CONFIG.numNeuronas;
+    const cols = Math.ceil(Math.sqrt(n * (ancho / alto)));
+    const filas = Math.ceil(n / cols);
+    const cellW = ancho / cols;
+    const cellH = alto / filas;
+
+    for (let f = 0; f < filas; f++) {
+      for (let c = 0; c < cols; c++) {
+        if (neuronas.length >= n) return;
+        const x = c * cellW + cellW * (0.15 + Math.random() * 0.7);
+        const y = f * cellH + cellH * (0.15 + Math.random() * 0.7);
+        neuronas.push(new Neurona(x, y));
+      }
+    }
+  }
+
+  /* Conecta cada neurona con sus vecinas más cercanas, sin duplicar */
+  function generarConexiones() {
+    conexiones = [];
+    const maxDistSq = CONFIG.radioConexion * CONFIG.radioConexion;
+
+    for (let i = 0; i < neuronas.length; i++) {
+      const candidatas = [];
+      for (let j = 0; j < neuronas.length; j++) {
+        if (i === j) continue;
+        const dx = neuronas[i].baseX - neuronas[j].baseX;
+        const dy = neuronas[i].baseY - neuronas[j].baseY;
+        const dSq = dx * dx + dy * dy;
+        if (dSq < maxDistSq) candidatas.push({ idx: j, dSq });
+      }
+      candidatas.sort((a, b) => a.dSq - b.dSq);
+
+      let creadas = neuronas[i].vecinas.length;
+      for (let k = 0; k < candidatas.length && creadas < CONFIG.maxConexiones; k++) {
+        const j2 = candidatas[k].idx;
+        if (j2 < i) continue; // ese par ya se evaluó → sin duplicados
+        const con = new Conexion(neuronas[i], neuronas[j2]);
+        conexiones.push(con);
+        neuronas[i].vecinas.push({ conexion: con, invertido: false });
+        neuronas[j2].vecinas.push({ conexion: con, invertido: true });
+        creadas++;
+      }
+    }
+  }
+
+  /* ============ LOOP PRINCIPAL ============
+     Orden de dibujo: axones → pulsos → neuronas.
+     El canvas se limpia transparente: la aurora se ve detrás. */
+  function dibujarFrame(ahora) {
+    ctx.clearRect(0, 0, ancho, alto);
+
+    for (const n of neuronas) n.actualizar();
+    for (const c of conexiones) c.dibujar();
+
+    for (let i = pulsos.length - 1; i >= 0; i--) {
+      pulsos[i].actualizar(ahora);
+      if (pulsos[i].muerto) pulsos.splice(i, 1);
+      else pulsos[i].dibujar();
+    }
+
+    for (const n of neuronas) n.dibujar();
+
+    // Marcapasos: cada disparoCadaMs una neurona al azar intenta encenderse
+    if (ahora - ultimoDisparoGlobal > CONFIG.disparoCadaMs) {
+      ultimoDisparoGlobal = ahora;
+      const azar = neuronas[Math.floor(Math.random() * neuronas.length)];
+      if (azar) azar.disparar(ahora, false);
+    }
+  }
+
+  function loop(timestamp) {
+    if (!animando) return;
+    dibujarFrame(timestamp);
+    rafId = window.requestAnimationFrame(loop);
+  }
+
+  function iniciar() {
+    if (animando || REDUCE_MOTION) return;
+    animando = true;
+    rafId = window.requestAnimationFrame(loop);
+  }
+
+  function pausar() {
+    animando = false;
+    if (rafId) window.cancelAnimationFrame(rafId);
+  }
+
+  /* ============ REDIMENSIONADO ============
+     DPR limitado a 2x: nítido en retina sin matar la GPU en
+     móviles con DPR 3+. Dibujamos en coordenadas CSS. */
+  function redimensionar() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    ancho = canvas.clientWidth;
+    alto = canvas.clientHeight;
+    canvas.width = ancho * dpr;
+    canvas.height = alto * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    esMovil = window.matchMedia("(max-width: 768px)").matches;
+    CONFIG.numNeuronas = esMovil ? 16 : 34;
+    CONFIG.radioConexion = esMovil ? 180 : 240;
+    CONFIG.maxPulsos = esMovil ? 25 : 60;
+
+    pulsos = [];
+    generarNeuronas();
+    generarConexiones();
+
+    // Con movimiento reducido: un frame estático de la red en reposo
+    if (REDUCE_MOTION) dibujarFrame(0);
+  }
+
+  /* Debounce: no regenerar la red 60 veces por segundo al arrastrar
+     la ventana */
+  let resizeTimer = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(redimensionar, 150);
+  });
+
+  /* Pausa cuando el hero sale de pantalla → ahorra batería/CPU */
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((entradas) => {
+      visible = entradas[0].isIntersecting;
+      if (visible) iniciar(); else pausar();
+    }, { threshold: 0.05 }).observe(canvas);
+  }
+
+  /* Pausa con la pestaña en segundo plano */
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) pausar();
+    else if (visible) iniciar();
+  });
+
+  /* --- ARRANQUE ---
+     Encendemos 2 neuronas de entrada así la red no nace "muerta"
+     esperando el primer disparo del marcapasos */
+  redimensionar();
+  iniciar();
+  setTimeout(() => {
+    const ahora = performance.now();
+    if (neuronas[0]) neuronas[0].disparar(ahora, false);
+    const mitad = Math.floor(neuronas.length / 2);
+    if (neuronas[mitad]) neuronas[mitad].disparar(ahora, false);
+  }, 400);
+})();
