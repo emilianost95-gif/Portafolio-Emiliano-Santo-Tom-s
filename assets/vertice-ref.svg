@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="VÉRTICE — plano técnico de construcción">
+  <defs>
+    <linearGradient id="v-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d1b3d"/>
+      <stop offset="1" stop-color="#132a5c"/>
+    </linearGradient>
+    <pattern id="v-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#2a4a8f" stroke-width="1" opacity="0.5"/>
+    </pattern>
+    <pattern id="v-grid-fine" width="8" height="8" patternUnits="userSpaceOnUse">
+      <path d="M8 0H0V8" fill="none" stroke="#1e3a75" stroke-width="0.5" opacity="0.4"/>
+    </pattern>
+  </defs>
+
+  <!-- Fondo blueprint -->
+  <rect width="800" height="600" fill="url(#v-bg)"/>
+  <rect width="800" height="600" fill="url(#v-grid-fine)"/>
+  <rect width="800" height="600" fill="url(#v-grid)"/>
+
+  <!-- Marco de plano -->
+  <rect x="24" y="24" width="752" height="552" fill="none" stroke="#7ea6ff" stroke-width="2"/>
+  <rect x="32" y="32" width="736" height="536" fill="none" stroke="#4a6db8" stroke-width="1"/>
+
+  <!-- Edificio principal: torre en elevación -->
+  <g stroke="#cfe0ff" stroke-width="2.5" fill="none">
+    <rect x="300" y="140" width="200" height="330"/>
+    <!-- pisos -->
+    <path d="M300 180h200M300 220h200M300 260h200M300 300h200M300 340h200M300 380h200M300 420h200"/>
+    <!-- ventanas -->
+    <g stroke-width="1.5" stroke="#8fb4ff">
+      <path d="M330 150v20M370 150v20M410 150v20M450 150v20
+               M330 190v20M370 190v20M410 190v20M450 190v20
+               M330 230v20M370 230v20M410 230v20M450 230v20
+               M330 270v20M370 270v20M410 270v20M450 270v20
+               M330 310v20M370 310v20M410 310v20M450 310v20
+               M330 350v20M370 350v20M410 350v20M450 350v20
+               M330 390v20M370 390v20M410 390v20M450 390v20"/>
+    </g>
+  </g>
+
+  <!-- Edificio secundario -->
+  <g stroke="#8fb4ff" stroke-width="2" fill="none" opacity="0.85">
+    <rect x="520" y="260" width="130" height="210"/>
+    <path d="M520 300h130M520 340h130M520 380h130M520 420h130"/>
+  </g>
+
+  <!-- Grúa torre -->
+  <g stroke="#ffb347" stroke-width="3" fill="none" stroke-linecap="round">
+    <path d="M180 470V150"/>
+    <path d="M180 150H420"/>
+    <path d="M180 150L140 190M180 150l60 40"/>
+    <path d="M300 150v30"/>
+    <path d="M300 180h-16v14h16z" fill="#ffb347"/>
+  </g>
+  <g stroke="#ffb347" stroke-width="1.5" opacity="0.8">
+    <path d="M180 470l14-40-28 0zM180 430l14-40-28 0zM180 390l14-40-28 0zM180 350l14-40-28 0zM180 310l14-40-28 0zM180 270l14-40-28 0zM180 230l14-40-28 0z" fill="none"/>
+  </g>
+
+  <!-- Línea de suelo -->
+  <path d="M60 470h680" stroke="#7ea6ff" stroke-width="2.5"/>
+  <path d="M60 470l-8 12M120 470l-8 12M240 470l-8 12M560 470l-8 12M700 470l-8 12M740 470l-8 12" stroke="#4a6db8" stroke-width="1.5"/>
+
+  <!-- Líneas de cota -->
+  <g stroke="#ffb347" stroke-width="1.2" fill="none">
+    <path d="M300 500v16M500 500v16M300 510h200"/>
+    <path d="M300 510l10-4v8zM500 510l-10-4v8z" fill="#ffb347"/>
+    <path d="M270 140h-16M270 470h-16M262 140v330"/>
+    <path d="M262 140l-4 10h8zM262 470l-4-10h8z" fill="#ffb347"/>
+  </g>
+  <text x="400" y="536" fill="#ffd9a0" font-family="monospace" font-size="15" text-anchor="middle">12.400</text>
+  <text x="246" y="310" fill="#ffd9a0" font-family="monospace" font-size="15" text-anchor="middle" transform="rotate(-90 246 310)">33.000</text>
+
+  <!-- Sello de plano PL-01 -->
+  <g>
+    <rect x="576" y="56" width="176" height="76" fill="#0d1b3d" stroke="#7ea6ff" stroke-width="1.5"/>
+    <path d="M576 84h176M576 108h176M676 84v48" stroke="#4a6db8" stroke-width="1"/>
+    <text x="588" y="76" fill="#cfe0ff" font-family="monospace" font-size="16" font-weight="bold">PL-01</text>
+    <text x="700" y="76" fill="#ffb347" font-family="monospace" font-size="12">REV.C</text>
+    <text x="588" y="101" fill="#8fb4ff" font-family="monospace" font-size="10">ELEVACIÓN NORTE</text>
+    <text x="684" y="101" fill="#8fb4ff" font-family="monospace" font-size="10">1:100</text>
+    <text x="588" y="125" fill="#8fb4ff" font-family="monospace" font-size="10">VÉRTICE · 25 AÑOS</text>
+    <text x="684" y="125" fill="#8fb4ff" font-family="monospace" font-size="10">2026</text>
+  </g>
+
+  <!-- Norte -->
+  <g transform="translate(88,96)">
+    <circle r="26" fill="none" stroke="#7ea6ff" stroke-width="1.5"/>
+    <path d="M0 -20L7 8 0 2 -7 8Z" fill="#ffb347"/>
+    <text y="44" fill="#8fb4ff" font-family="monospace" font-size="12" text-anchor="middle">N</text>
+  </g>
+</svg>

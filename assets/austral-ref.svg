@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="AUSTRAL — moda esencial del sur">
+  <defs>
+    <linearGradient id="a-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#efe7db"/>
+      <stop offset="1" stop-color="#e2d6c4"/>
+    </linearGradient>
+    <linearGradient id="a-coat" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8a9a8b"/>
+      <stop offset="1" stop-color="#6f8272"/>
+    </linearGradient>
+    <linearGradient id="a-knit" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c9814f"/>
+      <stop offset="1" stop-color="#b06a3c"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fondo editorial -->
+  <rect width="800" height="600" fill="url(#a-bg)"/>
+
+  <!-- Montañas del sur, sutiles -->
+  <path d="M0 460 L140 330 L230 420 L340 300 L470 440 L600 340 L800 470 V600 H0 Z" fill="#d3c4ac" opacity="0.55"/>
+  <path d="M0 500 L180 400 L320 480 L520 390 L680 480 L800 430 V600 H0 Z" fill="#c4b298" opacity="0.5"/>
+
+  <!-- Riel de colgado -->
+  <path d="M120 96 H680" stroke="#4a4038" stroke-width="5" stroke-linecap="round"/>
+  <path d="M140 96 V70 M660 96 V70" stroke="#4a4038" stroke-width="4"/>
+
+  <!-- Percha 1: abrigo verde salvia -->
+  <g>
+    <path d="M250 108 q0 -14 12 -14 q12 0 12 12" fill="none" stroke="#4a4038" stroke-width="4" stroke-linecap="round"/>
+    <path d="M262 118 l-56 24 v14 l20 -6 v170 q0 12 12 12 h48 q12 0 12 -12 V150 l20 6 v-14 Z" fill="url(#a-coat)"/>
+    <path d="M262 118 v214" stroke="#5e6f61" stroke-width="2"/>
+    <path d="M244 150 v160 M280 150 v160" stroke="#617465" stroke-width="1.5" opacity="0.7"/>
+    <circle cx="254" cy="170" r="2.6" fill="#3f4a41"/>
+    <circle cx="254" cy="210" r="2.6" fill="#3f4a41"/>
+    <circle cx="254" cy="250" r="2.6" fill="#3f4a41"/>
+  </g>
+
+  <!-- Percha 2: knit terracota -->
+  <g>
+    <path d="M400 108 q0 -14 12 -14 q12 0 12 12" fill="none" stroke="#4a4038" stroke-width="4" stroke-linecap="round"/>
+    <path d="M412 120 l-50 20 v16 l16 -5 v128 q0 10 10 10 h48 q10 0 10 -10 V151 l16 5 v-16 Z" fill="url(#a-knit)"/>
+    <path d="M386 160 h52 M386 178 h52 M386 196 h52 M386 214 h52 M386 232 h52 M386 250 h52 M386 268 h52" stroke="#9c5a30" stroke-width="2.5" opacity="0.55"/>
+    <path d="M382 150 v130 M442 150 v130" stroke="#8f5029" stroke-width="2" opacity="0.6"/>
+  </g>
+
+  <!-- Percha 3: camisa crema -->
+  <g>
+    <path d="M550 108 q0 -14 12 -14 q12 0 12 12" fill="none" stroke="#4a4038" stroke-width="4" stroke-linecap="round"/>
+    <path d="M562 118 l-52 22 v14 l18 -5 v154 q0 10 10 10 h48 q10 0 10 -10 V149 l18 5 v-14 Z" fill="#f4ead9"/>
+    <path d="M562 118 v195" stroke="#d8c9b0" stroke-width="2"/>
+    <path d="M562 118 l-12 18 12 10 12 -10 Z" fill="#e8dcc6"/>
+    <circle cx="562" cy="160" r="2.4" fill="#b8a888"/>
+    <circle cx="562" cy="190" r="2.4" fill="#b8a888"/>
+    <circle cx="562" cy="220" r="2.4" fill="#b8a888"/>
+    <circle cx="562" cy="250" r="2.4" fill="#b8a888"/>
+  </g>
+
+  <!-- Etiqueta de marca -->
+  <g transform="translate(120,455)">
+    <rect width="230" height="86" fill="#f6efe3" stroke="#4a4038" stroke-width="1.5"/>
+    <text x="20" y="36" fill="#3a332c" font-family="Georgia, serif" font-size="26" letter-spacing="6">AUSTRAL</text>
+    <path d="M20 50 h190" stroke="#4a4038" stroke-width="1"/>
+    <text x="20" y="70" fill="#7a6f60" font-family="monospace" font-size="11" letter-spacing="2">ESENCIALES DEL SUR</text>
+    <circle cx="205" cy="30" r="9" fill="none" stroke="#b06a3c" stroke-width="1.5"/>
+    <path d="M205 24 v12 M199 30 h12" stroke="#b06a3c" stroke-width="1.2"/>
+  </g>
+
+  <!-- Sello moda lenta -->
+  <g transform="translate(636,500)">
+    <circle r="44" fill="none" stroke="#4a4038" stroke-width="1.5"/>
+    <circle r="34" fill="none" stroke="#4a4038" stroke-width="0.8"/>
+    <text y="-8" fill="#4a4038" font-family="monospace" font-size="10" text-anchor="middle" letter-spacing="1">MODA</text>
+    <text y="8" fill="#4a4038" font-family="monospace" font-size="10" text-anchor="middle" letter-spacing="1">LENTA</text>
+    <text y="24" fill="#b06a3c" font-family="monospace" font-size="9" text-anchor="middle">EST. SUR</text>
+  </g>
+</svg>
