@@ -322,54 +322,122 @@ document.addEventListener("DOMContentLoaded", () => {
      =========================================================== */
   const form = document.getElementById("contactForm");
   if (form) {
-    form.addEventListener("submit", (e) => {
+    /* 👉 Pegá acá tu Access Key gratuita de https://web3forms.com
+       (te la mandan al correo al registrar tu email; no requiere backend). */
+    const WEB3FORMS_KEY = "53ec99b1-065e-49e5-8072-26f61c71a97d";
+
+    const successPanel = document.getElementById("formSuccess");
+    const submitBtn = form.querySelector(".contact-form__submit");
+    const btnLabel = submitBtn ? submitBtn.querySelector(".btn__label") : null;
+    const LABEL_IDLE = btnLabel ? btnLabel.textContent : "Enviar";
+
+    // Reglas por campo -> devuelven true o el mensaje de error
+    const rules = {
+      name:    (v) => v.trim().length >= 2 || "Ingresá tu nombre.",
+      email:   (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) || "Ingresá un correo válido.",
+      project: (v) => v !== "" || "Elegí un tipo de proyecto.",
+      message: (v) => v.trim().length >= 10 || "Contame un poco más (mín. 10 caracteres).",
+    };
+
+    // Label flotante + validación en vivo
+    form.querySelectorAll(".field").forEach((field) => {
+      const input = field.querySelector("input, textarea, select");
+      if (!input) return;
+      const setFilled = () => field.classList.toggle("is-filled", input.value.trim() !== "");
+      setFilled();
+      input.addEventListener("input", () => {
+        setFilled();
+        if (field.classList.contains("has-error")) validateField(input);
+      });
+      input.addEventListener("change", setFilled);
+      input.addEventListener("blur", () => validateField(input));
+    });
+
+    function validateField(input) {
+      const rule = rules[input.name];
+      if (!rule) return true;
+      const res = rule(input.value);
+      if (res === true) { clearError(input.name); return true; }
+      showError(input.name, res);
+      return false;
+    }
+
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
+
+      // Honeypot: si un bot lo marcó, cortamos en silencio
+      if (form.elements.botcheck && form.elements.botcheck.checked) return;
+
       let valid = true;
+      ["name", "email", "project", "message"].forEach((n) => {
+        const input = form.elements[n];
+        if (input && !validateField(input)) valid = false;
+      });
+      if (!valid) { toast("error", "Revisá los campos marcados."); return; }
 
-      const name = form.name.value.trim();
-      const email = form.email.value.trim();
-      const message = form.message.value.trim();
-
-      // Limpia errores previos
-      clearError("name"); clearError("email"); clearError("message");
-
-      if (name.length < 2) {
-        showError("name", "Ingresá tu nombre.");
-        valid = false;
-      }
-      // Expresión regular simple para validar el correo
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        showError("email", "Ingresá un correo válido.");
-        valid = false;
-      }
-      if (message.length < 10) {
-        showError("message", "Contame un poco más (mín. 10 caracteres).");
-        valid = false;
-      }
-
-      if (valid) {
-        // Acá conectarías un servicio real (Formspree, EmailJS, etc.)
-        toast("success", "¡Mensaje listo! Te responderé pronto.");
-        form.reset();
-      } else {
-        toast("error", "Revisá los campos marcados.");
+      setLoading(true);
+      try {
+        const res = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({
+            access_key: WEB3FORMS_KEY,
+            subject: "Nuevo mensaje desde tu portafolio",
+            from_name: "Portafolio · Emiliano",
+            name: form.elements.name.value.trim(),
+            email: form.elements.email.value.trim(),
+            project_type: form.elements.project.value,
+            message: form.elements.message.value.trim(),
+          }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          showSuccess();
+        } else {
+          setLoading(false);
+          toast("error", data.message || "No se pudo enviar. Probá de nuevo.");
+        }
+      } catch (err) {
+        setLoading(false);
+        toast("error", "Hubo un problema de conexión. Intentá otra vez.");
       }
     });
-  }
 
-  function showError(field, msg) {
-    const span = document.querySelector(`[data-error="${field}"]`);
-    if (span) {
-      span.textContent = msg;
-      span.closest(".form-field").classList.add("has-error");
+    function setLoading(state) {
+      if (!submitBtn) return;
+      submitBtn.classList.toggle("is-loading", state);
+      submitBtn.disabled = state;
+      submitBtn.setAttribute("aria-busy", state ? "true" : "false");
+      if (btnLabel) btnLabel.textContent = state ? "Enviando…" : LABEL_IDLE;
     }
-  }
-  function clearError(field) {
-    const span = document.querySelector(`[data-error="${field}"]`);
-    if (span) {
-      span.textContent = "";
-      span.closest(".form-field").classList.remove("has-error");
+
+    function showSuccess() {
+      setLoading(false);
+      form.hidden = true;
+      form.reset();
+      form.querySelectorAll(".field.is-filled").forEach((f) => f.classList.remove("is-filled"));
+      if (successPanel) {
+        successPanel.hidden = false;
+        successPanel.classList.add("is-shown");
+        successPanel.focus?.();
+      }
+    }
+
+    function showError(field, msg) {
+      const input = form.elements[field];
+      const wrap = input ? input.closest(".field") : null;
+      const span = form.querySelector(`[data-error="${field}"]`);
+      if (span) span.textContent = msg;
+      if (wrap) wrap.classList.add("has-error");
+      if (input) input.setAttribute("aria-invalid", "true");
+    }
+    function clearError(field) {
+      const input = form.elements[field];
+      const wrap = input ? input.closest(".field") : null;
+      const span = form.querySelector(`[data-error="${field}"]`);
+      if (span) span.textContent = "";
+      if (wrap) wrap.classList.remove("has-error");
+      if (input) input.removeAttribute("aria-invalid");
     }
   }
 
