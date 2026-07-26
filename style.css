@@ -1769,3 +1769,10 @@ h1, h2, h3, h4 {
 .project-card.is-live::before {
   opacity: 1;
 }
+/* ===== Skills en chips agrupados (reemplaza barras de %) ===== */
+.skills__grid--groups{display:block}
+.skill-group{margin-bottom:1.6rem}
+.skill-group__title{display:block;font-weight:600;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;opacity:.55;margin-bottom:.55rem}
+.skill-chips{list-style:none;display:flex;flex-wrap:wrap;gap:.5rem;padding:0;margin:0}
+.skill-chips li{padding:.4rem .85rem;border:1px solid rgba(255,255,255,.12);border-radius:999px;font-size:.85rem;background:rgba(255,255,255,.03);transition:border-color .2s,transform .2s}
+.skill-chips li:hover{border-color:rgba(255,255,255,.3);transform:translateY(-2px)}
