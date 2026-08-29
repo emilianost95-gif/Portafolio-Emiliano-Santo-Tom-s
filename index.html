@@ -1,777 +1,813 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="dark">
+<html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- ========================= SEO ========================= -->
-  <title>Emiliano Samir Santo Tomás · Desarrollador Web Front-End</title>
-  <meta name="description" content="Desarrollador Web Front-End en Chile. Creo sitios web modernos, rápidos y optimizados: landing pages, sitios corporativos y experiencias web a medida." />
-  <meta name="author" content="Emiliano Samir Santo Tomás" />
-  <meta name="keywords" content="desarrollador web, front-end, Chile, landing page, sitios web, HTML, CSS, JavaScript, diseño web" />
-  <meta name="robots" content="index, follow" />
-  <meta name="theme-color" content="#08090d" />
-  <link rel="canonical" href="https://emilianost95-gif.github.io/" />
+<!-- ===========================================================================
+     SEO
+     Hallazgo B-03: la V1 apuntaba canonical, og:url, og:image, sitemap y
+     robots a la RAÍZ del dominio y no al subdirectorio real del proyecto. El
+     og:image devolvía 404, y por eso el sitio no mostraba preview al
+     compartirse por WhatsApp o LinkedIn. Todas las URLs de acá son la ruta real.
+     ======================================================================== -->
+<title>Emiliano Santo Tomás · Desarrollador Web Front-End</title>
+<meta name="description" content="Desarrollador web front-end en Chile. Sitios rápidos, accesibles y bien terminados: landing pages, sitios corporativos y experiencias a medida. Seis proyectos reales en producción.">
+<meta name="author" content="Emiliano Samir Santo Tomás">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0A0B0C">
+<link rel="canonical" href="https://emilianost95-gif.github.io/Portafolio-Emiliano-Santo-Tom-s/">
 
-  <!-- ================== Open Graph / redes ================== -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Emiliano Samir Santo Tomás · Desarrollador Web Front-End"/>
-  <meta property="og:description" content="Transformo ideas en experiencias web modernas, rápidas y memorables."/>
-  <meta property="og:url" content="https://emilianost95-gif.github.io/" />
-  <meta property="og:locale" content="es_CL" />
-  <meta property="og:image" content="https://emilianost95-gif.github.io/og-image.png" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Emiliano Samir Santo Tomás · Desarrollador Web Front-End"/>
-  <meta name="twitter:description" content="Transformo ideas en experiencias web modernas, rápidas y memorables." />
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_CL">
+<meta property="og:site_name" content="Emiliano Santo Tomás">
+<meta property="og:title" content="Emiliano Santo Tomás · Desarrollador Web Front-End">
+<meta property="og:description" content="Sitios rápidos, accesibles y bien terminados. Seis proyectos reales en producción.">
+<meta property="og:url" content="https://emilianost95-gif.github.io/Portafolio-Emiliano-Santo-Tom-s/">
+<meta property="og:image" content="https://emilianost95-gif.github.io/Portafolio-Emiliano-Santo-Tom-s/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Emiliano Santo Tomás · Desarrollador Web Front-End">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Emiliano Santo Tomás · Desarrollador Web Front-End">
+<meta name="twitter:description" content="Sitios rápidos, accesibles y bien terminados. Seis proyectos reales en producción.">
+<meta name="twitter:image" content="https://emilianost95-gif.github.io/Portafolio-Emiliano-Santo-Tom-s/og-image.png">
 
-  <!-- ===================== Favicon (SVG inline) ===================== -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2322d3ee'/%3E%3Cstop offset='0.5' stop-color='%236366f1'/%3E%3Cstop offset='1' stop-color='%23a855f7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='24' fill='%2308090d'/%3E%3Ctext x='50' y='68' font-family='monospace' font-size='52' font-weight='700' fill='url(%23g)' text-anchor='middle'%3EE%3C/text%3E%3C/svg%3E" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230A0B0C'/%3E%3Ctext x='50' y='70' font-family='Helvetica,Arial,sans-serif' font-size='60' font-weight='800' fill='%23E0A03C' text-anchor='middle'%3EE%3C/text%3E%3C/svg%3E">
 
-  <!-- ===================== Tipografías ===================== -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<!-- ===========================================================================
+     TEMA Y REVELADOS — antes del primer pintado.
+     Es el único script en línea del sitio, y existe por dos motivos:
+     1. Aplicar el tema guardado sin destello del tema equivocado.
+     2. Marcar que hay JavaScript, que es lo que habilita el estado inicial
+        oculto de los revelados. Si reveal.js no confirma en 2,5 s que arrancó,
+        la marca se quita sola y todo el contenido queda visible igual.
+     ======================================================================== -->
+<script>
+  (function () {
+    var d = document.documentElement, t;
+    try { t = localStorage.getItem('est-theme'); } catch (e) {}
+    if (!t) t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    d.setAttribute('data-theme', t);
 
-  <!-- ===================== Estilos ===================== -->
-  <link rel="stylesheet" href="style.css?v=3" />
+    d.classList.add('js-reveal');
+    setTimeout(function () {
+      if (d.dataset.revealReady !== '1') d.classList.remove('js-reveal');
+    }, 2500);
+  })();
+</script>
 
-  <!-- ============ Datos estructurados (SEO avanzado) ============ -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    "name": "Emiliano Samir Santo Tomás",
-    "jobTitle": "Desarrollador Web Front-End",
-    "address": { "@type": "PostalAddress", "addressCountry": "CL" },
-    "email": "emilianost95@gmail.com",
-    "url": "https://emilianost95-gif.github.io/",
-    "sameAs": [
-      "https://github.com/emilianost95-gif",
-      "https://www.linkedin.com/in/emiliano-santo-tomás-718489291"
-    ]
-  }
-  </script>
+<!-- ===========================================================================
+     FUENTES — self-hosted, variables, con los ejes recortados y subseteadas
+     al alfabeto que el sitio usa. 89 KB las tres, contra las 3 familias × 8
+     pesos que la V1 pedía a Google con render bloqueante.
+     Se precargan las dos que aparecen en el primer pintado.
+     ======================================================================== -->
+<link rel="preload" href="fonts/archivo-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+<!-- ===========================================================================
+     ESTILOS — modulares en desarrollo; build.mjs los concatena y minifica.
+     ======================================================================== -->
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Emiliano Samir Santo Tomás",
+  "jobTitle": "Desarrollador Web Front-End",
+  "address": { "@type": "PostalAddress", "addressCountry": "CL" },
+  "email": "emilianost95@gmail.com",
+  "url": "https://emilianost95-gif.github.io/Portafolio-Emiliano-Santo-Tom-s/",
+  "knowsAbout": ["HTML5", "CSS3", "JavaScript", "Accesibilidad web", "SEO técnico", "Rendimiento web"],
+  "sameAs": [
+    "https://github.com/emilianost95-gif",
+    "https://www.linkedin.com/in/emiliano-santo-tom%C3%A1s-718489291"
+  ]
+}
+</script>
+  <link rel="stylesheet" href="css/styles.min.css">
 </head>
 
 <body>
 
-  <!-- ===== Preloader cyberpunk ===== -->
-  <div id="preloader" class="preloader">
-    <div class="preloader__grid" aria-hidden="true"></div>
-    <div class="preloader__scan" aria-hidden="true"></div>
-    <div class="preloader__boot" id="preloaderBoot"></div>
-    <div class="preloader__logo" id="preloaderLogo">
-      <span class="preloader__est" id="preloaderEst">EST</span>
-      <span class="preloader__tag" id="preloaderTag">FRONT-END · CHILE</span>
+<a class="skip-link" href="#hero">Saltar al contenido</a>
+
+<div class="backdrop" aria-hidden="true"></div>
+
+<div class="cursor cursor--ring" id="cursorRing" aria-hidden="true"></div>
+<div class="cursor cursor--dot"  id="cursorDot"  aria-hidden="true"></div>
+
+
+<!-- =========================================================================
+     NAVEGACIÓN
+     ====================================================================== -->
+<header class="nav" id="nav">
+  <div class="nav__inner">
+    <a class="nav__logo" href="#hero" aria-label="EST · ir al inicio">EST<em>.</em></a>
+
+    <nav aria-label="Navegación principal">
+      <ul class="nav__links">
+        <span class="nav__indicator" aria-hidden="true"></span>
+        <li><a class="nav__link" href="#about"    data-nav-link>Sobre mí</a></li>
+        <li><a class="nav__link" href="#projects" data-nav-link>Proyectos</a></li>
+        <li><a class="nav__link" href="#stack"    data-nav-link>Stack</a></li>
+        <li><a class="nav__link" href="#services" data-nav-link>Servicios</a></li>
+        <li><a class="nav__link" href="#contact"  data-nav-link>Contacto</a></li>
+      </ul>
+    </nav>
+
+    <div class="nav__actions">
+      <button class="theme-btn" id="themeBtn" type="button" aria-pressed="false" aria-label="Activar tema claro">
+        <span class="theme-btn__icons">
+          <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 1.8v2.4M12 19.8v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M1.8 12h2.4M19.8 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
+          <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </span>
+      </button>
+
+      <a class="btn btn--primary btn--sm nav__cta" href="#contact" data-magnetic>Hablemos</a>
+
+      <button class="nav__burger" type="button" aria-expanded="false" aria-controls="navPanel" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Panel móvil -->
+<div class="nav__panel" id="navPanel">
+  <nav aria-label="Navegación móvil">
+    <ul class="nav__panel-links">
+      <li style="--i:0"><a href="#about"    data-nav-link><span class="n">01</span>Sobre mí</a></li>
+      <li style="--i:1"><a href="#projects" data-nav-link><span class="n">02</span>Proyectos</a></li>
+      <li style="--i:2"><a href="#stack"    data-nav-link><span class="n">03</span>Stack</a></li>
+      <li style="--i:3"><a href="#services" data-nav-link><span class="n">04</span>Servicios</a></li>
+      <li style="--i:4"><a href="#contact"  data-nav-link><span class="n">05</span>Contacto</a></li>
+    </ul>
+  </nav>
+  <div class="nav__panel-foot">
+    <a href="mailto:emilianost95@gmail.com">emilianost95@gmail.com</a>
+    <a href="https://github.com/emilianost95-gif" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</div>
+
+
+<main>
+
+<!-- =========================================================================
+     HERO
+     ====================================================================== -->
+<section class="hero" id="hero" aria-labelledby="heroTitle" tabindex="-1">
+
+  <div class="hero__heat" aria-hidden="true"></div>
+
+  <span class="hero__rail hero__rail--left"  aria-hidden="true">EST · Portafolio v2</span>
+  <span class="hero__rail hero__rail--right" aria-hidden="true">Concepción · Chile</span>
+
+  <div class="hero__inner container">
+    <p class="hero__status">
+      <span class="hero__dot" aria-hidden="true"></span>
+      Disponible para proyectos
+    </p>
+
+    <h1 class="hero__title" id="heroTitle">
+      <span class="hero__line hero__line--1"><span class="hero__given">Emiliano Samir</span></span>
+      <span class="hero__line hero__line--2"><span class="hero__family">Santo Tomás</span></span>
+    </h1>
+
+    <div class="hero__rule" aria-hidden="true"></div>
+
+    <p class="hero__role">Desarrollador Web Front-End</p>
+
+    <p class="hero__desc">
+      Construyo sitios rápidos, accesibles y bien terminados, con la misma
+      precisión que traigo del taller de estructuras metálicas.
+      <strong>Proyectos reales, en producción</strong> —no plantillas—.
+    </p>
+
+    <div class="hero__cta">
+      <a class="btn btn--primary" href="#projects" data-magnetic>
+        Ver proyectos
+        <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a class="btn btn--ghost" href="#contact" data-magnetic>Contactame</a>
     </div>
   </div>
 
-  <!-- ========================================================= -->
-  <!-- CURSOR PERSONALIZADO                                      -->
-  <!-- ========================================================= -->
-  <div class="cursor-dot" id="cursorDot"></div>
-  <div class="cursor-ring" id="cursorRing"></div>
-
-  <!-- ========================================================= -->
-  <!-- FONDO ANIMADO (aurora + grid)                            -->
-  <!-- ========================================================= -->
-  <div class="bg-fx" aria-hidden="true">
-    <div class="bg-fx__blob bg-fx__blob--1"></div>
-    <div class="bg-fx__blob bg-fx__blob--2"></div>
-    <div class="bg-fx__blob bg-fx__blob--3"></div>
-    <div class="bg-fx__grid"></div>
+  <div class="hero__foot">
+    <div class="hero__ticks" aria-hidden="true"></div>
+    <a class="hero__scroll" href="#about">
+      <span class="hero__scroll-line" aria-hidden="true"></span>
+      Scroll
+    </a>
   </div>
+</section>
 
-  <!-- ========================================================= -->
-  <!-- NAVBAR                                                    -->
-  <!-- ========================================================= -->
-  <header class="nav" id="nav">
-    <div class="nav__inner">
-      <a href="#hero" class="nav__logo" aria-label="Inicio">EST<span>.</span></a>
 
-      <nav class="nav__links" id="navLinks" aria-label="Navegación principal">
-        <a href="#about">Sobre mí</a>
-        <a href="#projects">Proyectos</a>
-        <a href="#services">Servicios</a>
-        <a href="#experience">Experiencia</a>
-        <a href="#contact">Contacto</a>
-      </nav>
+<!-- =========================================================================
+     SOBRE MÍ · Fase 5
+     ====================================================================== -->
+<section class="section section--elev section--ruled" id="about" aria-labelledby="aboutTitle">
+  <div class="container">
 
-      <div class="nav__actions">
-        <!-- Cambio de tema claro / oscuro -->
-        <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
-          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-        </button>
+    <div class="section-head" data-reveal>
+      <span class="label">Sobre mí</span>
+      <h2 class="section-head__title" id="aboutTitle">
+        Construyendo, aprendiendo y <span class="text-accent">creciendo</span>
+      </h2>
+    </div>
 
-        <a href="#contact" class="btn btn--primary btn--sm" data-hide-mobile>Hablemos</a>
+    <div class="about__grid">
 
-        <!-- Menú hamburguesa (solo móvil) -->
-        <button class="nav__burger" id="navBurger" aria-label="Abrir menú" aria-expanded="false">
-          <span></span><span></span><span></span>
-        </button>
+      <div class="about__story">
+        <p class="about__opener" data-reveal>
+          Soy Emiliano, desarrollador web front-end con base en Chile.
+        </p>
+
+        <div data-reveal-group="1">
+          <p data-reveal>
+            Vengo de la <strong>soldadura y los procesos metalúrgicos</strong>, un rubro
+            donde una unión mal hecha se ve y se paga. Esa obsesión por el detalle y por
+            que las cosas aguanten es la que hoy llevo al código.
+          </p>
+
+          <blockquote class="about__quote" data-reveal>
+            Trato cada entrega como una pieza de taller: medida, probada y terminada.
+          </blockquote>
+
+          <p data-reveal>
+            Construyo <strong>proyectos reales para clientes</strong>, no ejercicios de
+            tutorial. Me enfoco en sitios <strong>rápidos, accesibles y bien optimizados</strong>.
+          </p>
+          <p data-reveal>
+            Voy en camino hacia el <strong>desarrollo de software</strong>, sumando
+            herramientas y buenas prácticas en cada proyecto. Aprendo rápido y entrego en serio.
+          </p>
+        </div>
       </div>
+
+      <aside class="about__aside" data-reveal="side" aria-label="Ficha técnica">
+        <div class="spec-card">
+          <div class="spec-card__head">
+            <span>Ficha técnica</span>
+            <b>EST-01</b>
+          </div>
+
+          <dl class="spec-rows">
+            <div class="spec-row"><dt>Base</dt><dd>Concepción, Chile</dd></div>
+            <div class="spec-row"><dt>Oficio previo</dt><dd>Estructuras metálicas</dd></div>
+            <div class="spec-row"><dt>Enfoque</dt><dd>Front-end a medida</dd></div>
+            <div class="spec-row"><dt>En producción</dt><dd>6 sitios</dd></div>
+            <div class="spec-row"><dt>Estado</dt><dd><span class="ok">Disponible</span></dd></div>
+          </dl>
+
+          <div class="principles">
+            <div class="principle">
+              <span class="principle__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              </span>
+              <div>
+                <h3>Código limpio</h3>
+                <p>Estructura clara, comentada y fácil de mantener y escalar.</p>
+              </div>
+            </div>
+            <div class="principle">
+              <span class="principle__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              </span>
+              <div>
+                <h3>Rendimiento</h3>
+                <p>Carga veloz y buenas métricas en Lighthouse como prioridad.</p>
+              </div>
+            </div>
+            <div class="principle">
+              <span class="principle__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+              </span>
+              <div>
+                <h3>Responsive</h3>
+                <p>Se ve y funciona perfecto en celular, tablet y escritorio.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
     </div>
-  </header>
+  </div>
+</section>
 
-  <main>
 
-    <!-- ========================================================= -->
-    <!-- HERO · Sinapsis neuronal                                  -->
-    <!-- ========================================================= -->
-    <section class="hero section" id="hero">
+<!-- =========================================================================
+     PROYECTOS · Fase 6
+     Las imágenes son capturas reales de cada sitio en producción.
+     ====================================================================== -->
+<section class="section section--ruled" id="projects" aria-labelledby="projectsTitle">
+  <div class="container container--wide">
 
-      <!-- Canvas de la red neuronal (script.js, sección 14).
-           Si JS falla, queda invisible y el fondo aurora hace de fallback -->
-      <canvas id="heroCanvas" class="hero__canvas" aria-hidden="true"></canvas>
+    <div class="section-head" data-reveal>
+      <span class="label">Proyectos</span>
+      <h2 class="section-head__title" id="projectsTitle">Trabajo seleccionado</h2>
+      <p class="section-head__lead">
+        Seis sitios en producción. Diseño, código y optimización de punta a punta.
+      </p>
+    </div>
 
-      <div class="container">
-        <div class="hero__content">
-          <span class="hero__badge" data-reveal>EST</span>
+    <div class="featured">
 
-          <h1 class="hero__title" data-reveal data-reveal-delay="1">
-            <span class="hero__name">Emiliano Samir</span>
-            <span class="hero__name hero__name--glow">Santo Tomás</span>
-          </h1>
-
-          <p class="hero__role" data-reveal data-reveal-delay="1">
-            <span class="hero__bracket">&lt;</span>Desarrollador Web Front-End<span class="hero__bracket">/&gt;</span>
+      <!-- Destacado 1 · VÉRTICE -->
+      <article class="case" data-reveal>
+        <div class="case__media" data-tilt data-parallax>
+          <span class="case__index">PR-01 · Constructora</span>
+          <picture>
+            <source srcset="img/projects/vertice.avif" type="image/avif">
+            <img class="case__img" src="img/projects/vertice.webp"
+                 width="1600" height="1000" loading="lazy" decoding="async"
+                 alt="Portada del sitio de VÉRTICE: una casa construida en Pinto, Chile, con el titular «Construimos el futuro» sobre la fotografía.">
+          </picture>
+        </div>
+        <div class="case__body">
+          <p class="case__kicker">Sitio corporativo · 2026</p>
+          <h3 class="case__title">VÉRTICE</h3>
+          <p class="case__desc">
+            Sitio corporativo para constructora chilena con 25+ años de trayectoria.
+            Diseño editorial con nomenclatura de planos (PL-01, PL-02…), línea de
+            tiempo histórica, 8 servicios con cotización, galería categorizada y
+            proceso de 5 etapas.
           </p>
-
-          <!-- Frase con efecto typing (el texto lo arma script.js) -->
-          <p class="hero__typed" data-reveal data-reveal-delay="2">
-            <span id="typed"></span><span class="type-cursor" aria-hidden="true"></span>
-          </p>
-
-          <p class="hero__desc" data-reveal data-reveal-delay="2">
-            Construyo sitios rápidos, accesibles y bien terminados, con la
-            misma precisión que traigo del taller de estructuras metálicas.
-            Proyectos reales, en producción —no plantillas—.
-          </p>
-
-          <div class="hero__cta" data-reveal data-reveal-delay="3">
-            <a href="#projects" class="btn btn--primary">
-              Ver proyectos
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <ul class="tags"><li>HTML</li><li>CSS</li><li>JavaScript</li><li>GSAP</li></ul>
+          <div class="case__actions">
+            <a class="btn btn--primary btn--sm" href="https://emilianost95-gif.github.io/V-rtice-AR/" target="_blank" rel="noopener" data-magnetic>
+              Ver el sitio
+              <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
             </a>
-            <a href="#contact" class="btn btn--ghost">Contactame</a>
+            <a class="btn btn--ghost btn--sm" href="https://github.com/emilianost95-gif/V-rtice-AR" target="_blank" rel="noopener" data-magnetic>Código</a>
           </div>
         </div>
-      </div>
+      </article>
 
-      <!-- Indicador de scroll -->
-      <div class="scroll-indicator" aria-hidden="true">
-        <div class="scroll-indicator__mouse"><span></span></div>
-        SCROLL
-      </div>
-    </section>
+      <!-- Destacado 2 · VULCANO -->
+      <article class="case case--flip" data-reveal>
+        <div class="case__media" data-tilt data-parallax>
+          <span class="case__index">PR-02 · Metalúrgica</span>
+          <picture>
+            <source srcset="img/projects/vulcano.avif" type="image/avif">
+            <img class="case__img" src="img/projects/vulcano.webp"
+                 width="1600" height="1000" loading="lazy" decoding="async"
+                 alt="Portada del sitio de VULCANO sobre fondo oscuro con el titular «Construimos estructuras que desafían el tiempo».">
+          </picture>
+        </div>
+        <div class="case__body">
+          <p class="case__kicker">Sitio corporativo · 2026</p>
+          <h3 class="case__title">VULCANO</h3>
+          <p class="case__desc">
+            Sitio corporativo para empresa de estructuras metálicas. Diseño industrial
+            con scroll-driven animations, sección de servicios detallada, galería de
+            proyectos, testimonios y contacto vía WhatsApp.
+          </p>
+          <ul class="tags"><li>HTML</li><li>CSS</li><li>JavaScript</li><li>WhatsApp API</li></ul>
+          <div class="case__actions">
+            <a class="btn btn--primary btn--sm" href="https://emilianost95-gif.github.io/VULCANO/" target="_blank" rel="noopener" data-magnetic>
+              Ver el sitio
+              <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
+            </a>
+            <a class="btn btn--ghost btn--sm" href="https://github.com/emilianost95-gif/VULCANO" target="_blank" rel="noopener" data-magnetic>Código</a>
+          </div>
+        </div>
+      </article>
 
-    <!-- ========================================================= -->
-    <!-- SOBRE MÍ                                                  -->
-    <!-- ========================================================= -->
-    <section class="section section--alt" id="about">
-      <div class="container">
+    </div>
+
+    <!-- Grilla secundaria -->
+    <div class="projects__grid" data-reveal-group="1">
+
+      <article class="card" data-reveal>
+        <div class="card__media">
+          <picture>
+            <source srcset="img/projects/austral.avif" type="image/avif">
+            <img src="img/projects/austral.webp" width="900" height="562" loading="lazy" decoding="async"
+                 alt="Sección de colecciones de AUSTRAL: tres ilustraciones de prendas sobre fondos beige y carbón.">
+          </picture>
+        </div>
+        <div class="card__body">
+          <h3 class="card__title">AUSTRAL</h3>
+          <p class="card__desc">
+            E-commerce minimalista para marca de ropa esencial del sur. Catálogo de
+            colecciones con filtros, lookbook editorial, carrito funcional, newsletter
+            y filosofía de moda lenta.
+          </p>
+          <ul class="tags"><li>HTML</li><li>CSS</li><li>JavaScript</li></ul>
+          <div class="card__actions">
+            <a class="btn btn--primary btn--sm" href="https://emilianost95-gif.github.io/AUSTRAL/" target="_blank" rel="noopener">Ver</a>
+            <a class="btn btn--ghost btn--sm" href="https://github.com/emilianost95-gif/AUSTRAL" target="_blank" rel="noopener">Código</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" data-reveal>
+        <div class="card__media">
+          <picture>
+            <source srcset="img/projects/smartgrow.avif" type="image/avif">
+            <img src="img/projects/smartgrow.webp" width="900" height="562" loading="lazy" decoding="async"
+                 alt="Dashboard de SmartGrow en verde fósforo sobre negro, con lecturas de temperatura, humedad y presión de vapor.">
+          </picture>
+        </div>
+        <div class="card__body">
+          <h3 class="card__title">Smart Grow <span class="badge">En desarrollo</span></h3>
+          <p class="card__desc">
+            Sistema de automatización para cultivo indoor: monitoreo ambiental en
+            tiempo real con ESP32, sensores y un dashboard con visualización de datos.
+          </p>
+          <ul class="tags"><li>ESP32</li><li>Arduino</li><li>IoT</li><li>Dashboard</li></ul>
+          <div class="card__actions">
+            <a class="btn btn--primary btn--sm" href="https://emilianost95-gif.github.io/smart-grow/" target="_blank" rel="noopener">Ver demo</a>
+            <a class="btn btn--ghost btn--sm" href="https://github.com/emilianost95-gif/smart-grow" target="_blank" rel="noopener">Código</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" data-reveal>
+        <div class="card__media">
+          <picture>
+            <source srcset="img/projects/vikingos.avif" type="image/avif">
+            <img src="img/projects/vikingos.webp" width="900" height="562" loading="lazy" decoding="async"
+                 alt="Portada de VIKINGO'S BarberShop: el nombre en letras doradas sobre fondo negro con el lema «Donde los guerreros forjan su estilo».">
+          </picture>
+        </div>
+        <div class="card__body">
+          <h3 class="card__title">VIKINGO'S</h3>
+          <p class="card__desc">
+            Landing page con estética vikinga para barbería. Incluye formulario de
+            reservas, botón flotante de WhatsApp y diseño 100% responsive.
+          </p>
+          <ul class="tags"><li>HTML</li><li>CSS</li><li>JavaScript</li><li>WhatsApp API</li></ul>
+          <div class="card__actions">
+            <a class="btn btn--primary btn--sm" href="https://emilianost95-gif.github.io/VIKINGO-S-BarberShop/" target="_blank" rel="noopener">Ver</a>
+            <a class="btn btn--ghost btn--sm" href="https://github.com/emilianost95-gif/VIKINGO-S-BarberShop" target="_blank" rel="noopener">Código</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" data-reveal>
+        <div class="card__media">
+          <picture>
+            <source srcset="img/projects/roblenegro.avif" type="image/avif">
+            <img src="img/projects/roblenegro.webp" width="900" height="562" loading="lazy" decoding="async"
+                 alt="Sitio de Roble Negro con el titular «Muebles cortados al milímetro» y un panel de cifras del taller.">
+          </picture>
+        </div>
+        <div class="card__body">
+          <h3 class="card__title">Roble Negro</h3>
+          <p class="card__desc">
+            Sitio corporativo para fabricación de muebles a medida. Diseño moderno,
+            optimización SEO y experiencia fluida en todos los dispositivos.
+          </p>
+          <ul class="tags"><li>HTML</li><li>CSS</li><li>SEO</li><li>Responsive</li></ul>
+          <div class="card__actions">
+            <a class="btn btn--primary btn--sm" href="https://emilianost95-gif.github.io/RobleNegro/" target="_blank" rel="noopener">Ver</a>
+            <a class="btn btn--ghost btn--sm" href="https://github.com/emilianost95-gif/RobleNegro" target="_blank" rel="noopener">Código</a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- =========================================================================
+     STACK · Fase 7 (fusiona las dos secciones duplicadas de la V1)
+     ====================================================================== -->
+<section class="section section--elev section--ruled" id="stack" aria-labelledby="stackTitle">
+  <div class="container">
+    <div class="mode-split">
+
+      <div>
         <div class="section-head" data-reveal>
-          <span class="eyebrow">Sobre mí</span>
-          <h2 class="section-title">Construyendo, aprendiendo y <span class="gradient-text">creciendo</span></h2>
+          <span class="label">Stack</span>
+          <h2 class="section-head__title" id="stackTitle">Con qué trabajo</h2>
+          <p class="section-head__lead">
+            Agrupado por dominio real, no por un porcentaje inventado.
+            Este stack crece con cada proyecto.
+          </p>
         </div>
 
-        <div class="about__grid">
-          <div class="about__text" data-reveal>
-            <p>
-              Soy <strong>Emiliano</strong>, desarrollador web front-end con base en Chile.
-              Vengo de la <strong>soldadura y los procesos metalúrgicos</strong>, un rubro
-              donde una unión mal hecha se ve y se paga. Esa obsesión por el detalle y por
-              que las cosas aguanten es la que hoy llevo al código.
-            </p>
-            <p>
-              Construyo <strong>proyectos reales para clientes</strong>, no ejercicios de
-              tutorial. Me enfoco en sitios <strong>rápidos, accesibles y bien optimizados</strong>,
-              y trato cada entrega como una pieza de taller: medida, probada y terminada.
-            </p>
-            <p>
-              Voy en camino hacia el <strong>desarrollo de software</strong>, sumando
-              herramientas y buenas prácticas en cada proyecto. Aprendo rápido y entrego en serio.
-            </p>
+        <div class="stack__groups">
+          <div class="stack-group" data-reveal>
+            <p class="stack-group__label">Sólido · en producción</p>
+            <div class="stack__tiles" data-reveal-group="1">
+              <div class="tile"><span class="tile__icon"><svg viewBox="0 0 24 24" fill="#E34F26" aria-hidden="true"><path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.23-2.622L5.412 4.41l.71 8.01h9.126l-.27 3.027-2.911.804-2.956-.81-.188-2.11H6.248l.33 4.171L12 19.351l5.379-1.443.744-8.157H8.531z"/></svg></span><span class="tile__name">HTML5</span></div>
+              <div class="tile"><span class="tile__icon"><svg viewBox="0 0 24 24" fill="#1572B6" aria-hidden="true"><path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.565-2.438L1.5 0zm17.09 4.413L5.41 4.41l.213 2.622 10.125.002-.255 2.716h-6.64l.24 2.573h6.182l-.366 3.523-2.91.804-2.956-.81-.188-2.11h-2.61l.29 3.855L12 19.351l5.373-1.443.802-9.495z"/></svg></span><span class="tile__name">CSS3</span></div>
+              <div class="tile"><span class="tile__icon"><svg viewBox="0 0 24 24" fill="none" stroke="#E0A03C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="14" height="11" rx="1.5"/><path d="M18 9h4v9a1 1 0 0 1-1 1h-8"/><path d="M6 19h5"/></svg></span><span class="tile__name">Responsive</span></div>
+              <div class="tile"><span class="tile__icon"><svg viewBox="0 0 24 24" fill="#F05032" aria-hidden="true"><path d="M23.546 10.93 13.067.452a1.55 1.55 0 0 0-2.188 0L8.708 2.627l2.76 2.76a1.838 1.838 0 0 1 2.327 2.341l2.658 2.66a1.838 1.838 0 0 1 1.9 3.039 1.837 1.837 0 0 1-2.6 0 1.846 1.846 0 0 1-.404-1.996L12.86 9.176v6.32a1.84 1.84 0 1 1-1.516-.054V9.066a1.838 1.838 0 0 1-.998-2.41L7.62 3.932.45 11.102a1.55 1.55 0 0 0 0 2.188l10.48 10.48a1.55 1.55 0 0 0 2.187 0l10.43-10.43a1.55 1.55 0 0 0 0-2.188"/></svg></span><span class="tile__name">Git &amp; GitHub</span></div>
+            </div>
           </div>
 
-          <div class="about__cards">
-            <div class="about-card" data-reveal data-reveal-delay="1">
-              <div class="about-card__icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-              </div>
-              <h4>Código limpio</h4>
-              <p>Estructura clara, comentada y fácil de mantener y escalar.</p>
+          <div class="stack-group" data-reveal>
+            <p class="stack-group__label">En uso constante</p>
+            <div class="stack__tiles" data-reveal-group="1">
+              <div class="tile"><span class="tile__icon"><svg viewBox="0 0 24 24" fill="#F7DF1E" aria-hidden="true"><path d="M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805 0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855-.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675 3.207.405.783-.226 1.458-.691 1.811-1.411.51-.93.402-2.07.397-3.346.012-2.054 0-4.109 0-6.179l.004-.056z"/></svg></span><span class="tile__name">JavaScript ES6</span></div>
+              <div class="tile"><span class="tile__icon"><svg viewBox="0 0 24 24" fill="none" stroke="#E0A03C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h4l2-5 4 10 2-5h4"/></svg></span><span class="tile__name">Fetch / APIs</span></div>
+              <div class="tile"><span class="tile__icon"><svg viewBox="0 0 24 24" fill="none" stroke="#5FA88C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v.01M12 11v6"/></svg></span><span class="tile__name">Accesibilidad</span></div>
+              <div class="tile"><span class="tile__icon"><svg viewBox="0 0 24 24" fill="none" stroke="#5FA88C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span><span class="tile__name">SEO técnico</span></div>
             </div>
-            <div class="about-card" data-reveal data-reveal-delay="2">
-              <div class="about-card__icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-              </div>
-              <h4>Rendimiento</h4>
-              <p>Carga veloz y buenas métricas en Lighthouse como prioridad.</p>
-            </div>
-            <div class="about-card" data-reveal data-reveal-delay="3">
-              <div class="about-card__icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-              </div>
-              <h4>Responsive</h4>
-              <p>Se ve y funciona perfecto en celular, tablet y escritorio.</p>
+          </div>
+
+          <div class="stack-group stack-group--now" data-reveal>
+            <p class="stack-group__label">Aprendiendo ahora</p>
+            <div class="stack__tiles" data-reveal-group="1">
+              <div class="tile"><span class="tile__icon"><svg viewBox="0 0 24 24" fill="#61DAFB" aria-hidden="true"><circle cx="12" cy="12" r="2.1"/><g fill="none" stroke="#61DAFB" stroke-width="1"><ellipse cx="12" cy="12" rx="10" ry="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/></g></svg></span><span class="tile__name">React</span></div>
+              <div class="tile"><span class="tile__icon"><svg viewBox="0 0 24 24" fill="#3178C6" aria-hidden="true"><path d="M3 3h18v18H3V3zm10.3 12.1v2.1c.34.18.75.31 1.2.4.46.09.94.13 1.44.13.49 0 .95-.05 1.39-.14.44-.1.82-.25 1.15-.47.33-.22.59-.5.78-.85.19-.35.29-.78.29-1.29 0-.37-.06-.69-.17-.97a2.2 2.2 0 0 0-.49-.72 3.6 3.6 0 0 0-.77-.57c-.3-.17-.63-.33-1-.48a9.2 9.2 0 0 1-.73-.34 3 3 0 0 1-.48-.3 1.2 1.2 0 0 1-.29-.33.77.77 0 0 1-.1-.38c0-.13.03-.25.09-.36a.9.9 0 0 1 .27-.28c.12-.08.27-.14.44-.19.18-.04.38-.06.6-.06.16 0 .33.01.5.04.18.02.36.06.54.11.18.05.36.12.53.2.17.08.33.17.48.28V9.29a4.9 4.9 0 0 0-1.08-.28 8.8 8.8 0 0 0-1.35-.09c-.49 0-.95.05-1.38.16-.44.11-.82.27-1.15.5-.33.23-.59.51-.78.86-.19.35-.29.77-.29 1.25 0 .61.18 1.13.53 1.56.35.43.89.79 1.6 1.09.29.12.55.24.8.35.25.12.46.24.64.36.18.13.32.26.42.41.1.14.15.31.15.49 0 .13-.03.25-.09.36a.85.85 0 0 1-.28.28c-.12.08-.28.15-.46.19-.19.05-.4.07-.65.07-.43 0-.85-.07-1.27-.22a3.8 3.8 0 0 1-1.16-.67zM11.1 10.7H8.5V18H6.6v-7.3H4V9.1h7.1v1.6z"/></svg></span><span class="tile__name">TypeScript</span></div>
             </div>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- ========================================================= -->
-    <!-- TECNOLOGÍAS                                               -->
-    <!-- ========================================================= -->
-    <section class="section" id="tech">
-      <div class="container">
+      <!-- Métricas: reemplazan a "2 clientes · 500+ horas" -->
+      <div data-reveal="side">
+        <div class="metrics">
+          <div class="metric metric--key">
+            <span class="metric__value">6</span>
+            <span class="metric__label">Sitios en producción</span>
+            <span class="metric__note">Con código público en GitHub</span>
+          </div>
+          <div class="metric">
+            <span class="metric__value">98<span class="unit">/100</span></span>
+            <span class="metric__label">SEO</span>
+            <span class="metric__note">Promedio Lighthouse · 6 proyectos</span>
+          </div>
+          <div class="metric">
+            <span class="metric__value">96<span class="unit">/100</span></span>
+            <span class="metric__label">Buenas prácticas</span>
+            <span class="metric__note">Promedio Lighthouse · 6 proyectos</span>
+          </div>
+          <div class="metric">
+            <span class="metric__value">93<span class="unit">/100</span></span>
+            <span class="metric__label">Accesibilidad</span>
+            <span class="metric__note">Promedio Lighthouse · 6 proyectos</span>
+          </div>
+        </div>
+        <p class="metrics__source">
+          Medido con Lighthouse sobre los seis proyectos enlazados más abajo.
+          Podés verificarlo vos mismo: abrí cualquiera y corré la auditoría.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- =========================================================================
+     SERVICIOS
+     ====================================================================== -->
+<section class="section section--ruled" id="services" aria-labelledby="servicesTitle">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="label">Servicios</span>
+      <h2 class="section-head__title" id="servicesTitle">Lo que puedo hacer por vos</h2>
+      <p class="section-head__lead">Desde una landing page hasta el mantenimiento continuo de tu sitio.</p>
+    </div>
+
+    <div class="services__grid" data-reveal-group="1">
+      <div class="service" data-reveal>
+        <span class="service__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg></span>
+        <h3>Landing Pages</h3>
+        <p>Páginas de aterrizaje pensadas para convertir, con diseño impactante y carga veloz.</p>
+      </div>
+      <div class="service" data-reveal>
+        <span class="service__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg></span>
+        <h3>Sitios Corporativos</h3>
+        <p>Presencia profesional para tu negocio, clara, ordenada y a tu medida.</p>
+      </div>
+      <div class="service" data-reveal>
+        <span class="service__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>
+        <h3>Optimización Web</h3>
+        <p>Mejoro velocidad y rendimiento para que tu sitio puntúe alto en Lighthouse.</p>
+      </div>
+      <div class="service" data-reveal>
+        <span class="service__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
+        <h3>Mantenimiento</h3>
+        <p>Actualizaciones, correcciones y mejoras para que tu web siga impecable.</p>
+      </div>
+      <div class="service" data-reveal>
+        <span class="service__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="14" height="11" rx="1.5"/><path d="M18 9h4v9a1 1 0 0 1-1 1h-8"/></svg></span>
+        <h3>Responsive Design</h3>
+        <p>Cada sitio se adapta perfecto a celular, tablet y escritorio.</p>
+      </div>
+      <div class="service" data-reveal>
+        <span class="service__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
+        <h3>SEO Básico</h3>
+        <p>Meta tags, estructura y buenas prácticas para que Google te encuentre.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- =========================================================================
+     TRAYECTORIA
+     ====================================================================== -->
+<section class="section section--elev section--ruled" id="experience" aria-labelledby="expTitle">
+  <div class="container">
+    <div class="mode-split">
+
+      <div>
         <div class="section-head" data-reveal>
-          <span class="eyebrow">Stack</span>
-          <h2 class="section-title">Tecnologías que uso</h2>
-          <p class="section-lead">Las herramientas con las que trabajo hoy. Este stack crece con cada proyecto.</p>
-        </div>
-
-        <div class="tech__list">
-          <!-- HTML5 -->
-          <div class="tech-item" data-reveal>
-            <svg viewBox="0 0 24 24" fill="#e34f26"><path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.23-2.622L5.412 4.41l.71 8.01h9.126l-.27 3.027-2.911.804-2.956-.81-.188-2.11H6.248l.33 4.171L12 19.351l5.379-1.443.744-8.157H8.531z"/></svg>
-            <span>HTML5</span>
-          </div>
-          <!-- CSS3 -->
-          <div class="tech-item" data-reveal data-reveal-delay="1">
-            <svg viewBox="0 0 24 24" fill="#1572b6"><path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.565-2.438L1.5 0zm17.09 4.413L5.41 4.41l.213 2.622 10.125.002-.255 2.716h-6.64l.24 2.573h6.182l-.366 3.523-2.91.804-2.956-.81-.188-2.11h-2.61l.29 3.855L12 19.351l5.373-1.443.802-9.495z"/></svg>
-            <span>CSS3</span>
-          </div>
-          <!-- JavaScript -->
-          <div class="tech-item" data-reveal data-reveal-delay="2">
-            <svg viewBox="0 0 24 24" fill="#f7df1e"><path d="M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805 0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855-.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675 3.207.405.783-.226 1.458-.691 1.811-1.411.51-.93.402-2.07.397-3.346.012-2.054 0-4.109 0-6.179l.004-.056z"/></svg>
-            <span>JavaScript</span>
-          </div>
-          <!-- Git -->
-          <div class="tech-item" data-reveal data-reveal-delay="3">
-            <svg viewBox="0 0 24 24" fill="#f05032"><path d="M23.546 10.93L13.067.452a1.55 1.55 0 0 0-2.188 0L8.708 2.627l2.76 2.76a1.838 1.838 0 0 1 2.327 2.341l2.658 2.66a1.838 1.838 0 0 1 1.9 3.039 1.837 1.837 0 0 1-2.6 0 1.846 1.846 0 0 1-.404-1.996L12.86 9.176v6.32a1.84 1.84 0 1 1-1.516-.054V9.066a1.838 1.838 0 0 1-.998-2.41L7.62 3.932.45 11.102a1.55 1.55 0 0 0 0 2.188l10.48 10.48a1.55 1.55 0 0 0 2.187 0l10.43-10.43a1.55 1.55 0 0 0 0-2.188"/></svg>
-            <span>Git</span>
-          </div>
-          <!-- GitHub -->
-          <div class="tech-item" data-reveal data-reveal-delay="4">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
-            <span>GitHub</span>
-          </div>
-          <!-- Responsive -->
-          <div class="tech-item" data-reveal data-reveal-delay="4">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="14" height="11" rx="1"/><path d="M18 9h4v9a1 1 0 0 1-1 1h-8"/><line x1="6" y1="19" x2="11" y2="19"/></svg>
-            <span>Responsive</span>
-          </div>
-          <!-- Espacio para tecnologías futuras -->
-          <div class="tech-item tech-item--soon" data-reveal data-reveal-delay="4">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            <span>Más pronto</span>
-          </div>
+          <span class="label">Trayectoria</span>
+          <h2 class="section-head__title" id="expTitle">Mi camino como desarrollador</h2>
+          <p class="section-head__lead">
+            Todavía estoy empezando, pero cada paso fue un proyecto real y
+            aprendizaje concreto.
+          </p>
         </div>
       </div>
-    </section>
 
-    <!-- ========================================================= -->
-    <!-- PROYECTOS                                                 -->
-    <!-- ========================================================= -->
-    <section class="section section--alt" id="projects">
-      <div class="container">
-        <div class="section-head" data-reveal>
-          <span class="eyebrow">Proyectos</span>
-          <h2 class="section-title">Trabajo seleccionado</h2>
-          <p class="section-lead">Proyectos reales en los que apliqué diseño, código y optimización de punta a punta.</p>
+      <div class="timeline" data-reveal-group="1">
+        <div class="timeline__item" data-reveal>
+          <p class="timeline__date">2025 · Inicio</p>
+          <h3 class="timeline__title">Primeros pasos en programación</h3>
+          <p class="timeline__desc">Arranco con fundamentos de desarrollo web y electrónica (Arduino), construyendo las bases del stack.</p>
         </div>
-
-        <div class="projects__grid">
-
-          <!-- VIKINGO'S BarberShop -->
-          <article class="project-card" data-reveal>
-            <div class="project-card__media media--vikingos">
-              <img class="project-card__img" src="assets/vikingos-ref.avif"
-                   alt="Referencia: interior de barbería" loading="lazy" />
-              <span class="preview-label">VIKINGO'S</span>
-            </div>
-            <div class="project-card__body">
-              <h3 class="project-card__title">VIKINGO'S BarberShop</h3>
-              <p class="project-card__desc">
-                Landing page con estética vikinga para barbería. Incluye:
-                formulario de reservas, botón flotante de WhatsApp y diseño
-                100% responsive.
-              </p>
-              <div class="project-card__tags">
-                <span>HTML</span><span>CSS</span><span>JavaScript</span><span>WhatsApp API</span>
-              </div>
-              <div class="project-card__actions">
-                <a href="https://emilianost95-gif.github.io/VIKINGO-S-BarberShop/" class="btn btn--primary btn--sm" target="_blank" rel="noopener">Ver proyecto</a>
-                <a href="https://github.com/emilianost95-gif/VIKINGO-S-BarberShop" class="btn btn--ghost btn--sm" target="_blank" rel="noopener">GitHub</a>
-              </div>
-            </div>
-          </article>
-
-          <!-- Roble Negro -->
-          <article class="project-card" data-reveal data-reveal-delay="1">
-            <div class="project-card__media media--roble">
-              <img class="project-card__img" src="assets/roble-ref.avif"
-                   alt="Referencia: muebles de madera" loading="lazy" />
-              <span class="preview-label">Roble Negro</span>
-            </div>
-            <div class="project-card__body">
-              <h3 class="project-card__title">Roble Negro</h3>
-              <p class="project-card__desc">
-                Sitio corporativo para fabricación de muebles a medida. Diseño
-                moderno, optimización SEO y experiencia fluida en todos los
-                dispositivos.
-              </p>
-              <div class="project-card__tags">
-                <span>HTML</span><span>CSS</span><span>SEO</span><span>Responsive</span>
-              </div>
-              <div class="project-card__actions">
-                <a href="https://emilianost95-gif.github.io/RobleNegro/" class="btn btn--primary btn--sm" target="_blank" rel="noopener">Ver proyecto</a>
-                <a href="https://github.com/emilianost95-gif/RobleNegro" class="btn btn--ghost btn--sm" target="_blank" rel="noopener">GitHub</a>
-              </div>
-            </div>
-          </article>
-
-          <!-- Smart Grow -->
-          <article class="project-card" data-reveal data-reveal-delay="2">
-            <div class="project-card__media media--smartgrow">
-              <span class="preview-label">SmartGrow</span>
-            </div>
-            <div class="project-card__body">
-              <h3 class="project-card__title">
-                Smart Grow
-                <span class="project-card__badge">EN DESARROLLO</span>
-              </h3>
-              <p class="project-card__desc">
-                Sistema de automatización para cultivo indoor: monitoreo
-                ambiental en tiempo real con ESP32, sensores y un dashboard
-                con visualización de datos.
-              </p>
-              <div class="project-card__tags">
-                <span>ESP32</span><span>Arduino</span><span>IoT</span><span>Dashboard</span>
-              </div>
-              <div class="project-card__actions">
-                <a href="https://emilianost95-gif.github.io/smart-grow/" class="btn btn--primary btn--sm" target="_blank" rel="noopener">Ver demo</a>
-                <a href="https://github.com/emilianost95-gif/smart-grow" class="btn btn--ghost btn--sm" target="_blank" rel="noopener">GitHub</a>
-              </div>
-            </div>
-          </article>
-
-          <!-- VÉRTICE -->
-          <article class="project-card" data-reveal data-reveal-delay="3">
-            <div class="project-card__media media--vertice">
-              <img class="project-card__img" src="assets/vertice-ref.svg"
-                   alt="Referencia: plano técnico de construcción" loading="lazy" />
-              <span class="preview-label">VÉRTICE</span>
-            </div>
-            <div class="project-card__body">
-              <h3 class="project-card__title">VÉRTICE</h3>
-              <p class="project-card__desc">
-                Sitio corporativo para constructora chilena con 25+ años de
-                trayectoria. Diseño editorial con nomenclatura de planos
-                (PL-01, PL-02...), línea de tiempo histórica, 8 servicios con
-                cotización, galería categorizada y proceso de 5 etapas.
-              </p>
-              <div class="project-card__tags">
-                <span>HTML</span><span>CSS</span><span>JavaScript</span>
-              </div>
-              <div class="project-card__actions">
-                <a href="https://emilianost95-gif.github.io/V-rtice-AR/" class="btn btn--primary btn--sm" target="_blank" rel="noopener">Ver proyecto</a>
-                <a href="https://github.com/emilianost95-gif/V-rtice-AR" class="btn btn--ghost btn--sm" target="_blank" rel="noopener">GitHub</a>
-              </div>
-            </div>
-          </article>
-
-          <!-- AUSTRAL -->
-          <article class="project-card" data-reveal data-reveal-delay="4">
-            <div class="project-card__media media--austral">
-              <img class="project-card__img" src="assets/austral-ref.svg"
-                   alt="Referencia: prendas esenciales colgadas en riel" loading="lazy" />
-              <span class="preview-label">AUSTRAL</span>
-            </div>
-            <div class="project-card__body">
-              <h3 class="project-card__title">AUSTRAL</h3>
-              <p class="project-card__desc">
-                E-commerce minimalista para marca de ropa esencial del sur.
-                Catálogo de colecciones con filtros, lookbook editorial,
-                carrito funcional, newsletter y filosofía de moda lenta.
-              </p>
-              <div class="project-card__tags">
-                <span>HTML</span><span>CSS</span><span>JavaScript</span>
-              </div>
-              <div class="project-card__actions">
-                <a href="https://emilianost95-gif.github.io/AUSTRAL/" class="btn btn--primary btn--sm" target="_blank" rel="noopener">Ver proyecto</a>
-                <a href="https://github.com/emilianost95-gif/AUSTRAL" class="btn btn--ghost btn--sm" target="_blank" rel="noopener">GitHub</a>
-              </div>
-            </div>
-          </article>
-
-          <!-- VULCANO -->
-          <article class="project-card" data-reveal data-reveal-delay="5">
-            <div class="project-card__media media--vulcano">
-              <img class="project-card__img" src="assets/vulcano-ref.svg"
-                   alt="Referencia: estructura metálica con soldadura" loading="lazy" />
-              <span class="preview-label">VULCANO</span>
-            </div>
-            <div class="project-card__body">
-              <h3 class="project-card__title">VULCANO</h3>
-              <p class="project-card__desc">
-                Sitio corporativo para empresa de estructuras metálicas.
-                Diseño industrial con scroll-driven animations, sección de
-                servicios detallada, galería de proyectos, testimonios y
-                contacto vía WhatsApp.
-              </p>
-              <div class="project-card__tags">
-                <span>HTML</span><span>CSS</span><span>JavaScript</span><span>WhatsApp API</span>
-              </div>
-              <div class="project-card__actions">
-                <a href="https://emilianost95-gif.github.io/VULCANO/" class="btn btn--primary btn--sm" target="_blank" rel="noopener">Ver proyecto</a>
-                <a href="https://github.com/emilianost95-gif/VULCANO" class="btn btn--ghost btn--sm" target="_blank" rel="noopener">GitHub</a>
-              </div>
-            </div>
-          </article>
-
-          <!-- Espacio para proyectos futuros -->
-          <article class="project-card project-card--soon" data-reveal data-reveal-delay="6">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            <p>Tu próximo proyecto<br>podría estar acá.</p>
-          </article>
-
+        <div class="timeline__item" data-reveal>
+          <p class="timeline__date">2025 · Front-End</p>
+          <h3 class="timeline__title">HTML, CSS y JavaScript</h3>
+          <p class="timeline__desc">Me especializo en front-end: diseño responsive, animaciones y buenas prácticas de código.</p>
+        </div>
+        <div class="timeline__item" data-reveal>
+          <p class="timeline__date">2025–2026 · Proyectos reales</p>
+          <h3 class="timeline__title">Primeros clientes y proyectos</h3>
+          <p class="timeline__desc">Desarrollo y despliego sitios reales: VIKINGO'S, Roble Negro, VÉRTICE, AUSTRAL, VULCANO y SmartGrow, todos publicados en GitHub Pages.</p>
+        </div>
+        <div class="timeline__item timeline__item--now" data-reveal>
+          <p class="timeline__date">Ahora</p>
+          <h3 class="timeline__title">Buscando crecer</h3>
+          <p class="timeline__desc">En busca de mi primera posición como desarrollador y avanzando hacia el desarrollo de software e informática.</p>
         </div>
       </div>
-    </section>
 
-    <!-- ========================================================= -->
-    <!-- SERVICIOS                                                 -->
-    <!-- ========================================================= -->
-    <section class="section" id="services">
-      <div class="container">
-        <div class="section-head" data-reveal>
-          <span class="eyebrow">Servicios</span>
-          <h2 class="section-title">Lo que puedo hacer por vos</h2>
-          <p class="section-lead">Desde una landing page hasta el mantenimiento continuo de tu sitio.</p>
-        </div>
+    </div>
+  </div>
+</section>
 
-        <div class="services__grid">
-          <div class="service-card" data-reveal>
-            <div class="service-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg></div>
-            <h3>Landing Pages</h3>
-            <p>Páginas de aterrizaje pensadas para convertir, con diseño impactante y carga veloz.</p>
-          </div>
-          <div class="service-card" data-reveal data-reveal-delay="1">
-            <div class="service-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg></div>
-            <h3>Sitios Corporativos</h3>
-            <p>Presencia profesional para tu negocio, clara, ordenada y a tu medida.</p>
-          </div>
-          <div class="service-card" data-reveal data-reveal-delay="2">
-            <div class="service-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
-            <h3>Optimización Web</h3>
-            <p>Mejoro velocidad y rendimiento para que tu sitio puntúe alto en Lighthouse.</p>
-          </div>
-          <div class="service-card" data-reveal data-reveal-delay="3">
-            <div class="service-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
-            <h3>Mantenimiento</h3>
-            <p>Actualizaciones, correcciones y mejoras para que tu web siga impecable.</p>
-          </div>
-          <div class="service-card" data-reveal data-reveal-delay="1">
-            <div class="service-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="14" height="11" rx="1"/><path d="M18 9h4v9a1 1 0 0 1-1 1h-8"/></svg></div>
-            <h3>Responsive Design</h3>
-            <p>Cada sitio se adapta perfecto a celular, tablet y escritorio.</p>
-          </div>
-          <div class="service-card" data-reveal data-reveal-delay="2">
-            <div class="service-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-            <h3>SEO Básico</h3>
-            <p>Meta tags, estructura y buenas prácticas para que Google te encuentre.</p>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- ========================================================= -->
-    <!-- EXPERIENCIA (timeline)                                    -->
-    <!-- ========================================================= -->
-    <section class="section section--alt" id="experience">
-      <div class="container">
-        <div class="section-head" data-reveal>
-          <span class="eyebrow">Trayectoria</span>
-          <h2 class="section-title">Mi camino como desarrollador</h2>
-          <p class="section-lead">Todavía estoy empezando, pero cada paso fue un proyecto real y aprendizaje concreto.</p>
-        </div>
+<!-- =========================================================================
+     CONTACTO
+     ====================================================================== -->
+<section class="section section--ruled" id="contact" aria-labelledby="contactTitle">
+  <div class="container">
 
-        <div class="timeline">
-          <div class="timeline-item" data-reveal>
-            <div class="timeline-item__date">2025 · Inicio</div>
-            <h3 class="timeline-item__title">Primeros pasos en programación</h3>
-            <p class="timeline-item__desc">Arranco con fundamentos de desarrollo web y electrónica (Arduino), construyendo las bases del stack.</p>
-          </div>
-          <div class="timeline-item" data-reveal data-reveal-delay="1">
-            <div class="timeline-item__date">2025 · Front-End</div>
-            <h3 class="timeline-item__title">HTML, CSS y JavaScript</h3>
-            <p class="timeline-item__desc">Me especializo en front-end: diseño responsive, animaciones y buenas prácticas de código.</p>
-          </div>
-          <div class="timeline-item" data-reveal data-reveal-delay="2">
-            <div class="timeline-item__title-wrap">
-              <div class="timeline-item__date">2025–2026 · Proyectos reales</div>
-              <h3 class="timeline-item__title">Primeros clientes y proyectos</h3>
-            </div>
-            <p class="timeline-item__desc">Desarrollo y despliego sitios reales: VIKINGO'S, Simetría Conce y SmartGrow, publicados en GitHub Pages.</p>
-          </div>
-          <div class="timeline-item" data-reveal data-reveal-delay="3">
-            <div class="timeline-item__date">Ahora</div>
-            <h3 class="timeline-item__title">Buscando crecer</h3>
-            <p class="timeline-item__desc">En busca de mi primera posición como desarrollador y avanzando hacia el desarrollo de software e informática.</p>
-          </div>
-        </div>
-      </div>
-    </section>
+    <div class="section-head" data-reveal>
+      <span class="label">¿Empezamos?</span>
+      <h2 class="section-head__title" id="contactTitle">
+        Contame tu <span class="text-accent">proyecto</span>
+      </h2>
+      <p class="section-head__lead">
+        Contame qué necesitás y lo hacemos realidad. Normalmente respondo en
+        menos de 24&nbsp;horas.
+      </p>
+    </div>
 
-    <!-- ========================================================= -->
-    <!-- HABILIDADES (barras animadas)                             -->
-    <!-- ========================================================= -->
-    <section class="section" id="skills">
-      <div class="container">
-        <div class="section-head" data-reveal>
-          <span class="eyebrow">Habilidades</span>
-          <h2 class="section-title">Stack y dominio</h2>
-          <p class="section-lead">Con qué trabajo hoy y qué estoy sumando. Este stack crece con cada proyecto.</p>
-        </div>
+    <div class="contact__grid">
 
-        <div class="skills__grid skills__grid--groups">
-          <div class="skill-group" data-reveal>
-            <span class="skill-group__title">Sólido</span>
-            <ul class="skill-chips">
-              <li>HTML5</li><li>CSS3</li><li>Responsive</li><li>Git &amp; GitHub</li>
-            </ul>
+      <div>
+        <div class="channels" data-reveal-group="1">
+          <div class="channel" data-reveal>
+            <span class="channel__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg></span>
+            <span class="channel__txt">
+              <strong>Correo</strong>
+              <span id="emailText">emilianost95@gmail.com</span>
+            </span>
+            <button class="channel__copy" id="copyEmail" type="button" aria-label="Copiar dirección de correo">Copiar</button>
           </div>
-          <div class="skill-group" data-reveal data-reveal-delay="1">
-            <span class="skill-group__title">En uso constante</span>
-            <ul class="skill-chips">
-              <li>JavaScript (ES6+)</li><li>Fetch / APIs</li><li>Accesibilidad</li><li>SEO técnico</li>
-            </ul>
-          </div>
-          <div class="skill-group" data-reveal data-reveal-delay="2">
-            <span class="skill-group__title">Aprendiendo ahora</span>
-            <!-- EDITÁ: dejá solo lo que REALMENTE estudies -->
-            <ul class="skill-chips">
-              <li>React</li><li>TypeScript</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- ========================================================= -->
-    <!-- ESTADÍSTICAS (contadores)                                 -->
-    <!-- ========================================================= -->
-    <section class="section section--alt" id="stats">
-      <div class="container">
-        <div class="stats__grid">
-          <!-- data-count = valor final del contador (editá libremente) -->
-          <div class="stat" data-reveal>
-            <div class="stat__num"><span data-count="6">6</span></div>
-            <div class="stat__label">Proyectos realizados</div>
-          </div>
-          <div class="stat" data-reveal data-reveal-delay="1">
-            <div class="stat__num"><span data-count="6">6</span><span class="plus">+</span></div>
-            <div class="stat__label">Tecnologías aprendidas</div>
-          </div>
-          <div class="stat" data-reveal data-reveal-delay="2">
-            <div class="stat__num"><span data-count="2">2</span></div>
-            <div class="stat__label">Clientes</div>
-          </div>
-          <div class="stat" data-reveal data-reveal-delay="3">
-            <div class="stat__num"><span data-count="500">500</span><span class="plus">+</span></div>
-            <div class="stat__label">Horas de desarrollo</div>
-          </div>
-        </div>
-      </div>
-    </section>
+          <a class="channel" href="https://www.linkedin.com/in/emiliano-santo-tom%C3%A1s-718489291" target="_blank" rel="noopener" data-reveal>
+            <span class="channel__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg></span>
+            <span class="channel__txt"><strong>LinkedIn</strong><span>Conectemos</span></span>
+            <svg class="link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><path d="M7 17 17 7M7 7h10v10"/></svg>
+          </a>
 
-    <!-- ========================================================= -->
-    <!-- GITHUB                                                    -->
-    <!-- ========================================================= -->
-    <section class="section" id="github">
-      <div class="container">
-        <div class="section-head" data-reveal>
-          <span class="eyebrow">Open Source</span>
-          <h2 class="section-title">Mirá mi código</h2>
-        </div>
-
-        <div class="github-card" data-reveal>
-          <div class="github-card__avatar">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
-          </div>
-          <div class="github-card__info">
-            <h3>Emiliano Santo Tomás</h3>
-            <p class="handle">@emilianost95-gif</p>
-            <p>Acá publico mis proyectos: landing pages, sitios corporativos y SmartGrow.</p>
-          </div>
-          <a href="https://github.com/emilianost95-gif" class="btn btn--primary" target="_blank" rel="noopener">
-            Ver perfil
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+          <a class="channel" href="https://wa.me/56926432541" target="_blank" rel="noopener" data-reveal>
+            <span class="channel__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-.607z"/></svg></span>
+            <span class="channel__txt"><strong>WhatsApp</strong><span>+56 9 2643 2541</span></span>
+            <svg class="link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16"><path d="M7 17 17 7M7 7h10v10"/></svg>
           </a>
         </div>
-      </div>
-    </section>
 
-    <!-- ========================================================= -->
-    <!-- CONTACTO                                                  -->
-    <!-- ========================================================= -->
-    <section class="section section--alt" id="contact">
-      <div class="container">
-        <div class="section-head" data-reveal>
-          <span class="eyebrow">¿Empezamos?</span>
-          <h2 class="section-title">Cuéntame tu <span class="gradient-text">proyecto</span></h2>
-          <p class="section-lead">Contame qué necesitás y lo hacemos realidad. Normalmente respondo en menos de 24&nbsp;horas.</p>
-        </div>
-
-        <!-- Señales de confianza -->
         <ul class="trust" data-reveal>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Desarrollo a medida</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Código limpio</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>SEO incluido</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>100% responsive</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Alto rendimiento</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Desarrollo a medida</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Código limpio</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>SEO incluido</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>100% responsive</li>
         </ul>
+      </div>
 
-        <div class="contact__grid">
-          <!-- Canales de contacto directo -->
-          <div class="contact__channels">
-            <!-- Correo · con botón copiar -->
-            <div class="contact-channel" data-reveal data-reveal-delay="1">
-              <div class="contact-channel__icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>
-              </div>
-              <div class="contact-channel__txt">
-                <strong>Correo</strong>
-                <span id="emailText">emilianost95@gmail.com</span>
-              </div>
-              <button class="contact-channel__copy" id="copyEmail" aria-label="Copiar correo">Copiar</button>
-            </div>
+      <div data-reveal="side">
+        <form class="form" id="contactForm" novalidate autocomplete="on"
+              data-access-key="53ec99b1-065e-49e5-8072-26f61c71a97d">
 
-            <!-- LinkedIn · perfil real -->
-            <a href="https://www.linkedin.com/in/emiliano-santo-tomás-718489291" class="contact-channel" target="_blank" rel="noopener" data-reveal data-reveal-delay="2">
-              <div class="contact-channel__icon">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg>
-              </div>
-              <div class="contact-channel__txt">
-                <strong>LinkedIn</strong>
-                <span>Conectemos</span>
-              </div>
-            </a>
+          <div class="field">
+            <input type="text" id="name" name="name" placeholder="Tu nombre" autocomplete="name" required aria-describedby="err-name">
+            <label class="field__label" for="name">Nombre</label>
+            <span class="field__error" id="err-name" aria-live="polite"></span>
           </div>
 
-          <!-- Formulario de contacto (Web3Forms) -->
-          <div class="contact-form-wrap" data-reveal data-reveal-delay="1">
-            <form class="contact-form" id="contactForm" novalidate autocomplete="on">
-              <div class="field">
-                <input type="text" id="name" name="name" placeholder="¿Cómo te llamás?" autocomplete="name" required aria-describedby="err-name" />
-                <label for="name">Nombre</label>
-                <span class="error-msg" id="err-name" data-error="name" aria-live="polite"></span>
-              </div>
-
-              <div class="field">
-                <input type="email" id="email" name="email" placeholder="tucorreo@ejemplo.com" autocomplete="email" required aria-describedby="err-email" />
-                <label for="email">Correo</label>
-                <span class="error-msg" id="err-email" data-error="email" aria-live="polite"></span>
-              </div>
-
-              <div class="field field--select">
-                <select id="project" name="project" required aria-describedby="err-project">
-                  <option value="" selected disabled hidden></option>
-                  <option value="Landing Page">Landing Page</option>
-                  <option value="Sitio Corporativo">Sitio Corporativo</option>
-                  <option value="E-commerce">E-commerce</option>
-                  <option value="Portfolio">Portfolio</option>
-                  <option value="Sistema Web">Sistema Web</option>
-                  <option value="Otro">Otro</option>
-                </select>
-                <label for="project">Tipo de proyecto</label>
-                <svg class="field__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                <span class="error-msg" id="err-project" data-error="project" aria-live="polite"></span>
-              </div>
-
-              <div class="field">
-                <textarea id="message" name="message" placeholder="Describe tu proyecto, objetivos, referencias o cualquier idea que tengas." required aria-describedby="err-message"></textarea>
-                <label for="message">Mensaje</label>
-                <span class="error-msg" id="err-message" data-error="message" aria-live="polite"></span>
-              </div>
-
-              <!-- Anti-spam (honeypot): invisible para humanos -->
-              <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
-
-              <button type="submit" class="btn btn--primary contact-form__submit">
-                <span class="btn__spinner" aria-hidden="true"></span>
-                <span class="btn__label">Empezar mi proyecto</span>
-                <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-              </button>
-            </form>
-
-            <!-- Estado de éxito -->
-            <div class="form-success" id="formSuccess" role="status" hidden>
-              <div class="form-success__check">
-                <svg viewBox="0 0 52 52" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-15"/></svg>
-              </div>
-              <h3>¡Gracias!</h3>
-              <p>Recibí tu mensaje. Te respondo lo antes posible — normalmente en menos de 24&nbsp;horas.</p>
-            </div>
+          <div class="field">
+            <input type="email" id="email" name="email" placeholder="tucorreo@ejemplo.com" autocomplete="email" required aria-describedby="err-email">
+            <label class="field__label" for="email">Correo</label>
+            <span class="field__error" id="err-email" aria-live="polite"></span>
           </div>
-        </div>
 
-        <p class="contact__quote" data-reveal>Toda gran idea empieza con una conversación.</p>
+          <div class="field">
+            <select id="project" name="project" required aria-describedby="err-project">
+              <option value="" selected disabled hidden></option>
+              <option value="Landing Page">Landing Page</option>
+              <option value="Sitio Corporativo">Sitio Corporativo</option>
+              <option value="E-commerce">E-commerce</option>
+              <option value="Portfolio">Portfolio</option>
+              <option value="Sistema Web">Sistema Web</option>
+              <option value="Otro">Otro</option>
+            </select>
+            <label class="field__label" for="project">Tipo de proyecto</label>
+            <svg class="field__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            <span class="field__error" id="err-project" aria-live="polite"></span>
+          </div>
+
+          <div class="field">
+            <textarea id="message" name="message" placeholder="Describe tu proyecto, objetivos, referencias o cualquier idea que tengas." required aria-describedby="err-message"></textarea>
+            <label class="field__label" for="message">Mensaje</label>
+            <span class="field__error" id="err-message" aria-live="polite"></span>
+          </div>
+
+          <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+          <button class="btn btn--primary form__submit" type="submit" data-magnetic>
+            <span class="btn__spinner" aria-hidden="true"></span>
+            <span class="btn__label">Empezar mi proyecto</span>
+            <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          </button>
+        </form>
+
+        <div class="form-done" id="formDone" role="status" hidden>
+          <span class="form-done__mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </span>
+          <h3>¡Gracias!</h3>
+          <p>Recibí tu mensaje. Te respondo lo antes posible — normalmente en menos de 24&nbsp;horas.</p>
+        </div>
       </div>
-    </section>
 
-  </main>
+    </div>
+  </div>
+</section>
 
-  <!-- ========================================================= -->
-  <!-- FOOTER                                                    -->
-  <!-- ========================================================= -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer__top">
-        <div>
-          <div class="footer__brand">EST<span>.</span></div>
-          <p class="footer__tagline">Desarrollador Web Front-End · Chile</p>
-        </div>
-        <div class="footer__socials">
-          <a href="https://github.com/emilianost95-gif" target="_blank" rel="noopener" aria-label="GitHub">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
-          </a>
-          <a href="https://wa.me/56926432541" target="_blank" rel="noopener" aria-label="WhatsApp">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-.607zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-          </a>
-          <a href="#" target="_blank" rel="noopener" aria-label="LinkedIn">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg>
-          </a>
-        </div>
+</main>
+
+
+<!-- =========================================================================
+     FOOTER
+     ====================================================================== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div>
+        <p class="footer__brand">EST<em>.</em></p>
+        <p class="footer__tagline">Desarrollador Web Front-End · Chile</p>
       </div>
-      <div class="footer__bottom">
-        <p>© <span id="year"></span> Emiliano Samir Santo Tomás. Todos los derechos reservados.</p>
-        <p>Diseñado y desarrollado con <span class="gradient-text">código</span>.</p>
+
+      <div class="footer__socials">
+        <a href="https://github.com/emilianost95-gif" target="_blank" rel="noopener" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        </a>
+        <a href="https://www.linkedin.com/in/emiliano-santo-tom%C3%A1s-718489291" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg>
+        </a>
+        <a href="https://wa.me/56926432541" target="_blank" rel="noopener" aria-label="WhatsApp">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-.607z"/></svg>
+        </a>
       </div>
     </div>
-  </footer>
 
-  <!-- ========================================================= -->
-  <!-- FLOTANTES                                                 -->
-  <!-- ========================================================= -->
-  <!-- WhatsApp · cambiá el número -->
-  <a href="https://wa.me/56926432541" class="float-wsp" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-.607zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+    <div class="footer__bottom">
+      <p>© <span id="year">2026</span> Emiliano Samir Santo Tomás</p>
+      <p>HTML · CSS · JavaScript · sin frameworks</p>
+    </div>
+  </div>
+</footer>
+
+
+<!-- Acciones flotantes -->
+<div class="floats">
+  <a class="float float--wsp" href="https://wa.me/56926432541" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-.607z"/></svg>
   </a>
-
-  <!-- Volver arriba -->
-  <button class="back-to-top" id="backToTop" aria-label="Volver arriba">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+  <button class="float float--top" id="toTop" type="button" tabindex="-1" aria-label="Volver arriba">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
   </button>
+</div>
 
-  <!-- Contenedor de notificaciones -->
-  <div class="toasts" id="toasts" aria-live="polite"></div>
+<div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
 
-  <!-- ===================== Scripts ===================== -->
-  <script src="script.js?v=3" defer></script>
+<script src="js/app.min.js" defer></script>
 </body>
 </html>

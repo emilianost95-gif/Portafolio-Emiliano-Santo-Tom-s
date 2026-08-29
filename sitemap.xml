@@ -1,26 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- sitemap.xml — Ajustá las URLs si tu repositorio no es la página raíz
-     (por ejemplo: https://emilianost95-gif.github.io/portfolio/) -->
+<!-- Una sola URL: el sitio es una página. Los #anclas no son URLs
+     independientes y listarlas, como hacía la V1, solo ensucia el sitemap. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://emilianost95-gif.github.io/</loc>
-    <lastmod>2026-06-27</lastmod>
+    <loc>https://emilianost95-gif.github.io/Portafolio-Emiliano-Santo-Tom-s/</loc>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://emilianost95-gif.github.io/#projects</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emilianost95-gif.github.io/#services</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emilianost95-gif.github.io/#contact</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
   </url>
 </urlset>

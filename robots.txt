@@ -1,8 +1,7 @@
 # robots.txt — Emiliano Samir Santo Tomás
-# Permite a todos los buscadores indexar todo el sitio
+# Portafolio en https://emilianost95-gif.github.io/Portafolio-Emiliano-Santo-Tom-s/
 
 User-agent: *
 Allow: /
 
-# Mapa del sitio (ajustá la URL si tu repo no es la página raíz)
-Sitemap: https://emilianost95-gif.github.io/sitemap.xml
+Sitemap: https://emilianost95-gif.github.io/Portafolio-Emiliano-Santo-Tom-s/sitemap.xml

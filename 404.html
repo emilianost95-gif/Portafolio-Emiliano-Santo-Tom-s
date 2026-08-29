@@ -1,59 +1,83 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="dark">
+<html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>404 · Página no encontrada</title>
-  <meta name="robots" content="noindex" />
-  <meta name="theme-color" content="#08090d" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%2308090d'/%3E%3Ctext x='50' y='68' font-family='monospace' font-size='52' font-weight='700' fill='%236366f1' text-anchor='middle'%3EE%3C/text%3E%3C/svg%3E" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    /* Estilos propios de la página 404 */
-    .nf {
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      text-align: center;
-      padding: 24px;
-    }
-    .nf__code {
-      font-family: var(--font-display);
-      font-size: clamp(6rem, 22vw, 13rem);
-      font-weight: 700;
-      line-height: 1;
-      background: var(--gradient-text);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.04em;
-    }
-    .nf h1 { font-size: clamp(1.4rem, 4vw, 2rem); margin: 8px 0 14px; }
-    .nf p { color: var(--text-dim); max-width: 420px; margin: 0 auto 32px; }
-  </style>
-</head>
-<body>
-  <!-- Fondo animado (mismo del sitio) -->
-  <div class="bg-fx" aria-hidden="true">
-    <div class="bg-fx__blob bg-fx__blob--1"></div>
-    <div class="bg-fx__blob bg-fx__blob--2"></div>
-    <div class="bg-fx__blob bg-fx__blob--3"></div>
-    <div class="bg-fx__grid"></div>
-  </div>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Página no encontrada · Emiliano Santo Tomás</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0A0B0C">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230A0B0C'/%3E%3Ctext x='50' y='70' font-family='Helvetica,Arial,sans-serif' font-size='60' font-weight='800' fill='%23E0A03C' text-anchor='middle'%3EE%3C/text%3E%3C/svg%3E">
 
-  <main class="nf">
-    <div>
-      <div class="nf__code">404</div>
-      <h1>Esta página se perdió en el código</h1>
-      <p>El enlace que seguiste no existe o fue movido. Volvamos a un lugar conocido.</p>
-      <a href="/" class="btn btn--primary">
-        Volver al inicio
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      </a>
-    </div>
-  </main>
+<script>
+  (function () {
+    var d = document.documentElement, t;
+    try { t = localStorage.getItem('est-theme'); } catch (e) {}
+    if (!t) t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    d.setAttribute('data-theme', t);
+  })();
+</script>
+
+<link rel="preload" href="fonts/archivo-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/00-reset.css">
+<link rel="stylesheet" href="css/01-tokens.css">
+<link rel="stylesheet" href="css/02-base.css">
+<link rel="stylesheet" href="css/03-layout.css">
+<link rel="stylesheet" href="css/04-components/button.css">
+
+<style>
+  /* Página de error: una sola pantalla, misma dirección de arte que el sitio. */
+  .oops {
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: var(--sp-7) var(--gutter);
+  }
+  .oops__code {
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 118, "wght" 800;
+    font-size: clamp(5rem, 22vw, 13rem);
+    line-height: .86;
+    letter-spacing: -.05em;
+    color: var(--fg);
+  }
+  .oops__rule {
+    width: min(320px, 60vw);
+    height: 2px;
+    margin: var(--sp-5) auto;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+  .oops__msg {
+    font-size: var(--step-1);
+    color: var(--fg-2);
+    max-width: 42ch;
+    margin: 0 auto var(--sp-6);
+  }
+  .oops__meta {
+    margin-top: var(--sp-6);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: var(--track-wide);
+    text-transform: uppercase;
+    color: var(--fg-3);
+  }
+</style>
+</head>
+
+<body>
+<div class="backdrop" aria-hidden="true"></div>
+
+<main class="oops">
+  <div>
+    <p class="oops__code">404</p>
+    <div class="oops__rule" aria-hidden="true"></div>
+    <h1 class="oops__msg">Esta página no existe. Debe haberse quedado en el taller.</h1>
+    <a class="btn btn--primary" href="./">
+      Volver al inicio
+      <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </a>
+    <p class="oops__meta">EST · Portafolio</p>
+  </div>
+</main>
 </body>
 </html>
