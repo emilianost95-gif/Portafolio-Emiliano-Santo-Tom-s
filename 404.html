@@ -5,9 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Página no encontrada · Emiliano Santo Tomás</title>
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#0A0B0C">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230A0B0C'/%3E%3Ctext x='50' y='70' font-family='Helvetica,Arial,sans-serif' font-size='60' font-weight='800' fill='%23E0A03C' text-anchor='middle'%3EE%3C/text%3E%3C/svg%3E">
-
+<meta name="theme-color" content="#0B0C0F">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230B0C0F'/%3E%3Ctext x='50' y='70' font-family='Helvetica,Arial,sans-serif' font-size='60' font-weight='800' fill='%23E0A03C' text-anchor='middle'%3EE%3C/text%3E%3C/svg%3E">
 <script>
   (function () {
     var d = document.documentElement, t;
@@ -16,67 +15,22 @@
     d.setAttribute('data-theme', t);
   })();
 </script>
-
-<link rel="preload" href="fonts/archivo-var-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/00-reset.css">
-<link rel="stylesheet" href="css/01-tokens.css">
-<link rel="stylesheet" href="css/02-base.css">
-<link rel="stylesheet" href="css/03-layout.css">
-<link rel="stylesheet" href="css/04-components/button.css">
-
+<!-- Rutas absolutas: GitHub Pages sirve este archivo desde cualquier URL inexistente,
+     incluso anidada, así que las rutas relativas se romperían. -->
+<link rel="stylesheet" href="/Portafolio-Emiliano-Santo-Tom-s/css/styles.css?v=3">
 <style>
-  /* Página de error: una sola pantalla, misma dirección de arte que el sitio. */
-  .oops {
-    min-height: 100svh;
-    display: grid;
-    place-items: center;
-    text-align: center;
-    padding: var(--sp-7) var(--gutter);
-  }
-  .oops__code {
-    font-family: var(--font-display);
-    font-variation-settings: "wdth" 118, "wght" 800;
-    font-size: clamp(5rem, 22vw, 13rem);
-    line-height: .86;
-    letter-spacing: -.05em;
-    color: var(--fg);
-  }
-  .oops__rule {
-    width: min(320px, 60vw);
-    height: 2px;
-    margin: var(--sp-5) auto;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  }
-  .oops__msg {
-    font-size: var(--step-1);
-    color: var(--fg-2);
-    max-width: 42ch;
-    margin: 0 auto var(--sp-6);
-  }
-  .oops__meta {
-    margin-top: var(--sp-6);
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: var(--track-wide);
-    text-transform: uppercase;
-    color: var(--fg-3);
-  }
+  .oops { min-height: 100svh; display: grid; place-items: center; text-align: center; padding: 3rem var(--gutter); }
+  .oops__code { font-family: var(--font-display); font-weight: 800; font-size: clamp(5rem, 22vw, 12rem); line-height: .9; letter-spacing: -.05em; }
+  .oops__msg { font-size: 1.2rem; color: var(--fg-muted); max-width: 40ch; margin: 1.5rem auto 2rem; font-family: var(--font-body); font-weight: 500; }
 </style>
 </head>
-
 <body>
-<div class="backdrop" aria-hidden="true"></div>
-
 <main class="oops">
   <div>
+    <p class="label">Error 404</p>
     <p class="oops__code">404</p>
-    <div class="oops__rule" aria-hidden="true"></div>
-    <h1 class="oops__msg">Esta página no existe. Debe haberse quedado en el taller.</h1>
-    <a class="btn btn--primary" href="./">
-      Volver al inicio
-      <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-    </a>
-    <p class="oops__meta">EST · Portafolio</p>
+    <h1 class="oops__msg">Esta página no existe. El resto del laboratorio sí.</h1>
+    <a class="btn btn--primary" href="/Portafolio-Emiliano-Santo-Tom-s/">Volver al inicio</a>
   </div>
 </main>
 </body>
