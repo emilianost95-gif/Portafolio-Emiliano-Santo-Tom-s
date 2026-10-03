@@ -1,7 +1,7 @@
-import { holdTrack, scrollToTrack } from './track';
+import { scrollToHeldTrack } from './track';
 
-/** Fracción de cada sección en la que su formación se queda quieta. */
-const SECTION_HOLD = 0.6;
+/** La transición entre formaciones ocupa como máximo ~0,9 pantallas antes de la sección siguiente. */
+const TRANSITION_VIEWPORTS = 0.9;
 
 export interface ScrollSnapshot {
   /** Posición en el track de secciones (0 = primera, n-1 = última). */
@@ -39,7 +39,7 @@ export class ScrollTracker {
   read(): ScrollSnapshot {
     const y = window.scrollY;
     return {
-      track: holdTrack(scrollToTrack(y, this.anchors), SECTION_HOLD),
+      track: scrollToHeldTrack(y, this.anchors, innerHeight * TRANSITION_VIEWPORTS),
       progress: Math.min(1, Math.max(0, y / this.maxScroll)),
     };
   }

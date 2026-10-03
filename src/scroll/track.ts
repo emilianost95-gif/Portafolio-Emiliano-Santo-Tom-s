@@ -25,16 +25,31 @@ export function scrollToTrack(y: number, anchors: readonly number[]): number {
 }
 
 /**
- * Meseta por sección: cada formación se queda armada durante la primera parte de su
- * tramo (`hold`) y transiciona en el resto. Sin esto, mientras se leían las tarjetas de
- * proyectos la cercha ya se estaba convirtiendo en código.
+ * Igual que scrollToTrack, pero cada formación se queda armada durante su sección y la
+ * transición a la siguiente ocurre solo en el último tramo: como máximo `windowPx` píxeles
+ * (y nunca más del 40 % de la sección).
  *
- * Sigue siendo una función pura, continua y monótona (reversible igual que el track).
+ * Se mide en píxeles y no en porcentaje porque las secciones tienen alturas muy distintas:
+ * con el carrusel de proyectos (~3500 px), un 40 % hacía que la cercha se convirtiera en
+ * código mientras todavía se estaban mirando las tarjetas.
+ *
+ * Pura, continua y monótona: reversible igual que scrollToTrack.
  */
-export function holdTrack(track: number, hold: number): number {
-  if (hold <= 0) return track;
-  const i = Math.floor(track);
-  const f = track - i;
-  const local = Math.min(1, Math.max(0, (f - hold) / (1 - hold)));
-  return i + local;
+export function scrollToHeldTrack(y: number, anchors: readonly number[], windowPx: number): number {
+  const n = anchors.length;
+  if (n < 2) return 0;
+  const first = anchors[0] ?? 0;
+  const last = anchors[n - 1] ?? first;
+  if (y <= first) return 0;
+  if (y >= last) return n - 1;
+  for (let i = 0; i < n - 1; i++) {
+    const a = anchors[i] ?? 0;
+    const b = anchors[i + 1] ?? a;
+    if (y < b) {
+      const w = Math.min(windowPx, (b - a) * 0.4);
+      if (w <= 0) return i;
+      return i + Math.min(1, Math.max(0, (y - (b - w)) / w));
+    }
+  }
+  return n - 1;
 }

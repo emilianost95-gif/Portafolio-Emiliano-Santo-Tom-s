@@ -9,6 +9,7 @@ import './styles/components.css';
 import { detectCapabilities, type GpuBackend } from './core/capabilities';
 import { initialQuality, readOverride, type QualityLevel } from './core/quality';
 import { initCards } from './ui/cards';
+import { initHScroll } from './ui/hscroll';
 import { initActiveNav } from './ui/nav';
 
 /**
@@ -70,6 +71,7 @@ function main(): void {
   });
   initActiveNav();
   initCards();
+  initHScroll();
 
   whenIdle(() => {
     bootEnhancements().catch((error: unknown) => {

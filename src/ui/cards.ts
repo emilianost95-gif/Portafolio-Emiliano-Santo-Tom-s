@@ -1,9 +1,6 @@
 /**
  * Tarjetas de proyecto interactivas.
  *
- *  - Entrada "soldada": un cordón recorre el borde y el contenido aparece por partes.
- *    Va atada al scroll con CSS (animation-timeline: view()); acá solo está el fallback
- *    para navegadores sin esa API.
  *  - Luz que sigue al puntero (como la torcha sobre metal) + borde que se enciende cerca.
  *  - Tarjeta activa (hover o foco con teclado) → la escena 3D suelda la cercha justo detrás de ella.
  *
@@ -91,29 +88,6 @@ export function initCards(): () => void {
     });
   });
 
-  cleanups.push(initEntranceFallback(cards));
   return () => cleanups.forEach((fn) => fn());
 }
 
-/**
- * Fallback de la entrada para navegadores sin scroll-driven animations.
- * También es reversible: la clase se saca cuando la tarjeta vuelve a quedar por
- * DEBAJO del viewport (al subir). Si sale por arriba (ya leída), queda soldada.
- */
-function initEntranceFallback(cards: HTMLElement[]): () => void {
-  if (CSS.supports('animation-timeline: view()')) return () => undefined;
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return () => undefined;
-  document.documentElement.classList.add('cards-io');
-  const io = new IntersectionObserver(
-    (entries) => {
-      for (const entry of entries) {
-        const el = entry.target as HTMLElement;
-        if (entry.isIntersecting) el.classList.add('is-in');
-        else if (entry.boundingClientRect.top > 0) el.classList.remove('is-in');
-      }
-    },
-    { rootMargin: '0px 0px -12% 0px' },
-  );
-  cards.forEach((c) => io.observe(c));
-  return () => io.disconnect();
-}

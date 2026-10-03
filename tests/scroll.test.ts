@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { scrollToTrack, holdTrack } from '../src/scroll/track.ts';
+import { scrollToTrack, scrollToHeldTrack } from '../src/scroll/track.ts';
 import { sampleKeys, smoothstep01, damp, type CameraPose } from '../src/graphics/camera/CameraRig.ts';
 
 const anchors = [0, 1000, 2500, 3000, 4200];
@@ -63,19 +63,28 @@ test('amortiguación independiente de los FPS', () => {
   assert.ok(Math.abs(a - b) < 1e-12);
 });
 
-test('meseta: la formación se mantiene durante el 60 % de la sección', () => {
-  assert.equal(holdTrack(1.0, 0.6), 1);
-  assert.equal(holdTrack(1.3, 0.6), 1);
-  assert.ok(Math.abs(holdTrack(1.6, 0.6) - 1) < 1e-9); // 1,6 - 1 = 0,6000000000000001 en coma flotante
-  assert.ok(Math.abs(holdTrack(1.8, 0.6) - 1.5) < 1e-9);
-  assert.equal(holdTrack(2, 0.6), 2);
+
+const tall = [0, 800, 4800, 5600, 6400]; // proyectos con carrusel: 4000 px
+
+test('meseta en píxeles: la cercha se mantiene durante todo el carrusel', () => {
+  assert.equal(scrollToHeldTrack(800, tall, 700), 1);
+  assert.equal(scrollToHeldTrack(3000, tall, 700), 1);
+  assert.equal(scrollToHeldTrack(4100, tall, 700), 1); // recién a 700 px de la sección siguiente
+  assert.ok(Math.abs(scrollToHeldTrack(4450, tall, 700) - 1.5) < 1e-9);
+  assert.equal(scrollToHeldTrack(4800, tall, 700), 2);
 });
-test('meseta: continua y monótona (sin saltos en ningún punto)', () => {
-  let prev = holdTrack(0, 0.6);
-  for (let t = 0.001; t <= 4; t += 0.001) {
-    const v = holdTrack(t, 0.6);
-    assert.ok(v >= prev - 1e-12, `retrocede en ${t}`);
-    assert.ok(v - prev < 0.003, `salto en ${t}`);
+test('meseta en píxeles: en secciones cortas usa como máximo el 40 %', () => {
+  // sección de 800 px → ventana de 320 px aunque se pidan 700
+  assert.equal(scrollToHeldTrack(400, tall, 700), 0);
+  assert.ok(Math.abs(scrollToHeldTrack(640, tall, 700) - 0.5) < 1e-9);
+});
+test('meseta en píxeles: continua, monótona y reversible', () => {
+  let prev = scrollToHeldTrack(0, tall, 700);
+  for (let y = 1; y < 6500; y++) {
+    const v = scrollToHeldTrack(y, tall, 700);
+    assert.ok(v >= prev, `retrocede en ${y}`);
+    assert.ok(v - prev <= 1 / 320 + 1e-9, `salto en ${y}`);
     prev = v;
   }
+  assert.equal(scrollToHeldTrack(3000, tall, 700), scrollToHeldTrack(3000, tall, 700));
 });
