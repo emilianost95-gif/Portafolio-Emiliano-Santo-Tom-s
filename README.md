@@ -3,8 +3,9 @@
 Portfolio interactivo construido por fases.
 
 - **Fase 0:** base semántica completa, SEO y accesibilidad, sin 3D.
-- **Fase 1 (actual):** motor gráfico — Three.js (WebGPU con fallback a WebGL2), calidad adaptativa medida,
+- **Fase 1:** motor gráfico — Three.js (WebGPU con fallback a WebGL2), calidad adaptativa medida,
   fallback en tiempo de ejecución, monitor de rendimiento y una escena de prueba.
+- **Fase 2 (actual):** scroll → cámara. Scroll nativo, recorrido de cámara por secciones, reversible por construcción.
 
 El contenido funciona y se entiende sin el 3D; el 3D se suma encima.
 
@@ -57,7 +58,12 @@ src/
       particle-field/   Escena de prueba: partículas animadas 100 % en el vertex shader (TSL)
     debug/
       StatsOverlay.ts   Monitor de rendimiento (chunk aparte, solo con ?debug)
-tests/                  Tests de AdaptiveQuality, initialQuality y detección de render por software
+  scroll/
+    track.ts            Función pura: scroll → posición entre secciones (0..n-1)
+    ScrollTracker.ts    Lee el scroll nativo; mide las secciones solo cuando cambia el layout
+  graphics/camera/
+    CameraRig.ts        Keyframes de cámara por sección + easing + amortiguación (funciones puras)
+tests/                  Tests de calidad adaptativa, detección, track de scroll y cámara
   styles/
     tokens.css          Colores, tipografía, espaciado, movimiento (una sola fuente)
     base.css · layout.css · components.css
@@ -210,3 +216,68 @@ cuando haya escenas más pesadas.
 - **Canvas transparente sobre el fondo CSS.** La capa estática sigue debajo: si el 3D se apaga, no hay salto visual.
 - **`100lvh` en la capa gráfica.** En móvil, la barra del navegador no dispara resize del renderer en pleno scroll.
 - **Geometría propia por Sprite.** El renderer libera los buffers instanciados recién al hacer dispose de la geometría; el quad compartido de Sprite no se puede liberar.
+
+
+---
+
+## Checklist — Fase 2 (scroll)
+
+Flujo, igual al del punto 2 del documento:
+
+```text
+SCROLL NATIVO ─► track (0..4, función pura) ─► keyframes de cámara ─► cámara amortiguada ─► render
+     │                                             (mismo loop, mismo frame)
+     └─► barra de progreso (CSS scroll-driven animation, 0 JS)
+```
+
+### IMPLEMENTADO
+- [x] `scrollToTrack`: posición de scroll → posición entre secciones; vale exactamente `i` en el ancla de cada sección
+- [x] `ScrollTracker`: lee `scrollY` una vez por frame; mide las secciones solo con `ResizeObserver` y al cargar las fuentes
+- [x] `CameraRig`: un keyframe por sección (inicio, proyectos, stack, sobre mí, contacto), easing por tramo
+- [x] La cámara sigue la pose objetivo con amortiguación exponencial independiente de los FPS
+- [x] Scroll y render en **un solo loop**: el scroll se lee en el mismo frame que se dibuja
+- [x] Barra de progreso de lectura con `animation-timeline: scroll()` (sin JS; donde no hay soporte, no se muestra)
+- [x] Reduced motion: la cámara no acompaña el scroll (cuadro fijo)
+- [x] Header más opaco: el texto se transparentaba por debajo
+- [x] 9 tests nuevos (30 en total)
+
+### PERFORMANCE (medido en el notebook, Chrome 154, WebGPU · high)
+- 179–181 FPS durante el scroll; 1 draw call; costo extra por frame: leer `scrollY` y 6 interpolaciones
+- Recorrido completo de la página a ritmo constante (268 frames): **0 inversiones de velocidad de cámara**
+  (indicador de jitter); paso máximo por frame = 2,8 × la mediana (picos suaves en los cambios de sección)
+- Bundle: +0 dependencias
+
+### REVERSIBILIDAD (medido en el notebook)
+| Llegar a "Stack"… | Cámara |
+|---|---|
+| desde arriba | (−3,060 · 1,516 · 6,0006) |
+| desde abajo | (−3,060 · 1,516 · 6,0009) |
+
+Keyframe: (−3 · 1,5 · 6). La diferencia es el parallax del puntero, que es intencional.
+
+### ACCESSIBILITY
+- [x] Keyboard: Inicio/Fin/anclas/Tab usan el scroll nativo; la cámara llega amortiguada, sin saltos
+- [x] Reduced motion: cámara fija
+- [x] Screen reader: sin cambios en el contenido; la barra de progreso es `aria-hidden`
+- [x] Touch: scroll nativo del navegador (inercia del sistema)
+
+### COMPATIBILITY
+- [x] WebGPU / WebGL2 — la cámara no depende del backend
+- [x] Barra de progreso: Chrome/Edge y Safari 26+; en navegadores sin soporte simplemente no aparece
+- [ ] Celular real — pendiente
+
+### CÓDIGO
+- [x] TypeScript · [x] sin errores de consola · [x] lógica de scroll y cámara en funciones puras testeadas
+- [x] Sin dependencias nuevas
+
+### PENDIENTES
+- Con 25.000 partículas, el campo queda denso detrás del texto. Se resuelve en la Fase 3 con las escenas definitivas
+  (atenuar la escena detrás de bloques de texto)
+- Probar en celular
+
+### DECISIONES TÉCNICAS
+- **Sin Lenis.** Reemplazar el scroll nativo rompe Ctrl+F y los saltos a anclas, puede molestar a lectores de pantalla y hay que
+  desactivarlo en reduced motion. La suavidad que importa (la de la cámara) se logra con amortiguación sin tocar el scroll.
+- **Sin GSAP por ahora.** Ninguna escena necesita `pin` ni timelines encadenadas. Si la Fase 3 lo justifica, se suma solo ScrollTrigger.
+- **Cámara = función pura del scroll + amortiguación.** No hay triggers de una sola vez: es reversible por construcción y testeable sin navegador.
+- **Barra de progreso en CSS.** La anima el compositor del navegador: no puede desincronizarse del scroll ni ocupar el hilo principal.

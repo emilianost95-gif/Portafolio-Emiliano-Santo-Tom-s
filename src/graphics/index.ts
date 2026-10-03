@@ -2,6 +2,7 @@ import type { Capabilities } from '../core/capabilities';
 import type { QualityLevel } from '../core/quality';
 import { AdaptiveQuality } from './engine/AdaptiveQuality';
 import { Engine } from './engine/Engine';
+import { ScrollTracker } from '../scroll/ScrollTracker';
 import { ParticleFieldScene } from './scenes/particle-field/ParticleFieldScene';
 
 /**
@@ -32,6 +33,7 @@ export async function bootGraphics(opts: BootOptions): Promise<void> {
   let level: QualityLevel = opts.level;
   let engine: Engine | null = null;
   let overlay: { dispose(): void } | null = null;
+  const scroll = new ScrollTracker();
 
   const teardown = (): void => {
     overlay?.dispose();
@@ -42,6 +44,7 @@ export async function bootGraphics(opts: BootOptions): Promise<void> {
 
   const goStatic = (reason?: unknown): void => {
     teardown();
+    scroll.dispose();
     level = 'static';
     opts.onLevel('static');
     if (import.meta.env.DEV && reason) console.warn('[gfx] modo estático:', reason);
@@ -82,6 +85,7 @@ export async function bootGraphics(opts: BootOptions): Promise<void> {
         host: opts.stage,
         caps,
         level: level === 'static' ? 'low' : level,
+        readScroll: () => scroll.read(),
         onFrame: (deltaMs, now) => adaptive?.sample(deltaMs, now),
         onFatal,
       });

@@ -9,6 +9,8 @@ export interface FrameState {
   readonly delta: number;
   /** Puntero en coordenadas normalizadas (-1..1). `active` = hubo movimiento reciente. */
   readonly pointer: { readonly x: number; readonly y: number; readonly active: boolean };
+  /** Scroll nativo: `track` = posición entre secciones (0..n-1), `progress` = 0..1 de la página. */
+  readonly scroll: { readonly track: number; readonly progress: number };
 }
 
 /**

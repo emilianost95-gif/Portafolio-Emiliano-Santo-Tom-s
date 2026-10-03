@@ -1,6 +1,7 @@
 import * as THREE from 'three/webgpu';
 import type { Capabilities } from '../../core/capabilities';
 import { QUALITY_PROFILES, type QualityLevel, type QualityProfile } from '../../core/quality';
+import type { ScrollSnapshot } from '../../scroll/ScrollTracker';
 import { Pointer } from './Pointer';
 import type { SceneModule } from './types';
 
@@ -20,6 +21,8 @@ export interface EngineOptions {
   readonly host: HTMLElement;
   readonly caps: Capabilities;
   readonly level: QualityLevel;
+  /** Lectura del scroll nativo. Se llama una vez por frame, dentro del mismo loop que dibuja. */
+  readonly readScroll?: () => ScrollSnapshot;
   /** Llamado en cada frame con el delta en ms (lo usa la calidad adaptativa). */
   readonly onFrame?: (deltaMs: number, now: number) => void;
   /**
@@ -31,6 +34,7 @@ export interface EngineOptions {
 }
 
 const MAX_DELTA_S = 0.1;
+const NO_SCROLL: ScrollSnapshot = { track: 0, progress: 0 };
 
 /**
  * Motor: dueño único del renderer, el canvas, el loop y el resize.
@@ -154,12 +158,15 @@ export class Engine {
     this.frameMs += (deltaMs - this.frameMs) * 0.1;
 
     const pointer = this.pointer;
+    // Un solo loop: el scroll se lee acá, en el mismo frame que se dibuja.
+    // Dos loops (uno para el scroll y otro para el render) es la receta del jitter.
     scene.update({
       time: this.elapsed,
       delta,
       pointer: pointer
         ? { x: pointer.x, y: pointer.y, active: pointer.isActive(now) }
         : { x: 0, y: 0, active: false },
+      scroll: this.opts.readScroll?.() ?? NO_SCROLL,
     });
     if (!this.draw(scene)) return;
     // Chequeo de salud: hay fallos silenciosos (sin excepción) donde el backend
@@ -192,7 +199,8 @@ export class Engine {
   private renderOnce(): void {
     const scene = this.active;
     if (!scene) return;
-    scene.update({ time: 0, delta: 0, pointer: { x: 0, y: 0, active: false } });
+    // Reduced motion: cuadro fijo en la pose inicial. La cámara no acompaña el scroll.
+    scene.update({ time: 0, delta: 0, pointer: { x: 0, y: 0, active: false }, scroll: NO_SCROLL });
     this.draw(scene);
   }
 

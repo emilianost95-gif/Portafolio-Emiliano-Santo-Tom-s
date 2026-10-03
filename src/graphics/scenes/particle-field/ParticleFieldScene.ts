@@ -16,6 +16,7 @@ import {
   cos,
 } from 'three/tsl';
 import type { QualityProfile } from '../../../core/quality';
+import { damp, sampleKeys, type CameraKey, type CameraPose } from '../../camera/CameraRig';
 import type { FrameState, SceneModule } from '../../engine/types';
 
 /**
@@ -32,6 +33,20 @@ import type { FrameState, SceneModule } from '../../engine/types';
 
 const BOUNDS = { x: 13, y: 8, zNear: 2, zFar: -7 } as const;
 const POINTER_RADIUS = 2.4;
+
+/**
+ * Un keyframe por sección del HTML (inicio, proyectos, stack, sobre mí, contacto).
+ * Regla de legibilidad: la cámara nunca se acerca a menos de ~4 unidades de la
+ * partícula más próxima (z ≥ 6), así no pasan manchas grandes por encima del texto.
+ */
+const CAMERA_KEYS: readonly CameraKey[] = [
+  { position: { x: 0, y: 0, z: 10 }, target: { x: 0, y: 0, z: 0 } }, // inicio: vista frontal
+  { position: { x: 2.5, y: -1, z: 6.5 }, target: { x: -1, y: 0, z: -4 } }, // proyectos: entra en diagonal
+  { position: { x: -3, y: 1.5, z: 6 }, target: { x: 1, y: -1, z: -5 } }, // stack: cruza al otro lado
+  { position: { x: 0, y: -2, z: 7.5 }, target: { x: 0, y: 1, z: -2 } }, // sobre mí: mira hacia arriba
+  { position: { x: 0, y: 0, z: 12 }, target: { x: 0, y: 0, z: 0 } }, // contacto: se aleja, cierre
+];
+const CAMERA_FOLLOW = 3.5; // 1/s: cuánto tarda la cámara en alcanzar al scroll (≈ 0,3 s al 63 %)
 // Colores en espacio de pantalla (el motor no convierte la salida): el hex que
 // se escribe es el que se ve, igual que en tokens.css.
 const screenColor = (hex: number): THREE.Color => new THREE.Color().setHex(hex, THREE.LinearSRGBColorSpace);
@@ -53,7 +68,10 @@ export class ParticleFieldScene implements SceneModule {
   // Temporales reutilizados: cero allocations por frame.
   private readonly ray = new THREE.Vector3();
   private readonly pointerTarget = new THREE.Vector3();
-  private readonly cameraTarget = new THREE.Vector3();
+  private readonly lookAt = new THREE.Vector3();
+  private readonly pose: CameraPose = { position: { x: 0, y: 0, z: 10 }, target: { x: 0, y: 0, z: 0 } };
+  private readonly goalPosition = new THREE.Vector3();
+  private readonly goalTarget = new THREE.Vector3();
 
   constructor() {
     this.camera.position.set(0, 0, 10);
@@ -129,24 +147,40 @@ export class ParticleFieldScene implements SceneModule {
     this.camera.updateProjectionMatrix();
   }
 
-  update({ time, delta, pointer }: FrameState): void {
+  update({ time, delta, pointer, scroll }: FrameState): void {
+    this.updateCamera(scroll.track, pointer, delta);
+
     this.uTime.value = time;
 
     // Proyectar el puntero sobre el plano z = 0.
     this.ray.set(pointer.x, pointer.y, 0.5).unproject(this.camera).sub(this.camera.position).normalize();
-    const k = -this.camera.position.z / this.ray.z;
-    this.pointerTarget.copy(this.camera.position).addScaledVector(this.ray, k);
+    // Con la cámara en diagonal el rayo puede quedar casi paralelo al plano: se ignora ese caso.
+    if (this.ray.z < -0.05) {
+      const k = -this.camera.position.z / this.ray.z;
+      this.pointerTarget.copy(this.camera.position).addScaledVector(this.ray, k);
+    }
 
     // Suavizado exponencial independiente de los FPS: 1 - e^(-λ·dt).
-    const follow = 1 - Math.exp(-10 * delta);
-    this.uPointer.value.lerp(this.pointerTarget, follow);
+    this.uPointer.value.lerp(this.pointerTarget, damp(10, delta));
     const targetStrength = pointer.active ? 1 : 0;
-    this.uStrength.value += (targetStrength - this.uStrength.value) * (1 - Math.exp(-4 * delta));
+    this.uStrength.value += (targetStrength - this.uStrength.value) * damp(4, delta);
 
-    // Parallax leve de cámara.
-    this.cameraTarget.set(pointer.x * 0.6, pointer.y * 0.4, 10);
-    this.camera.position.lerp(this.cameraTarget, 1 - Math.exp(-2 * delta));
-    this.camera.lookAt(0, 0, 0);
+  }
+
+  /**
+   * Pose objetivo = keyframes según el scroll + un parallax leve del puntero.
+   * La cámara real la sigue con amortiguación: el scroll puede saltar (una
+   * ancla, la tecla Fin), la cámara no. Con delta 0 (cuadro fijo) se ubica directo.
+   */
+  private updateCamera(track: number, pointer: FrameState['pointer'], delta: number): void {
+    sampleKeys(CAMERA_KEYS, track, this.pose);
+    const { position: p, target: t } = this.pose;
+    this.goalPosition.set(p.x + pointer.x * 0.6, p.y + pointer.y * 0.4, p.z);
+    this.goalTarget.set(t.x, t.y, t.z);
+    const k = delta > 0 ? damp(CAMERA_FOLLOW, delta) : 1;
+    this.camera.position.lerp(this.goalPosition, k);
+    this.lookAt.lerp(this.goalTarget, k);
+    this.camera.lookAt(this.lookAt);
   }
 
   dispose(): void {

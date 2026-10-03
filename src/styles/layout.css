@@ -70,7 +70,8 @@
   height: var(--header-h);
   /* Fondo sólido semitransparente, SIN backdrop-filter: con un canvas animado
      detrás, el blur obliga a recomponer cada frame y es caro en GPU modestas. */
-  background: rgb(10 10 15 / 0.88);
+  /* 96 %: con 88 % el texto que pasa por debajo se leía a través del header (visto en pruebas). */
+  background: rgb(10 10 15 / 0.96);
   border-bottom: 1px solid var(--line);
 }
 .nav {
@@ -106,6 +107,30 @@
 @media (max-width: 479px) {
   .nav__list { gap: 0; }
   .nav__list a { padding-inline: 0.35rem; font-size: var(--fs-xs); }
+}
+
+/* Barra de progreso de lectura. Va atada al scroll nativo por el compositor:
+   no usa JS ni puede desincronizarse del scroll. */
+.scroll-progress {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  display: none;
+}
+@supports (animation-timeline: scroll()) {
+  .scroll-progress {
+    display: block;
+    animation: scroll-progress linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+@keyframes scroll-progress {
+  to { transform: scaleX(1); }
 }
 
 /* ---------- Secciones ---------- */
