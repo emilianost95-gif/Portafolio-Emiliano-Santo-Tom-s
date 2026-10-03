@@ -26,6 +26,8 @@ import { buildFormations, layoutParams, type Layout } from './formations';
 export interface ForgeOptions {
   /** Zona de pantalla (NDC) donde puede estar la torcha sin tapar texto. La calcula quien conoce el DOM. */
   readonly torchZone?: () => NdcBox | null;
+  /** Centro (NDC) de la tarjeta de proyecto activa, o null. Ahí detrás se suelda la cercha. */
+  readonly weldTarget?: () => { x: number; y: number } | null;
 }
 
 /**
@@ -88,6 +90,13 @@ export class ForgeScene implements SceneModule {
   private readonly uStrength = uniform(0);
   private readonly uOrigin = uniform(new THREE.Vector3());
   private readonly uDim = uniform(0.85);
+  /** Soldadura en un nudo de la cercha cuando se elige una tarjeta. */
+  private readonly uWeldPos = uniform(new THREE.Vector3(0, 0, -100));
+  private readonly uWeldAmt = uniform(0);
+  /** Muestra reducida de puntos de la cercha para buscar el más cercano en pantalla (≤ 600). */
+  private trussSample: Float32Array = new Float32Array(0);
+  private readonly weldGoal = new THREE.Vector3();
+  private readonly probe = new THREE.Vector3();
 
   private particles: THREE.Sprite | null = null;
   private material: THREE.SpriteNodeMaterial | null = null;
@@ -155,12 +164,20 @@ export class ForgeScene implements SceneModule {
     this.updateCamera(scroll.track, pointer, delta);
     this.updatePointer(pointer, delta);
 
-    // El arco solo existe en la sección de inicio, con un parpadeo irregular (dos senos desfasados).
-    const presence = Math.max(0, 1 - scroll.track * 1.5);
+    const weldPresence = this.updateWeld(scroll.track, delta);
+
+    // El arco existe en el inicio (torcha) y en la cercha cuando se elige una tarjeta.
+    // Parpadeo irregular: dos senos desfasados.
+    const heroPresence = Math.max(0, 1 - scroll.track * 1.5);
+    const presence = Math.max(heroPresence, weldPresence);
     const flicker = 0.82 + 0.12 * Math.sin(time * 37) + 0.06 * Math.sin(time * 91 + 1.3);
-    this.uGlow.value = presence * flicker * 0.55;
+    const welding = weldPresence > heroPresence;
+    // Soldando detrás de una tarjeta el halo es más grande y fuerte: la tarjeta (78 % opaca)
+    // deja pasar solo una parte de la luz.
+    this.uGlow.value = presence * flicker * (welding ? 1 : 0.55);
+    this.glow.scale.setScalar(welding ? 2.3 : 0.9);
     this.glow.visible = presence > 0.001;
-    this.glow.position.copy(this.uOrigin.value);
+    this.glow.position.copy(welding ? this.uWeldPos.value : this.uOrigin.value);
   }
 
   dispose(): void {
@@ -184,6 +201,13 @@ export class ForgeScene implements SceneModule {
     if (count === 0) return;
 
     const f = buildFormations(count, this.layout);
+    const stride = Math.max(1, Math.floor(count / 600));
+    this.trussSample = new Float32Array(Math.floor(count / stride) * 3);
+    for (let i = 0, j = 0; j < this.trussSample.length; i += stride, j += 3) {
+      this.trussSample[j] = f.truss[i * 3] ?? 0;
+      this.trussSample[j + 1] = f.truss[i * 3 + 1] ?? 0;
+      this.trussSample[j + 2] = f.truss[i * 3 + 2] ?? 0;
+    }
     const attr3 = (a: Float32Array) => instancedBufferAttribute<'vec3'>(new THREE.InstancedBufferAttribute(a, 3), 'vec3');
     const aSeed = instancedBufferAttribute<'float'>(new THREE.InstancedBufferAttribute(f.seeds, 1), 'float');
     const aVel = attr3(f.sparkVelocity);
@@ -275,11 +299,17 @@ export class ForgeScene implements SceneModule {
       .add(w3.mul(0.04))
       .add(mix(float(0.025), float(0.06), aSeed).mul(w4));
 
+    // --- Soldadura en el nudo de la tarjeta activa (solo existe en la formación de la cercha) ---
+    const weld = smoothstep(float(1.5), float(0), length(aTruss.sub(this.uWeldPos))).mul(this.uWeldAmt).mul(w1);
+    const weldColor = mix(color(HOT_ORANGE), color(HOT_WHITE), smoothstep(float(0.55), float(1), weld)).mul(1.4);
+    // Vibración mínima: el metal "hierve" bajo el arco.
+    const shimmer = vec3(sin(this.uTime.mul(53).add(aSeed.mul(97))), sin(this.uTime.mul(47).add(aSeed.mul(71))), float(0)).mul(weld.mul(0.025));
+
     const material = new THREE.SpriteNodeMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
-    material.positionNode = position;
-    material.scaleNode = size.add(push.mul(0.03));
-    material.colorNode = finalColor;
-    material.opacityNode = disc.mul(alpha).mul(this.uDim).add(push.mul(disc).mul(0.3));
+    material.positionNode = position.add(shimmer);
+    material.scaleNode = size.add(push.mul(0.03)).add(weld.mul(0.035));
+    material.colorNode = mix(finalColor, weldColor, weld);
+    material.opacityNode = disc.mul(alpha.add(weld.mul(0.7))).mul(this.uDim).add(push.mul(disc).mul(0.3));
 
     const sprite = new THREE.Sprite(material);
     // Geometría propia: el renderer libera los buffers instanciados recién al hacer dispose de la geometría.
@@ -326,6 +356,50 @@ export class ForgeScene implements SceneModule {
     this.uOrigin.value.lerp(this.originGoal, delta > 0 ? damp(8, delta) : 1);
     // El origen arranca en baseOrigin sin pasar por la zona: si el viewport es raro, se corrige acá.
     if (delta === 0) this.uOrigin.value.copy(this.originGoal);
+  }
+
+  /**
+   * La soldadura se desliza por la cercha hacia el nudo de la tarjeta activa
+   * (no salta) y se apaga suave al soltarla. Devuelve su presencia visible (0..1).
+   */
+  private updateWeld(track: number, delta: number): number {
+    const target = this.opts.weldTarget?.() ?? null;
+    const has = target !== null && this.findNearestOnScreen(target.x, target.y, this.weldGoal);
+    if (has) {
+      // Primera vez: aparece en el nudo; después, viaja.
+      if (this.uWeldAmt.value < 0.01) this.uWeldPos.value.copy(this.weldGoal);
+      else this.uWeldPos.value.lerp(this.weldGoal, delta > 0 ? damp(9, delta) : 1);
+    }
+    const goal = has ? 1 : 0;
+    this.uWeldAmt.value += (goal - this.uWeldAmt.value) * (delta > 0 ? damp(has ? 10 : 4, delta) : 1);
+    // Solo se ve cerca de la sección de proyectos (track ≈ 1).
+    const nearTruss = Math.max(0, 1 - Math.abs(track - 1) * 2);
+    return this.uWeldAmt.value * nearTruss;
+  }
+
+  /**
+   * Punto de la cercha cuya proyección en pantalla queda más cerca de (x, y) en NDC.
+   * Recorre una muestra de ≤ 600 puntos: ~0,05 ms por frame, y solo con una tarjeta activa.
+   */
+  private findNearestOnScreen(x: number, y: number, out: THREE.Vector3): boolean {
+    const pts = this.trussSample;
+    let best = Infinity;
+    let bi = -1;
+    const aspect = this.camera.aspect;
+    for (let j = 0; j < pts.length; j += 3) {
+      this.probe.set(pts[j] ?? 0, pts[j + 1] ?? 0, pts[j + 2] ?? 0).project(this.camera);
+      if (this.probe.z > 1) continue; // detrás de la cámara
+      const dx = (this.probe.x - x) * aspect; // distancia en proporción real de pantalla
+      const dy = this.probe.y - y;
+      const d = dx * dx + dy * dy;
+      if (d < best) {
+        best = d;
+        bi = j;
+      }
+    }
+    if (bi < 0) return false;
+    out.set(pts[bi] ?? 0, pts[bi + 1] ?? 0, pts[bi + 2] ?? 0);
+    return true;
   }
 
   /**

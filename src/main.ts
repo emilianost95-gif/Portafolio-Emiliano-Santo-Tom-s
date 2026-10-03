@@ -8,6 +8,7 @@ import './styles/components.css';
 
 import { detectCapabilities, type GpuBackend } from './core/capabilities';
 import { initialQuality, readOverride, type QualityLevel } from './core/quality';
+import { initCards } from './ui/cards';
 import { initActiveNav } from './ui/nav';
 
 /**
@@ -68,6 +69,7 @@ function main(): void {
     el.textContent = String(new Date().getFullYear());
   });
   initActiveNav();
+  initCards();
 
   whenIdle(() => {
     bootEnhancements().catch((error: unknown) => {

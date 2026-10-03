@@ -73,20 +73,127 @@
 }
 .cases + .group-title { margin-top: 4rem; }
 
-.cases { display: grid; gap: 1.25rem; }
+/* align-items: start → al abrir "Cómo lo hice" en una tarjeta, la vecina de fila no se estira. */
+.cases { display: grid; gap: 1.25rem; align-items: start; }
 @media (min-width: 900px) { .cases { grid-template-columns: repeat(2, 1fr); } }
 
+/* ---------- Tarjeta de proyecto interactiva ----------
+   --mx/--my: posición del puntero dentro de la tarjeta (las escribe src/ui/cards.ts).
+   --tilt-x/--tilt-y: inclinación leve. Sin JS o sin mouse, la tarjeta queda estática y completa. */
 .case {
+  --mx: 50%;
+  --my: 0%;
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  --torch: 255 140 38; /* naranja de la torcha */
+  position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.1rem;
   padding: clamp(1.25rem, 3vw, 2rem);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: rgb(18 18 26 / 0.92);
-  transition: border-color var(--dur) var(--ease-out);
+  /* 78 %: lo justo para que el arco de soldadura del 3D se vea brillar detrás de la tarjeta
+     activa sin bajar el contraste del texto (verificado con axe con la soldadura encendida). */
+  background: rgb(18 18 26 / 0.78);
+  transform: perspective(1000px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transition:
+    transform 450ms var(--ease-out),
+    border-color var(--dur) var(--ease-out),
+    box-shadow var(--dur) var(--ease-out);
 }
-.case:hover, .case:focus-within { border-color: var(--line-strong); }
+/* Luz que sigue al puntero: metal iluminado por la torcha. */
+.case::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(420px circle at var(--mx) var(--my), rgb(var(--torch) / 0.11), transparent 45%);
+  opacity: 0;
+  transition: opacity 300ms var(--ease-out);
+  pointer-events: none;
+}
+/* Borde que se enciende cerca del puntero (máscara: solo se pinta el anillo de 1 px). */
+.case::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(260px circle at var(--mx) var(--my), rgb(var(--torch) / 0.85), rgb(0 240 255 / 0.25) 40%, transparent 70%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  opacity: 0;
+  transition: opacity 300ms var(--ease-out);
+  pointer-events: none;
+}
+.case.is-lit::before,
+.case.is-lit::after { opacity: 1; }
+.case.is-lit { transition: border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out); }
+.case.is-lit,
+.case:focus-within {
+  border-color: var(--line-strong);
+  box-shadow: 0 18px 50px -24px rgb(var(--torch) / 0.35);
+}
+.case.is-lit .case__index,
+.case:focus-within .case__index { color: rgb(var(--torch)); text-shadow: 0 0 12px rgb(var(--torch) / 0.6); }
+@media (prefers-reduced-motion: reduce) {
+  .case { transform: none; }
+}
+
+/* "Cómo lo hice": desplegable nativo (teclado y lector de pantalla incluidos, sin JS). */
+.case__more {
+  border-top: 1px dashed var(--line-strong);
+  border-bottom: 1px dashed var(--line-strong);
+}
+.case__more > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 600;
+  color: var(--text);
+}
+.case__more > summary::-webkit-details-marker { display: none; }
+.case__more > summary::before {
+  content: '+';
+  display: inline-grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  color: var(--accent);
+  transition: transform var(--dur) var(--ease-out);
+}
+.case__more[open] > summary::before { content: '−'; }
+.case__more > summary:hover::before { border-color: var(--accent); }
+.case__more-hint {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 400;
+  color: var(--text-muted);
+}
+.case__more > .case__body { padding: 0.25rem 0 1rem; }
+/* Apertura animada donde el navegador lo soporta (Chrome 131+); en el resto abre al instante. */
+@supports (interpolate-size: allow-keywords) {
+  .case__more { interpolate-size: allow-keywords; }
+  .case__more::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition: block-size 350ms var(--ease-out), content-visibility 350ms allow-discrete;
+  }
+  .case__more[open]::details-content { block-size: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .case__more::details-content { transition: none; }
+}
 
 .case__index { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--accent-2); letter-spacing: 0.1em; }
 .case__title { margin-top: 0.4rem; font-size: var(--fs-lg); font-size: clamp(1.3rem, 1.1rem + 0.8vw, 1.65rem); }

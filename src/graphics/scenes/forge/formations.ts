@@ -170,6 +170,13 @@ function concatHalves(a: Float32Array, b: Float32Array, seeds: Float32Array): Fl
   return out;
 }
 
+const TRUSS = { length: 18, size: 2, panel: 1.7 } as const;
+
+/** Ubicación de la cercha de "Proyectos". Una sola fuente: la usan las partículas y los nudos. */
+function placeTruss(points: Float32Array, p: LayoutParams): void {
+  transform(points, -0.3, 0.1, 3, -0.6, -5, p); // corrida a la derecha: deja libre el título de la sección
+}
+
 export function buildFormations(count: number, layout: Layout, seed = 1): FormationSet {
   const rng = mulberry32(seed);
   const p = layoutParams(layout);
@@ -191,8 +198,8 @@ export function buildFormations(count: number, layout: Layout, seed = 1): Format
 
   // Proyectos: cercha larga que cruza la escena en diagonal y en profundidad.
   // Sección de 2 m y paneles de 1,7: con menos que eso las diagonales no se distinguen a esta distancia.
-  const truss = sampleSegments(trussSegments(18, 2, 1.7), count, rng, 0.03);
-  transform(truss, -0.3, 0.1, 3, -0.6, -5, p); // corrida a la derecha: deja libre el título de la sección
+  const truss = sampleSegments(trussSegments(TRUSS.length, TRUSS.size, TRUSS.panel), count, rng, 0.03);
+  placeTruss(truss, p);
 
   // Stack: bloque de código levemente girado, a la derecha.
   const code = sampleSegments(codeSegments(16, 6.5, 0.42, rng), count, rng, 0.03);

@@ -23,3 +23,18 @@ export function scrollToTrack(y: number, anchors: readonly number[]): number {
   }
   return n - 1;
 }
+
+/**
+ * Meseta por sección: cada formación se queda armada durante la primera parte de su
+ * tramo (`hold`) y transiciona en el resto. Sin esto, mientras se leían las tarjetas de
+ * proyectos la cercha ya se estaba convirtiendo en código.
+ *
+ * Sigue siendo una función pura, continua y monótona (reversible igual que el track).
+ */
+export function holdTrack(track: number, hold: number): number {
+  if (hold <= 0) return track;
+  const i = Math.floor(track);
+  const f = track - i;
+  const local = Math.min(1, Math.max(0, (f - hold) / (1 - hold)));
+  return i + local;
+}

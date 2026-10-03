@@ -3,6 +3,7 @@ import type { QualityLevel } from '../core/quality';
 import { AdaptiveQuality } from './engine/AdaptiveQuality';
 import { Engine } from './engine/Engine';
 import { ScrollTracker } from '../scroll/ScrollTracker';
+import { activeCardTarget } from '../ui/cards';
 import { createHeroSafeArea } from '../ui/safeArea';
 import { ForgeScene } from './scenes/forge/ForgeScene';
 
@@ -97,7 +98,9 @@ export async function bootGraphics(opts: BootOptions): Promise<void> {
       return;
     }
 
-    engine.mount(new ForgeScene({ torchZone: () => safeArea.read() }));
+    engine.mount(
+      new ForgeScene({ torchZone: () => safeArea.read(), weldTarget: activeCardTarget }),
+    );
     if (failed) return; // pudo fallar ya en el primer render (reduced motion)
     opts.onBackend(engine.backendName);
 

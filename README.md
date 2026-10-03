@@ -6,7 +6,8 @@ Portfolio interactivo construido por fases.
 - **Fase 1:** motor gráfico — Three.js (WebGPU con fallback a WebGL2), calidad adaptativa medida,
   fallback en tiempo de ejecución, monitor de rendimiento y una escena de prueba.
 - **Fase 2:** scroll → cámara. Scroll nativo, recorrido de cámara por secciones, reversible por construcción.
-- **Fase 3 (actual):** escena "Forja" — del metal al código. Formaciones por sección, el puntero es la torcha, bloom.
+- **Fase 3:** escena "Forja" — del metal al código. Formaciones por sección, el puntero es la torcha, bloom.
+- **Fase 4 (en curso):** producción. Hecho: tarjetas de proyecto interactivas conectadas al 3D.
 
 El contenido funciona y se entiende sin el 3D; el 3D se suma encima.
 
@@ -63,6 +64,7 @@ src/
     track.ts            Función pura: scroll → posición entre secciones (0..n-1)
     ScrollTracker.ts    Lee el scroll nativo; mide las secciones solo cuando cambia el layout
   ui/safeArea.ts        Mide el texto del hero en el DOM → zona de pantalla donde el 3D puede brillar sin taparlo
+  ui/cards.ts           Tarjetas interactivas: luz y borde que siguen al puntero, tilt, tarjeta activa → soldadura en 3D
   graphics/scenes/forge/
     formations.ts       Generadores puros (con semilla): chispas, cercha 3D, código, mezcla, campo
     ForgeScene.ts       Mezcla de formaciones en el vertex shader (TSL), torcha, halo del arco, cámara
@@ -356,3 +358,38 @@ El color también cuenta la historia: metal al rojo (blanco → naranja → rojo
   Una luz física no aportaría nada visible y costaría por píxel.
 - **La zona segura se mide en el DOM.** El contenido manda; el 3D se adapta a él y no al revés.
 - **Bloom ligado al nivel de calidad.** Son ~14 pasadas extra: en `low` no existe.
+
+
+---
+
+## Checklist — Fase 4a (tarjetas interactivas)
+
+### IMPLEMENTADO
+- [x] Luz cálida que sigue al puntero sobre la tarjeta (la torcha sobre el metal) + borde que se enciende cerca del cursor
+- [x] Inclinación 3D leve (máx. 4°), solo con mouse/trackpad y sin reduced motion
+- [x] **Tarjeta activa → la cercha del fondo se suelda justo detrás de ella**: se busca el punto de la cercha más
+      cercano *en pantalla* al centro de la tarjeta; ahí se calienta el metal y aparece el arco, que brilla a través de la tarjeta
+- [x] Al pasar de una tarjeta a otra, la soldadura viaja por la cercha (no salta); al salir se apaga suave
+- [x] Funciona igual con teclado: el foco dentro de una tarjeta la activa
+- [x] "Cómo lo hice" desplegable (`<details>` nativo): siempre visibles problema y resultado; enfoque e implementación a pedido.
+      Apertura animada con `::details-content` + `interpolate-size` donde hay soporte
+- [x] Meseta por sección en el scroll: la cercha se mantiene armada mientras se leen los proyectos
+- [x] Links verificados: todos los repos enlazados existen y son públicos. Se sumó el link al repo de Registro Geriátrico
+
+### VERIFICADO (mouse y teclado reales)
+- Hover → `is-lit`, tilt aplicado, soldadura al 100 %, posición en pantalla **dentro** de la tarjeta activa
+- Salir → la soldadura se apaga (0,06 a los 3 s) · Foco con teclado → soldadura al 100 %
+- axe: 0 violaciones con la soldadura encendida · consola sin errores
+
+### PROBLEMAS ENCONTRADOS Y RESUELTOS
+1. **La primera idea (un nudo fijo de la cercha por tarjeta) no se veía:** las tarjetas tapan el centro y la cercha
+   cruza en diagonal, así que el nudo podía quedar detrás de otra tarjeta. → Punto de la cercha más cercano en pantalla a la tarjeta activa.
+2. **Mientras se leían las tarjetas, la cercha ya se estaba convirtiendo en código.** → Meseta: cada formación se queda armada el 60 % de su sección.
+3. **Con tarjetas al 92 % de opacidad el arco no se veía.** → Tarjetas al 78 % y halo más grande solo en modo soldadura; contraste verificado.
+4. **Al abrir una tarjeta, la vecina de fila se estiraba con un hueco vacío.** → `align-items: start` en la grilla.
+
+### PENDIENTES (resto de la Fase 4)
+- Capturas reales de cada proyecto en las tarjetas
+- Pista de interacción para la torcha del hero
+- Medir la carga con el 3D activo en el notebook
+- Deploy automático a GitHub Pages

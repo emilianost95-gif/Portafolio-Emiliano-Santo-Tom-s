@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { scrollToTrack } from '../src/scroll/track.ts';
+import { scrollToTrack, holdTrack } from '../src/scroll/track.ts';
 import { sampleKeys, smoothstep01, damp, type CameraPose } from '../src/graphics/camera/CameraRig.ts';
 
 const anchors = [0, 1000, 2500, 3000, 4200];
@@ -61,4 +61,21 @@ test('amortiguación independiente de los FPS', () => {
   const a = damp(6, 1 / 30);
   const b = 1 - (1 - damp(6, 1 / 60)) ** 2;
   assert.ok(Math.abs(a - b) < 1e-12);
+});
+
+test('meseta: la formación se mantiene durante el 60 % de la sección', () => {
+  assert.equal(holdTrack(1.0, 0.6), 1);
+  assert.equal(holdTrack(1.3, 0.6), 1);
+  assert.ok(Math.abs(holdTrack(1.6, 0.6) - 1) < 1e-9); // 1,6 - 1 = 0,6000000000000001 en coma flotante
+  assert.ok(Math.abs(holdTrack(1.8, 0.6) - 1.5) < 1e-9);
+  assert.equal(holdTrack(2, 0.6), 2);
+});
+test('meseta: continua y monótona (sin saltos en ningún punto)', () => {
+  let prev = holdTrack(0, 0.6);
+  for (let t = 0.001; t <= 4; t += 0.001) {
+    const v = holdTrack(t, 0.6);
+    assert.ok(v >= prev - 1e-12, `retrocede en ${t}`);
+    assert.ok(v - prev < 0.003, `salto en ${t}`);
+    prev = v;
+  }
 });
