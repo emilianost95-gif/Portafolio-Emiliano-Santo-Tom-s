@@ -64,7 +64,7 @@ src/
     track.ts            Función pura: scroll → posición entre secciones (0..n-1)
     ScrollTracker.ts    Lee el scroll nativo; mide las secciones solo cuando cambia el layout
   ui/safeArea.ts        Mide el texto del hero en el DOM → zona de pantalla donde el 3D puede brillar sin taparlo
-  ui/cards.ts           Tarjetas interactivas: luz y borde que siguen al puntero, tilt, tarjeta activa → soldadura en 3D
+  ui/cards.ts           Tarjetas: luz y borde que siguen al puntero, tarjeta activa → soldadura en 3D, fallback de la entrada
   graphics/scenes/forge/
     formations.ts       Generadores puros (con semilla): chispas, cercha 3D, código, mezcla, campo
     ForgeScene.ts       Mezcla de formaciones en el vertex shader (TSL), torcha, halo del arco, cámara
@@ -366,7 +366,10 @@ El color también cuenta la historia: metal al rojo (blanco → naranja → rojo
 
 ### IMPLEMENTADO
 - [x] Luz cálida que sigue al puntero sobre la tarjeta (la torcha sobre el metal) + borde que se enciende cerca del cursor
-- [x] Inclinación 3D leve (máx. 4°), solo con mouse/trackpad y sin reduced motion
+- [x] **Entrada "soldada" atada al scroll:** un cordón recorre el borde de la tarjeta (punta blanca → naranja → rojo,
+      se enfría a cian y se apaga) y el contenido aparece por partes a medida que entra. CSS puro con
+      `animation-timeline: view()` → reversible por construcción y en el compositor; fallback con IntersectionObserver
+- [x] ~~Inclinación 3D~~ — **descartada** a pedido: se reemplazó por la entrada soldada, más acorde al relato
 - [x] **Tarjeta activa → la cercha del fondo se suelda justo detrás de ella**: se busca el punto de la cercha más
       cercano *en pantalla* al centro de la tarjeta; ahí se calienta el metal y aparece el arco, que brilla a través de la tarjeta
 - [x] Al pasar de una tarjeta a otra, la soldadura viaja por la cercha (no salta); al salir se apaga suave
@@ -377,7 +380,10 @@ El color también cuenta la historia: metal al rojo (blanco → naranja → rojo
 - [x] Links verificados: todos los repos enlazados existen y son públicos. Se sumó el link al repo de Registro Geriátrico
 
 ### VERIFICADO (mouse y teclado reales)
-- Hover → `is-lit`, tilt aplicado, soldadura al 100 %, posición en pantalla **dentro** de la tarjeta activa
+- Hover → `is-lit`, soldadura al 100 %, posición en pantalla **dentro** de la tarjeta activa
+- Entrada: cordón al 11 % → 55 % → 99 % → apagado a medida que la tarjeta entra; al volver a subir a la misma
+  posición, el cordón queda exactamente en el mismo punto (55,2 %) → reversible
+- Reduced motion: contenido visible desde el inicio, sin cordón
 - Salir → la soldadura se apaga (0,06 a los 3 s) · Foco con teclado → soldadura al 100 %
 - axe: 0 violaciones con la soldadura encendida · consola sin errores
 
@@ -387,6 +393,7 @@ El color también cuenta la historia: metal al rojo (blanco → naranja → rojo
 2. **Mientras se leían las tarjetas, la cercha ya se estaba convirtiendo en código.** → Meseta: cada formación se queda armada el 60 % de su sección.
 3. **Con tarjetas al 92 % de opacidad el arco no se veía.** → Tarjetas al 78 % y halo más grande solo en modo soldadura; contraste verificado.
 4. **Al abrir una tarjeta, la vecina de fila se estiraba con un hueco vacío.** → `align-items: start` en la grilla.
+5. **La punta incandescente del cordón casi no se veía** (1,5 px, tramo caliente corto). → 2 px y gradiente rojo → naranja → blanco más largo.
 
 ### PENDIENTES (resto de la Fase 4)
 - Capturas reales de cada proyecto en las tarjetas

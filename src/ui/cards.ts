@@ -1,8 +1,10 @@
 /**
  * Tarjetas de proyecto interactivas.
  *
+ *  - Entrada "soldada": un cordón recorre el borde y el contenido aparece por partes.
+ *    Va atada al scroll con CSS (animation-timeline: view()); acá solo está el fallback
+ *    para navegadores sin esa API.
  *  - Luz que sigue al puntero (como la torcha sobre metal) + borde que se enciende cerca.
- *  - Inclinación 3D leve. Solo con mouse/trackpad y sin reduced motion.
  *  - Tarjeta activa (hover o foco con teclado) → la escena 3D suelda la cercha justo detrás de ella.
  *
  * Costo: un listener por tarjeta, agrupado en un requestAnimationFrame; solo se escriben
@@ -29,12 +31,9 @@ export function activeCardTarget(): { x: number; y: number } | null {
   };
 }
 
-const MAX_TILT_DEG = 4;
-
 export function initCards(): () => void {
   cards = [...document.querySelectorAll<HTMLElement>('.case')];
   const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
-  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const cleanups: (() => void)[] = [];
 
   cards.forEach((card, index) => {
@@ -49,13 +48,6 @@ export function initCards(): () => void {
       const y = lastY - rect.top;
       card.style.setProperty('--mx', `${x}px`);
       card.style.setProperty('--my', `${y}px`);
-      if (!reducedMotion.matches) {
-        // -1..1 respecto del centro → grados. Se inclina "hacia" el puntero.
-        const nx = (x / rect.width) * 2 - 1;
-        const ny = (y / rect.height) * 2 - 1;
-        card.style.setProperty('--tilt-x', `${(-ny * MAX_TILT_DEG).toFixed(2)}deg`);
-        card.style.setProperty('--tilt-y', `${(nx * MAX_TILT_DEG).toFixed(2)}deg`);
-      }
     };
 
     const onMove = (e: PointerEvent): void => {
@@ -75,8 +67,6 @@ export function initCards(): () => void {
       if (frame) cancelAnimationFrame(frame);
       frame = 0;
       card.classList.remove('is-lit');
-      card.style.removeProperty('--tilt-x');
-      card.style.removeProperty('--tilt-y');
       if (active === index && !card.contains(document.activeElement)) active = null;
     };
     // Teclado: el foco dentro de la tarjeta también la activa (y suelda su nudo).
@@ -101,5 +91,29 @@ export function initCards(): () => void {
     });
   });
 
+  cleanups.push(initEntranceFallback(cards));
   return () => cleanups.forEach((fn) => fn());
+}
+
+/**
+ * Fallback de la entrada para navegadores sin scroll-driven animations.
+ * También es reversible: la clase se saca cuando la tarjeta vuelve a quedar por
+ * DEBAJO del viewport (al subir). Si sale por arriba (ya leída), queda soldada.
+ */
+function initEntranceFallback(cards: HTMLElement[]): () => void {
+  if (CSS.supports('animation-timeline: view()')) return () => undefined;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return () => undefined;
+  document.documentElement.classList.add('cards-io');
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        const el = entry.target as HTMLElement;
+        if (entry.isIntersecting) el.classList.add('is-in');
+        else if (entry.boundingClientRect.top > 0) el.classList.remove('is-in');
+      }
+    },
+    { rootMargin: '0px 0px -12% 0px' },
+  );
+  cards.forEach((c) => io.observe(c));
+  return () => io.disconnect();
 }
