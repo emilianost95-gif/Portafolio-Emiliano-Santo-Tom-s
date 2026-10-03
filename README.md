@@ -64,7 +64,8 @@ src/
     track.ts            Función pura: scroll → posición entre secciones (0..n-1)
     ScrollTracker.ts    Lee el scroll nativo; mide las secciones solo cuando cambia el layout
   ui/safeArea.ts        Mide el texto del hero en el DOM → zona de pantalla donde el 3D puede brillar sin taparlo
-  ui/cards.ts           Tarjetas: luz y borde que siguen al puntero, tarjeta activa → soldadura en 3D, fallback de la entrada
+  ui/cards.ts           Tarjetas: luz y borde que siguen al puntero, tarjeta activa → soldadura en 3D
+  ui/hscroll.ts         Carrusel horizontal guiado por el scroll vertical (sticky + transición de foco)
   graphics/scenes/forge/
     formations.ts       Generadores puros (con semilla): chispas, cercha 3D, código, mezcla, campo
     ForgeScene.ts       Mezcla de formaciones en el vertex shader (TSL), torcha, halo del arco, cámara
@@ -366,24 +367,30 @@ El color también cuenta la historia: metal al rojo (blanco → naranja → rojo
 
 ### IMPLEMENTADO
 - [x] Luz cálida que sigue al puntero sobre la tarjeta (la torcha sobre el metal) + borde que se enciende cerca del cursor
-- [x] **Entrada "soldada" atada al scroll:** un cordón recorre el borde de la tarjeta (punta blanca → naranja → rojo,
-      se enfría a cian y se apaga) y el contenido aparece por partes a medida que entra. CSS puro con
-      `animation-timeline: view()` → reversible por construcción y en el compositor; fallback con IntersectionObserver
-- [x] ~~Inclinación 3D~~ — **descartada** a pedido: se reemplazó por la entrada soldada, más acorde al relato
+- [x] **Carrusel horizontal guiado por el scroll:** en escritorio la sección se fija y cada píxel de scroll vertical
+      mueve la cinta un píxel a la izquierda. Función directa del scroll → reversible por construcción
+- [x] **Transición de foco:** la tarjeta que pasa por el centro queda a escala, opacidad y saturación completas; las de
+      los costados se achican y se apagan. Contador `01 / 06` + barra de progreso. Separadores por grupo (productos / clientes)
+- [x] La cinta termina con la **última** tarjeta centrada (si no, nunca tomaba foco)
+- [x] Teclado: el foco en una tarjeta fuera de cuadro scrollea la página hasta centrarla
+- [x] Celular, pantallas de menos de 740 px de alto y reduced motion: lista vertical normal (mismo HTML, sin sticky)
+- [x] Transición de formaciones del 3D medida en **píxeles** (≤ 0,9 pantallas antes de la sección siguiente):
+      la cercha se mantiene durante todo el carrusel
+- [x] ~~Inclinación 3D~~ y ~~entrada con cordón~~ — descartadas a pedido; reemplazadas por el carrusel
 - [x] **Tarjeta activa → la cercha del fondo se suelda justo detrás de ella**: se busca el punto de la cercha más
       cercano *en pantalla* al centro de la tarjeta; ahí se calienta el metal y aparece el arco, que brilla a través de la tarjeta
 - [x] Al pasar de una tarjeta a otra, la soldadura viaja por la cercha (no salta); al salir se apaga suave
 - [x] Funciona igual con teclado: el foco dentro de una tarjeta la activa
 - [x] "Cómo lo hice" desplegable (`<details>` nativo): siempre visibles problema y resultado; enfoque e implementación a pedido.
       Apertura animada con `::details-content` + `interpolate-size` donde hay soporte
-- [x] Meseta por sección en el scroll: la cercha se mantiene armada mientras se leen los proyectos
 - [x] Links verificados: todos los repos enlazados existen y son públicos. Se sumó el link al repo de Registro Geriátrico
 
 ### VERIFICADO (mouse y teclado reales)
 - Hover → `is-lit`, soldadura al 100 %, posición en pantalla **dentro** de la tarjeta activa
-- Entrada: cordón al 11 % → 55 % → 99 % → apagado a medida que la tarjeta entra; al volver a subir a la misma
-  posición, el cordón queda exactamente en el mismo punto (55,2 %) → reversible
-- Reduced motion: contenido visible desde el inicio, sin cordón
+- Carrusel: desplazamiento 0 → 690 → 1381 → 2071 → 2761 px; contador 01 → 02 → 04 → 05 → 06; la última tarjeta llega a foco 1,00
+- Volver a la misma posición de scroll da exactamente el mismo estado (reversible) · sin scroll horizontal de página
+- Teclado a la tarjeta 06 desde el inicio de la sección → queda a la vista · Track 3D = 1,00 durante todo el carrusel
+- Celular (390 px) y reduced motion: lista vertical, `hs-on` desactivado
 - Salir → la soldadura se apaga (0,06 a los 3 s) · Foco con teclado → soldadura al 100 %
 - axe: 0 violaciones con la soldadura encendida · consola sin errores
 
@@ -393,7 +400,14 @@ El color también cuenta la historia: metal al rojo (blanco → naranja → rojo
 2. **Mientras se leían las tarjetas, la cercha ya se estaba convirtiendo en código.** → Meseta: cada formación se queda armada el 60 % de su sección.
 3. **Con tarjetas al 92 % de opacidad el arco no se veía.** → Tarjetas al 78 % y halo más grande solo en modo soldadura; contraste verificado.
 4. **Al abrir una tarjeta, la vecina de fila se estiraba con un hueco vacío.** → `align-items: start` en la grilla.
-5. **La punta incandescente del cordón casi no se veía** (1,5 px, tramo caliente corto). → 2 px y gradiente rojo → naranja → blanco más largo.
+5. **La última tarjeta del carrusel nunca llegaba al centro** (la cinta terminaba con su borde en el borde de la pantalla). → Fin de la cinta = última tarjeta centrada.
+6. **El foco se calculaba corrido** (no descontaba el padding del contenedor). → Corregido.
+7. **Con el carrusel, la meseta del 60 % convertía la cercha en código a mitad de las tarjetas.** → Ventana de transición en píxeles.
+8. **La cinta usa 100vw y generaba scroll horizontal de página** (por la barra de scroll). → `overflow-x: clip` en body (no rompe el sticky).
+9. **Aparecía una barra de scroll dentro de cada tarjeta** (alto máximo + `overflow-y: auto`; visto en un notebook de 1536×791).
+   → Sin scroll interno: tarjetas más anchas y compactas; en el carrusel "Cómo lo hice" reemplaza problema/resultado/tecnologías
+   en vez de sumarse; el carrusel solo se activa desde 740 px de alto. Medido: a 1536×791 la tarjeta cerrada mide 484 px y
+   la abierta 557 px, con 727 px disponibles; 0 barras internas en 1920×955, 1536×791 y 1440×810.
 
 ### PENDIENTES (resto de la Fase 4)
 - Capturas reales de cada proyecto en las tarjetas

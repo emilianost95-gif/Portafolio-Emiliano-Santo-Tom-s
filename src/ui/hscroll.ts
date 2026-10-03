@@ -12,7 +12,13 @@
  * fijar la sección en un celular es incómodo y con reduced motion sería movimiento forzado.
  */
 
-const ENABLE_QUERY = '(min-width: 900px) and (prefers-reduced-motion: no-preference)';
+/**
+ * Solo en pantallas anchas Y suficientemente altas: la tarjeta (incluso con "Cómo lo hice"
+ * abierto) tiene que entrar completa en la parte fija. Medido: a 1280×720 una tarjeta abierta
+ * mide 653 px y el espacio es 656 px menos el contador → no entra. Debajo de 740 px de alto
+ * se usa la lista vertical.
+ */
+const ENABLE_QUERY = '(min-width: 900px) and (min-height: 740px) and (prefers-reduced-motion: no-preference)';
 
 /** Pura: desplazamiento horizontal (px) para una posición de scroll dentro de la sección. */
 export function shiftFor(scrolled: number, maxShift: number): number {

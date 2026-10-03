@@ -111,16 +111,24 @@
 .hs-on .hscroll__track > .case {
   --focus: 1;
   flex: 0 0 auto;
-  width: clamp(360px, 34vw, 500px);
-  max-height: calc(100svh - var(--header-h) - 7rem);
-  overflow-y: auto; /* si se abre "Cómo lo hice" y no entra, se scrollea adentro de la tarjeta */
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
+  /* Más ancha = más baja: la tarjeta tiene que entrar COMPLETA en la pantalla fija.
+     Nunca scroll interno (una barra de scroll dentro de una sección que ya se mueve con
+     el scroll confunde; así estaba antes y se veía como un error). */
+  width: clamp(440px, 42vw, 640px);
+  gap: 0.9rem;
+  padding: 1.5rem 1.75rem;
   /* Transición de foco: la tarjeta del centro manda; las de los costados se achican y apagan. */
   scale: calc(0.9 + var(--focus) * 0.1);
   opacity: calc(0.45 + var(--focus) * 0.55);
   filter: saturate(calc(0.4 + var(--focus) * 0.6));
 }
+/* En el carrusel, "Cómo lo hice" REEMPLAZA el contenido en vez de agregarlo: la tarjeta no crece.
+   Abierto: se ocultan problema, resultado y tecnologías; quedan enfoque, implementación y links. */
+.hs-on .hscroll__track > .case:has(.case__more[open]) > .case__body,
+.hs-on .hscroll__track > .case:has(.case__more[open]) > .tags { display: none; }
+.hs-on .case__body dd { font-size: 0.94rem; }
+.hs-on .case__tagline { font-size: 0.97rem; }
+
 .hs-on .hscroll__divider {
   flex: 0 0 auto;
   width: 240px;
