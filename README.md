@@ -409,8 +409,13 @@ El color también cuenta la historia: metal al rojo (blanco → naranja → rojo
    en vez de sumarse; el carrusel solo se activa desde 740 px de alto. Medido: a 1536×791 la tarjeta cerrada mide 484 px y
    la abierta 557 px, con 727 px disponibles; 0 barras internas en 1920×955, 1536×791 y 1440×810.
 
+### DEPLOY
+- `.github/workflows/deploy.yml`: en cada push a `main` → `npm ci` → `npm test` → `npm run build` (con typecheck) → GitHub Pages.
+  Si fallan los tests o el typecheck, **no se publica**.
+- Publicado en el mismo repo del portafolio anterior (`Portafolio-Emiliano-Santo-Tom-s`): el QR y el link de LinkedIn siguen
+  funcionando. El historial del portafolio anterior se conservó (merge de historiales, sin force push).
+
 ### PENDIENTES (resto de la Fase 4)
 - Capturas reales de cada proyecto en las tarjetas
 - Pista de interacción para la torcha del hero
 - Medir la carga con el 3D activo en el notebook
-- Deploy automático a GitHub Pages
