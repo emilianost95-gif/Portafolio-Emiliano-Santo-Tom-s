@@ -5,7 +5,8 @@ Portfolio interactivo construido por fases.
 - **Fase 0:** base semántica completa, SEO y accesibilidad, sin 3D.
 - **Fase 1:** motor gráfico — Three.js (WebGPU con fallback a WebGL2), calidad adaptativa medida,
   fallback en tiempo de ejecución, monitor de rendimiento y una escena de prueba.
-- **Fase 2 (actual):** scroll → cámara. Scroll nativo, recorrido de cámara por secciones, reversible por construcción.
+- **Fase 2:** scroll → cámara. Scroll nativo, recorrido de cámara por secciones, reversible por construcción.
+- **Fase 3 (actual):** escena "Forja" — del metal al código. Formaciones por sección, el puntero es la torcha, bloom.
 
 El contenido funciona y se entiende sin el 3D; el 3D se suma encima.
 
@@ -61,6 +62,10 @@ src/
   scroll/
     track.ts            Función pura: scroll → posición entre secciones (0..n-1)
     ScrollTracker.ts    Lee el scroll nativo; mide las secciones solo cuando cambia el layout
+  ui/safeArea.ts        Mide el texto del hero en el DOM → zona de pantalla donde el 3D puede brillar sin taparlo
+  graphics/scenes/forge/
+    formations.ts       Generadores puros (con semilla): chispas, cercha 3D, código, mezcla, campo
+    ForgeScene.ts       Mezcla de formaciones en el vertex shader (TSL), torcha, halo del arco, cámara
   graphics/camera/
     CameraRig.ts        Keyframes de cámara por sección + easing + amortiguación (funciones puras)
 tests/                  Tests de calidad adaptativa, detección, track de scroll y cámara
@@ -146,7 +151,7 @@ Ejecución (con el 3D ya corriendo):
 - [x] Escena de prueba: partículas que el puntero aparta (mouse y touch) + parallax de cámara
 - [x] Reduced motion: un único cuadro fijo, sin loop ni interacción
 - [x] Monitor `?debug` en chunk aparte
-- [x] 21 tests
+- [x] 21 tests (Fase 1)
 
 ### PERFORMANCE
 - Draw calls: **1** por frame (era 2 antes de sacar la pasada de conversión sRGB)
@@ -281,3 +286,73 @@ Keyframe: (−3 · 1,5 · 6). La diferencia es el parallax del puntero, que es i
 - **Sin GSAP por ahora.** Ninguna escena necesita `pin` ni timelines encadenadas. Si la Fase 3 lo justifica, se suma solo ScrollTrigger.
 - **Cámara = función pura del scroll + amortiguación.** No hay triggers de una sola vez: es reversible por construcción y testeable sin navegador.
 - **Barra de progreso en CSS.** La anima el compositor del navegador: no puede desincronizarse del scroll ni ocupar el hilo principal.
+
+
+---
+
+## Checklist — Fase 3 (escena "Forja")
+
+| Sección | Formación | Relato |
+|---|---|---|
+| Inicio | Chispas de soldadura con tiro parabólico real; **el puntero es la torcha** | El taller |
+| Proyectos | Cercha 3D (cordones, montantes y diagonales tipo Warren) | Estructura: lo construido |
+| Stack | Líneas de código con indentación y colores de sintaxis | Las herramientas |
+| Sobre mí | Mitad cercha (metal tibio), mitad código | Del metal al código |
+| Contacto | Campo tenue | Cierre |
+
+Cada partícula guarda su posición en cada formación (atributos instanciados) y el vertex shader las mezcla
+según el scroll, con un desfase por partícula: las chispas vuelan a armar la cercha y la cercha se desarma en código.
+El color también cuenta la historia: metal al rojo (blanco → naranja → rojo) que se enfría a cian.
+
+### IMPLEMENTADO
+- [x] 5 formaciones generadas por funciones puras con semilla (determinísticas, testeadas)
+- [x] Mezcla en GPU: 1 draw call para todas las partículas; la CPU solo actualiza 6 uniforms por frame
+- [x] Chispas: física real (v·t + ½·g·t²), vida de 0,7 a 1,6 s, color por temperatura
+- [x] Torcha interactiva acotada a una **zona libre de texto medida en el DOM** (no en coordenadas 3D)
+- [x] Halo del arco con parpadeo irregular: la fuente de luz de la escena
+- [x] Bloom (post-procesado) solo en `medium`/`high`; en `low` se dibuja directo al canvas
+- [x] Layout `wide`/`narrow`: en celular las formaciones van centradas, más atrás y más tenues
+- [x] Reduced motion: cuadro fijo (chispas congeladas), sin torcha
+- [x] 9 tests nuevos (39 en total)
+
+### PERFORMANCE (medido en el notebook: Chrome 154, WebGPU, Intel UHD, 180 Hz, nivel `high`)
+| Sección | p50 | p90 | p99 | Frames < 60 FPS |
+|---|---|---|---|---|
+| Inicio (chispas + halo + bloom) | 6,0 ms | 9,5 ms | 13,7 ms | 0 % |
+| Proyectos (cercha) | 6,8 ms | 10,8 ms | 14,5 ms | 0 % |
+| Stack (código) | 5,7 ms | 7,7 ms | 11,8 ms | 0 % |
+| Sobre mí | 5,7 ms | 7,2 ms | 9,9 ms | 0 % |
+| Contacto | 5,8 ms | 8,2 ms | 12,9 ms | 0,4 % |
+
+- 25.000 partículas · **15 draw calls** con bloom (1 sin bloom) · 13 render targets del bloom
+- La calidad adaptativa no bajó de `high` en ningún momento
+- Bundle: +6 KB gzip por el bloom; 0 dependencias nuevas
+
+### ACCESSIBILITY
+- [x] Keyboard · [x] Reduced motion (tiempo congelado, verificado) · [x] Screen reader (axe: 0) · [x] Touch (la torcha sigue al dedo)
+- [x] El texto nunca queda tapado: verificado con el puntero sobre el título (la torcha se queda debajo del párrafo)
+
+### COMPATIBILITY
+- [x] WebGPU (notebook real) · [x] WebGL2 (con y sin bloom) · [x] Layout de celular (emulado; falta celular real)
+
+### PROBLEMAS ENCONTRADOS Y RESUELTOS
+1. **Con bloom, el canvas quedaba opaco y tapaba el fondo CSS.** El pipeline sumaba también el canal alfa → se conserva el alfa de la escena.
+2. **El arco era una mancha blanca** (halo + chispas jóvenes + bloom). → Intensidad máx. 1,5, threshold del bloom 0,7, escoria del 15 % al 6 %.
+3. **La cercha se leía como una banda de puntos.** → Sección de 2 m y paneles de 1,7: ahora se distinguen las diagonales.
+4. **En "Sobre mí" las partículas pasaban por encima del texto.** → Formación movida a la única franja libre (junto al título) y más tenue.
+5. **En los extremos (inicio/contacto) quedaban restos de la formación vecina.** → El desfase por partícula se apaga en los extremos.
+6. **En `high`, la torcha llevada sobre el título lo tapaba de chispas** (visto en el notebook). → Solo el 35 % de las partículas son
+   chispas, y la torcha se limita a una zona medida en el DOM (en 3D no alcanzaba: depende de la proporción de la ventana).
+
+### PENDIENTES
+- Celular real (rendimiento y touch)
+- Probar Chrome con la RTX 4050 asignada (hoy usa la Intel UHD)
+- Lighthouse con el 3D activo en el notebook
+
+### DECISIONES TÉCNICAS
+- **Partículas y no modelos GLB.** Una cercha o un bloque de código como malla serían assets de cientos de KB; como
+  partículas son unas líneas de código y se pueden *transformar* entre sí, que es justamente el relato.
+- **Sin iluminación PBR.** Todo es emisivo (chispas, metal caliente, código en pantalla): la luz es el halo del arco y el bloom.
+  Una luz física no aportaría nada visible y costaría por píxel.
+- **La zona segura se mide en el DOM.** El contenido manda; el 3D se adapta a él y no al revés.
+- **Bloom ligado al nivel de calidad.** Son ~14 pasadas extra: en `low` no existe.

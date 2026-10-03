@@ -13,6 +13,11 @@ export interface FrameState {
   readonly scroll: { readonly track: number; readonly progress: number };
 }
 
+/** Post-procesado que la escena pide. El motor lo aplica solo si el nivel de calidad lo permite. */
+export interface PostSettings {
+  readonly bloom?: { readonly strength: number; readonly radius: number; readonly threshold: number };
+}
+
 /**
  * Contrato de una escena. El motor no sabe qué hay adentro: solo llama a estos
  * métodos. Así se puede reemplazar una escena sin tocar las demás (punto 12).
@@ -28,4 +33,5 @@ export interface SceneModule {
   dispose(): void;
   /** Cantidad de partículas/instancias vivas, para el monitor. */
   readonly instanceCount: number;
+  readonly post?: PostSettings;
 }

@@ -3,7 +3,8 @@ import type { QualityLevel } from '../core/quality';
 import { AdaptiveQuality } from './engine/AdaptiveQuality';
 import { Engine } from './engine/Engine';
 import { ScrollTracker } from '../scroll/ScrollTracker';
-import { ParticleFieldScene } from './scenes/particle-field/ParticleFieldScene';
+import { createHeroSafeArea } from '../ui/safeArea';
+import { ForgeScene } from './scenes/forge/ForgeScene';
 
 /**
  * Punto de entrada de la capa gráfica. Se carga con `import()` dinámico desde
@@ -34,6 +35,7 @@ export async function bootGraphics(opts: BootOptions): Promise<void> {
   let engine: Engine | null = null;
   let overlay: { dispose(): void } | null = null;
   const scroll = new ScrollTracker();
+  const safeArea = createHeroSafeArea();
 
   const teardown = (): void => {
     overlay?.dispose();
@@ -45,6 +47,7 @@ export async function bootGraphics(opts: BootOptions): Promise<void> {
   const goStatic = (reason?: unknown): void => {
     teardown();
     scroll.dispose();
+    safeArea.dispose();
     level = 'static';
     opts.onLevel('static');
     if (import.meta.env.DEV && reason) console.warn('[gfx] modo estático:', reason);
@@ -94,7 +97,7 @@ export async function bootGraphics(opts: BootOptions): Promise<void> {
       return;
     }
 
-    engine.mount(new ParticleFieldScene());
+    engine.mount(new ForgeScene({ torchZone: () => safeArea.read() }));
     if (failed) return; // pudo fallar ya en el primer render (reduced motion)
     opts.onBackend(engine.backendName);
 

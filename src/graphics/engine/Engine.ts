@@ -1,4 +1,6 @@
 import * as THREE from 'three/webgpu';
+import { pass, vec4 } from 'three/tsl';
+import { bloom } from 'three/addons/tsl/display/BloomNode.js';
 import type { Capabilities } from '../../core/capabilities';
 import { QUALITY_PROFILES, type QualityLevel, type QualityProfile } from '../../core/quality';
 import type { ScrollSnapshot } from '../../scroll/ScrollTracker';
@@ -44,6 +46,8 @@ export class Engine {
   private readonly renderer: THREE.WebGPURenderer;
   private readonly pointer: Pointer | null;
   private active: SceneModule | null = null;
+  /** Post-procesado activo (solo si el nivel lo permite y la escena lo pide). */
+  private pipeline: { readonly pipeline: THREE.RenderPipeline; dispose(): void } | null = null;
   private profile: QualityProfile;
   private readonly animate: boolean;
   private lastNow = -1;
@@ -81,6 +85,9 @@ export class Engine {
     // Cuando haya post-processing (Fase 3), esa pasada se hace igual y el
     // pipeline de post se encarga de la conversión.
     renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
+    // Contadores por FRAME, no por llamada a render(): con post-procesado hay
+    // varias pasadas por frame y el auto-reset mostraría solo la última.
+    renderer.info.autoReset = false;
     renderer.domElement.classList.add('stage__canvas');
     return new Engine(opts, renderer);
   }
@@ -94,6 +101,7 @@ export class Engine {
     this.active?.dispose();
     this.active = scene;
     scene.applyQuality(this.profile);
+    this.rebuildPipeline();
 
     const { host } = this.opts;
     host.appendChild(this.renderer.domElement);
@@ -113,6 +121,7 @@ export class Engine {
   setQuality(level: QualityLevel): void {
     this.profile = QUALITY_PROFILES[level];
     this.active?.applyQuality(this.profile);
+    this.rebuildPipeline();
     this.resize();
     if (!this.animate) this.renderOnce();
   }
@@ -138,6 +147,8 @@ export class Engine {
     void this.renderer.setAnimationLoop(null);
     removeEventListener('resize', this.queueResize);
     this.pointer?.dispose();
+    this.pipeline?.dispose();
+    this.pipeline = null;
     this.active?.dispose();
     this.active = null;
     this.renderer.dispose();
@@ -181,8 +192,10 @@ export class Engine {
 
   /** Renderiza protegido: una excepción del backend no puede romper la página. */
   private draw(scene: SceneModule): boolean {
+    this.renderer.info.reset();
     try {
-      this.renderer.render(scene.scene, scene.camera);
+      if (this.pipeline) this.pipeline.pipeline.render();
+      else this.renderer.render(scene.scene, scene.camera);
       return true;
     } catch (error) {
       this.fail(error);
@@ -202,6 +215,35 @@ export class Engine {
     // Reduced motion: cuadro fijo en la pose inicial. La cámara no acompaña el scroll.
     scene.update({ time: 0, delta: 0, pointer: { x: 0, y: 0, active: false }, scroll: NO_SCROLL });
     this.draw(scene);
+  }
+
+  /**
+   * Bloom = varias pasadas a resolución reducida (más draw calls y memoria de GPU).
+   * Por eso depende del nivel: en 'low' no existe y se dibuja directo al canvas.
+   */
+  private rebuildPipeline(): void {
+    this.pipeline?.dispose();
+    this.pipeline = null;
+    const scene = this.active;
+    const cfg = scene?.post?.bloom;
+    if (!scene || !cfg || !this.profile.postProcessing) return;
+
+    const scenePass = pass(scene.scene, scene.camera);
+    const color = scenePass.getTextureNode('output');
+    const glow = bloom(color, cfg.strength, cfg.radius, cfg.threshold);
+    const pipeline = new THREE.RenderPipeline(this.renderer);
+    // Se conserva el alfa de la escena: si no, el canvas queda opaco y tapa el fondo CSS
+    // (visto en pruebas). El brillo suma solo en RGB; con canvas premultiplicado eso se
+    // compone como luz aditiva sobre el fondo.
+    pipeline.outputNode = vec4(color.rgb.add(glow.rgb), color.a);
+    this.pipeline = {
+      pipeline,
+      dispose: () => {
+        glow.dispose();
+        scenePass.dispose();
+        pipeline.dispose();
+      },
+    };
   }
 
   private readonly queueResize = (): void => {
