@@ -64,10 +64,33 @@ test('en low solo pasa a estático si la caída es grave', () => {
   assert.equal(severe.aq.current, 'static');
 });
 
-test('detecta frames perdidos también a 144 Hz', () => {
+test('en 144 Hz baja si la mitad de los frames cae por debajo de 60 FPS', () => {
   const { aq } = make('high');
-  run(aq, 200, (i) => (i % 2 ? 13.9 : 6.94)); // a 144 Hz, 13,9 ms ya es un frame perdido
+  const now = run(aq, 85, (i) => (i % 2 ? 25 : 6.94));
+  run(aq, 300, () => 6.94, now);
   assert.equal(aq.current, 'medium');
+});
+
+test('en 144 Hz NO baja por rendir ~100 FPS (el objetivo es 90–120, no la frecuencia del monitor)', () => {
+  const { aq } = make('high');
+  run(aq, 300, (i) => (i % 2 ? 13.9 : 6.94));
+  assert.equal(aq.current, 'high');
+});
+
+// Datos reales medidos en un Acer Nitro (pantalla 180 Hz, Intel UHD, Chrome 154, WebGL2):
+// la calidad bajaba a 'low' andando a 177 FPS.
+test('regresión: deltas cortos por frames amontonados no bajan la calidad', () => {
+  const { aq, changes } = make('medium');
+  // 180 Hz con jitter: la mayoría ~5,6 ms, algunos frames amontonados de 2 ms y tirones de 9 ms.
+  run(aq, 900, (i) => (i % 10 === 0 ? 2 : i % 10 === 1 ? 9.2 : 5.6));
+  assert.ok(!changes.includes('low'), `cambios: ${changes.join(',')}`);
+  assert.equal(aq.current, 'high');
+});
+
+test('regresión: 180 Hz con 18 % de frames a ~9 ms y 2 % de tirones se queda en high', () => {
+  const { aq, changes } = make('high');
+  run(aq, 900, (i) => (i % 50 === 0 ? 38 : i % 6 === 0 ? 9.3 : 5.9));
+  assert.deepEqual(changes, []);
 });
 
 test('si sigue sin dar abasto después de bajar, baja otra vez', () => {
@@ -89,4 +112,16 @@ test('iOS en ahorro de batería (rAF a 30 Hz) no se confunde con frames perdidos
   run(aq, 300, () => 33.3);
   assert.ok(!changes.includes('static'));
   assert.equal(aq.current, 'medium');
+});
+
+test('60 Hz con algunos frames amontonados no confunde la pantalla con una de 250 Hz', () => {
+  const { aq, changes } = make('medium');
+  run(aq, 900, (i) => (i % 25 === 0 ? 2 : i % 25 === 1 ? 31 : 16.7));
+  assert.ok(!changes.includes('low'), `cambios: ${changes.join(',')}`);
+});
+
+test('en 144 Hz no SUBE si un tercio de los frames anda a ~72 FPS (subir exige margen)', () => {
+  const { aq, changes } = make('medium');
+  run(aq, 600, (i) => (i % 3 === 0 ? 13.9 : 6.94));
+  assert.deepEqual(changes, []);
 });

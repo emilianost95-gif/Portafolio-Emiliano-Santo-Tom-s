@@ -140,7 +140,7 @@ Ejecución (con el 3D ya corriendo):
 - [x] Escena de prueba: partículas que el puntero aparta (mouse y touch) + parallax de cámara
 - [x] Reduced motion: un único cuadro fijo, sin loop ni interacción
 - [x] Monitor `?debug` en chunk aparte
-- [x] 16 tests
+- [x] 21 tests
 
 ### PERFORMANCE
 - Draw calls: **1** por frame (era 2 antes de sacar la pasada de conversión sRGB)
@@ -149,7 +149,7 @@ Ejecución (con el 3D ya corriendo):
 - JS: chunk de Three **891 KB (245 KB gzip)**, cargado de forma diferida; la carga inicial sigue en ~56 KiB
 - Lighthouse en un equipo sin GPU (no descarga el 3D): 100 / 100 / 100 / 100, TBT 0 ms
 - Evaluación del chunk de Three medida: ~265 ms en desktop y ~470 ms en móvil simulado
-- FPS en GPU real: **sin medir todavía** (el entorno de pruebas no tiene GPU; con render por software: 15 FPS en low)
+- FPS en GPU real: ~179 (tope de la pantalla de 180 Hz) en `high` con WebGPU — ver Mediciones
 - Memory leaks: 240 cambios de nivel seguidos → geometrías estables en 1; heap oscila 4,7–9,1 MB sin crecer
 
 ### ACCESSIBILITY
@@ -160,7 +160,7 @@ Ejecución (con el 3D ya corriendo):
 
 ### COMPATIBILITY
 - [x] WebGL2 — verificado dibujando (1 draw call, sin errores)
-- [ ] **WebGPU — no se pudo verificar dibujando en el entorno de pruebas** (ver Problemas). La caída a WebGL2 sí está verificada
+- [x] WebGPU — verificado dibujando en Chrome 154 (Intel UHD). En Chromium 141 falla y cae a WebGL2: también verificado
 - [ ] Firefox, Safari iOS y Chrome Android reales — pendiente
 
 ### CÓDIGO
@@ -179,10 +179,29 @@ Ejecución (con el 3D ya corriendo):
 5. **Render por software → la página quedaba trabada 3–5 s** (TBT 1,8 s en desktop y 5,4 s en móvil) hasta que la calidad adaptativa bajaba a estático.
    → Detección previa y modo estático directo. TBT 0 ms.
 
+6. **En hardware real (pantalla de 180 Hz), WebGL2 bajaba a `low` andando a 177 FPS.** Estimaba el refresco con el
+   delta mínimo; los frames "amontonados" de 2–3 ms hacían creer que la pantalla era de 250 Hz. Además exigía
+   la frecuencia del monitor (5,6 ms) en vez del objetivo del proyecto.
+   → Refresco estimado con el percentil 10, y dos umbrales: bajar si se rompe el mínimo de 60 FPS; subir solo
+   si casi ningún frame cae por debajo de ~80 FPS. 6 tests de regresión con los datos medidos. Verificado en el equipo: queda en `high`.
+
+### MEDICIONES EN HARDWARE REAL
+Acer Nitro Lite 16 · Chrome 154 · pantalla de 180 Hz · DPR 1,25 · **GPU usada por Chrome: Intel UHD integrada**
+(Windows asigna al navegador la GPU de ahorro de energía; la RTX 4050 no participa).
+
+| Backend · nivel | Partículas | p50 | p90 | p99 | Frames > 12,5 ms |
+|---|---|---|---|---|---|
+| WebGPU · high (auto) | 25.000 | 5,6 ms | 7,1 ms | 38 ms | 2 % |
+| WebGL2 · high | 25.000 | 5,9 ms | 9,3 ms | 38 ms | 2 % |
+| WebGL2 · medium | 8.000 | 5,5 ms | 6,4 ms | 7,7 ms | 0 % |
+
+Draw calls: 1 · texturas: 0 · consola sin errores. El p99 de ~38 ms en `high` son tirones aislados (1 %); a vigilar
+cuando haya escenas más pesadas.
+
 ### PENDIENTES
-- Medir en GPU real con `?debug`: FPS en low/medium/high, y confirmar que WebGPU dibuja (o que cae a WebGL2 sin que se note)
 - Lighthouse en el notebook con el 3D activo
 - Probar en un celular real (techo 'medium', touch)
+- Probar con la RTX 4050 forzada para Chrome (Configuración de Windows → Pantalla → Gráficos)
 
 ### DECISIONES TÉCNICAS
 - **Sin compute shaders.** El movimiento va en el vertex shader: funciona igual en WebGPU y WebGL2, que emula compute.
