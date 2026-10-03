@@ -46,7 +46,7 @@ export function readOverride(search: string = location.search): QualityLevel | n
 
 export function initialQuality(caps: Capabilities, override: QualityLevel | null): QualityLevel {
   if (override) return override;
-  if (caps.backend === 'none' || caps.saveData) return 'static';
+  if (caps.backend === 'none' || caps.softwareRenderer || caps.saveData) return 'static';
   const lowEnd = caps.coarsePointer || (caps.deviceMemory !== null && caps.deviceMemory <= 4);
   if (caps.reducedMotion || lowEnd) return 'low';
   return 'medium'; // 'high' solo se alcanza midiendo (Fase 1).

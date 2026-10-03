@@ -42,8 +42,10 @@ export default defineConfig(({ mode }) => {
     plugins: [seoFiles(siteUrl)],
     build: {
       target: 'es2022',
-      // Avisa si algún chunk crece de más: el 3D va a ir en chunks separados y lazy.
-      chunkSizeWarningLimit: 600,
+      // Three.js (build WebGPU + TSL) pesa ~245 KB gzip y no se deja recortar mucho.
+      // Es un chunk lazy que se pide después del primer render; el límite está puesto
+      // justo encima para que cualquier crecimiento NUEVO vuelva a avisar.
+      chunkSizeWarningLimit: 920,
     },
   };
 });

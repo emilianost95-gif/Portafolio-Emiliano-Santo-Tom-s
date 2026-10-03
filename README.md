@@ -1,7 +1,12 @@
 # Portfolio — Emiliano Santo Tomás
 
-Portfolio interactivo construido por fases. **Fase 0 (actual):** base semántica completa, sin 3D.
-El contenido funciona y se entiende sin JavaScript gráfico; el 3D se suma encima en las fases siguientes.
+Portfolio interactivo construido por fases.
+
+- **Fase 0:** base semántica completa, SEO y accesibilidad, sin 3D.
+- **Fase 1 (actual):** motor gráfico — Three.js (WebGPU con fallback a WebGL2), calidad adaptativa medida,
+  fallback en tiempo de ejecución, monitor de rendimiento y una escena de prueba.
+
+El contenido funciona y se entiende sin el 3D; el 3D se suma encima.
 
 ## Comandos
 
@@ -10,9 +15,19 @@ npm install
 npm run dev         # servidor local
 npm run build       # typecheck + build de producción en dist/
 npm run preview     # sirve dist/ para probarlo como en producción
+npm test            # tests de la lógica de calidad y detección (runner nativo de Node 22.18+)
 ```
 
-Probar niveles gráficos sin cambiar de hardware: `?gfx=static`, `?gfx=low`, `?gfx=medium`, `?gfx=high`.
+### Parámetros de prueba (funcionan también en producción)
+
+| Parámetro | Qué hace |
+|---|---|
+| `?debug` | Muestra el monitor: FPS, frame time, draw calls, triángulos, instancias, geometrías/texturas, DPR, heap. Expone `window.__engine` |
+| `?gfx=static\|low\|medium\|high` | Fija el nivel de calidad (desactiva el ajuste automático) |
+| `?backend=webgl2` | Simula un navegador sin WebGPU |
+| `?backend=none` | Simula un dispositivo sin GPU |
+
+Ejemplo: `?debug&gfx=high&backend=webgl2`.
 
 ## Configuración
 
@@ -31,18 +46,32 @@ src/
     quality.ts          QualityProfile tipado: static | low | medium | high, y override ?gfx=
   ui/
     nav.ts              Sección activa en la navegación (aria-current)
-  graphics/
-    index.ts            Contrato de la capa gráfica. Chunk separado vía import(): si el modo es 'static' no se descarga
+  graphics/             Chunk separado vía import(): si el modo es 'static' no se descarga nada de esto
+    index.ts            Arranque + cadena de fallback en tiempo de ejecución (WebGPU → WebGL2 → estático)
+    engine/
+      Engine.ts         Dueño único de renderer, canvas, loop por delta, resize y chequeo de salud
+      AdaptiveQuality.ts Sube/baja de nivel según frames PERDIDOS (no FPS), con histéresis
+      Pointer.ts        Mouse y touch normalizados, listener pasivo
+      types.ts          Contrato SceneModule: applyQuality / resize / update / dispose
+    scenes/
+      particle-field/   Escena de prueba: partículas animadas 100 % en el vertex shader (TSL)
+    debug/
+      StatsOverlay.ts   Monitor de rendimiento (chunk aparte, solo con ?debug)
+tests/                  Tests de AdaptiveQuality, initialQuality y detección de render por software
   styles/
     tokens.css          Colores, tipografía, espaciado, movimiento (una sola fuente)
     base.css · layout.css · components.css
 vite.config.ts          Plugin que genera robots.txt y sitemap.xml desde VITE_SITE_URL
 ```
 
-Cadena de fallback (punto 4):
+Cadena de fallback (punto 4), en dos momentos:
 
 ```text
-WebGPU ──► WebGL2 ──► calidad baja ──► estático (fondo CSS: es lo que se ve hoy)
+Detección (antes de descargar Three):
+  sin GPU / render por software / ahorro de datos ─► estático (no se descarga el 3D)
+Ejecución (con el 3D ya corriendo):
+  WebGPU falla al iniciar o al dibujar ─► reinicia en WebGL2
+  WebGL2 falla, o pierde demasiados frames en 'low' ─► estático
 ```
 
 ## Checklist — Fase 0
@@ -94,3 +123,71 @@ WebGPU ──► WebGL2 ──► calidad baja ──► estático (fondo CSS: e
 - **3 niveles de calidad, no 4.** Un cuarto nivel se agrega si una escena real lo justifica.
 - **Calidad inicial conservadora.** Subir de nivel midiendo es invisible; bajar en mitad del scroll se nota.
 - **WebGPU detectado pidiendo un adaptador**, no solo mirando `navigator.gpu`.
+
+
+---
+
+## Checklist — Fase 1 (motor)
+
+### IMPLEMENTADO
+- [x] `Engine`: un solo renderer y canvas, loop por delta (con tope de 100 ms), resize agrupado por frame
+- [x] Contrato `SceneModule` → una escena se reemplaza sin tocar el motor
+- [x] `WebGPURenderer` de Three.js con `forceWebGL` cuando la detección no encontró WebGPU
+- [x] Fallback en tiempo de ejecución: excepción al dibujar, dispositivo perdido o "0 draw calls a los 30 frames" → siguiente backend
+- [x] Detección de render por software (SwiftShader, llvmpipe, Basic Render Driver) → estático sin descargar Three
+- [x] `AdaptiveQuality`: sondeo hacia arriba los primeros 10 s, baja en cualquier momento, no oscila
+- [x] Niveles con cambios reales: partículas 2.000 / 8.000 / 25.000, tope de DPR 1 / 1,5 / 2, renderScale 0,75 / 1 / 1
+- [x] Escena de prueba: partículas que el puntero aparta (mouse y touch) + parallax de cámara
+- [x] Reduced motion: un único cuadro fijo, sin loop ni interacción
+- [x] Monitor `?debug` en chunk aparte
+- [x] 16 tests
+
+### PERFORMANCE
+- Draw calls: **1** por frame (era 2 antes de sacar la pasada de conversión sRGB)
+- Triángulos: 2 por partícula (4.000 / 16.000 / 50.000 según nivel)
+- Texturas: **0** (antes había 2 del framebuffer intermedio)
+- JS: chunk de Three **891 KB (245 KB gzip)**, cargado de forma diferida; la carga inicial sigue en ~56 KiB
+- Lighthouse en un equipo sin GPU (no descarga el 3D): 100 / 100 / 100 / 100, TBT 0 ms
+- Evaluación del chunk de Three medida: ~265 ms en desktop y ~470 ms en móvil simulado
+- FPS en GPU real: **sin medir todavía** (el entorno de pruebas no tiene GPU; con render por software: 15 FPS en low)
+- Memory leaks: 240 cambios de nivel seguidos → geometrías estables en 1; heap oscila 4,7–9,1 MB sin crecer
+
+### ACCESSIBILITY
+- [x] Keyboard (el canvas no recibe foco ni bloquea clics: `pointer-events: none`, `aria-hidden`)
+- [x] Reduced motion (cuadro fijo)
+- [x] Screen reader (axe: 0 violaciones)
+- [x] Touch (el puntero funciona con el dedo; techo de calidad 'medium' en táctiles)
+
+### COMPATIBILITY
+- [x] WebGL2 — verificado dibujando (1 draw call, sin errores)
+- [ ] **WebGPU — no se pudo verificar dibujando en el entorno de pruebas** (ver Problemas). La caída a WebGL2 sí está verificada
+- [ ] Firefox, Safari iOS y Chrome Android reales — pendiente
+
+### CÓDIGO
+- [x] TypeScript estricto · [x] sin errores de consola propios · [x] módulos con una responsabilidad
+- [x] Una dependencia nueva: `three`
+
+### PROBLEMAS ENCONTRADOS Y RESUELTOS
+1. **El backend WebGPU de Three r186 falla en Chromium 141** (`createView` con `swizzle`): no dibujaba nada.
+   → Fallback en caliente a WebGL2 y chequeo de "0 draw calls".
+2. **Con frames de 200 ms la calidad adaptativa tardaba ~18 s en reaccionar** (la ventana se cerraba por cantidad de frames).
+   → La ventana también se cierra por tiempo (1,5 s).
+3. **Un equipo que nunca baja de 200 ms "parecía" un monitor de 5 Hz y la calidad SUBÍA.** Lo encontró un test.
+   → El intervalo de refresco estimado tiene un techo de 34 ms (30 Hz, por iOS en ahorro de batería).
+4. **Pasada extra de conversión sRGB:** +1 draw call y un framebuffer half-float por frame.
+   → Salida lineal y colores definidos en espacio de pantalla. Resultado: 1 draw call y casi 3× FPS con render por software.
+5. **Render por software → la página quedaba trabada 3–5 s** (TBT 1,8 s en desktop y 5,4 s en móvil) hasta que la calidad adaptativa bajaba a estático.
+   → Detección previa y modo estático directo. TBT 0 ms.
+
+### PENDIENTES
+- Medir en GPU real con `?debug`: FPS en low/medium/high, y confirmar que WebGPU dibuja (o que cae a WebGL2 sin que se note)
+- Lighthouse en el notebook con el 3D activo
+- Probar en un celular real (techo 'medium', touch)
+
+### DECISIONES TÉCNICAS
+- **Sin compute shaders.** El movimiento va en el vertex shader: funciona igual en WebGPU y WebGL2, que emula compute.
+- **Medir frames perdidos, no FPS.** El loop va atado al monitor: un equipo sobrado y uno justo marcan los dos 16,7 ms a 60 Hz.
+- **Arrancar conservador y subir midiendo.** Subir de calidad no se nota; bajarla en mitad del scroll sí.
+- **Canvas transparente sobre el fondo CSS.** La capa estática sigue debajo: si el 3D se apaga, no hay salto visual.
+- **`100lvh` en la capa gráfica.** En móvil, la barra del navegador no dispara resize del renderer en pleno scroll.
+- **Geometría propia por Sprite.** El renderer libera los buffers instanciados recién al hacer dispose de la geometría; el quad compartido de Sprite no se puede liberar.

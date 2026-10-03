@@ -7,7 +7,7 @@ import './styles/layout.css';
 import './styles/components.css';
 
 import { detectCapabilities, type GpuBackend } from './core/capabilities';
-import { QUALITY_PROFILES, initialQuality, readOverride, type QualityLevel } from './core/quality';
+import { initialQuality, readOverride, type QualityLevel } from './core/quality';
 import { initActiveNav } from './ui/nav';
 
 /**
@@ -19,6 +19,7 @@ import { initActiveNav } from './ui/nav';
  */
 
 const BACKEND_LABEL: Record<GpuBackend, string> = { webgpu: 'WebGPU', webgl2: 'WebGL2', none: 'sin GPU' };
+let currentBackend: GpuBackend = 'none';
 const LEVEL_LABEL: Record<QualityLevel, string> = {
   static: 'modo estático',
   low: 'calidad baja',
@@ -31,22 +32,35 @@ function whenIdle(task: () => void): void {
   else setTimeout(task, 200);
 }
 
-async function bootEnhancements(): Promise<void> {
+function setGfxState(level: QualityLevel, backend: GpuBackend = currentBackend): void {
+  currentBackend = backend;
   const root = document.documentElement;
-  const caps = await detectCapabilities();
-  const level = initialQuality(caps, readOverride());
-
   root.dataset.gfx = level;
-  root.dataset.backend = caps.backend;
+  root.dataset.backend = backend;
   const label = document.querySelector<HTMLElement>('[data-gfx-label]');
-  if (label) label.textContent = `Gráficos: ${BACKEND_LABEL[caps.backend]}, ${LEVEL_LABEL[level]}.`;
+  if (label) label.textContent = `Gráficos: ${BACKEND_LABEL[backend]}, ${LEVEL_LABEL[level]}.`;
+}
 
-  if (level === 'static') return;
+async function bootEnhancements(): Promise<void> {
+  const caps = await detectCapabilities();
+  const override = readOverride();
+  const level = initialQuality(caps, override);
+  setGfxState(level, caps.backend);
 
   const stage = document.getElementById('stage');
-  if (!stage) return;
+  if (level === 'static' || !stage) return;
+
   const { bootGraphics } = await import('./graphics');
-  await bootGraphics(stage, caps, QUALITY_PROFILES[level]);
+  await bootGraphics({
+    stage,
+    caps,
+    level,
+    fixed: override !== null,
+    debug: new URLSearchParams(location.search).has('debug'),
+    onLevel: (next) => setGfxState(next),
+    // El backend real puede diferir del detectado si WebGPU falló y se cayó a WebGL2.
+    onBackend: (name) => setGfxState(document.documentElement.dataset.gfx as QualityLevel, name === 'WebGPU' ? 'webgpu' : 'webgl2'),
+  });
 }
 
 function main(): void {
@@ -58,7 +72,7 @@ function main(): void {
   whenIdle(() => {
     bootEnhancements().catch((error: unknown) => {
       // Si la capa gráfica falla, el sitio sigue completo en modo estático.
-      document.documentElement.dataset.gfx = 'static';
+      setGfxState('static');
       if (import.meta.env.DEV) console.warn('[gfx] fallback a estático:', error);
     });
   });
