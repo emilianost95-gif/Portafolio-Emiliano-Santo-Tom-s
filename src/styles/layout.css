@@ -1,0 +1,100 @@
+.container {
+  width: 100%;
+  max-width: 1160px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* ---------- Capa gráfica ----------
+   Sin GPU (o antes de que cargue) esto ES la experiencia: una grilla tipo
+   plano técnico y dos luces. Costo: un solo layer fijo, sin animación. */
+.stage {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60vmax 50vmax at 85% -10%, rgb(0 240 255 / 0.13), transparent 60%),
+    radial-gradient(50vmax 40vmax at -10% 110%, rgb(255 61 170 / 0.08), transparent 60%),
+    var(--bg);
+}
+.stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at 50% 30%, #000 20%, transparent 75%);
+}
+
+/* ---------- Header ---------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: var(--header-h);
+  /* Fondo sólido semitransparente, SIN backdrop-filter: con un canvas animado
+     detrás, el blur obliga a recomponer cada frame y es caro en GPU modestas. */
+  background: rgb(10 10 15 / 0.88);
+  border-bottom: 1px solid var(--line);
+}
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 100%;
+}
+.nav__brand {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-decoration: none;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+}
+.nav__list { display: flex; gap: clamp(0.25rem, 2vw, 1.75rem); }
+.nav__list a {
+  display: inline-block;
+  padding: 0.5rem 0.4rem;           /* objetivo táctil ≥ 40px de alto con line-height */
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color var(--dur) var(--ease-out);
+}
+.nav__list a:hover { color: var(--text); }
+.nav__list a[aria-current='location'] {
+  color: var(--text);
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+@media (max-width: 479px) {
+  .nav__list { gap: 0; }
+  .nav__list a { padding-inline: 0.35rem; font-size: var(--fs-xs); }
+}
+
+/* ---------- Secciones ---------- */
+.section { padding-block: var(--space-section); }
+.section__head { max-width: 46rem; margin-bottom: clamp(2rem, 4vw, 3.5rem); }
+.section__head h2 { font-size: var(--fs-xl); margin-top: 0.75rem; }
+.section__intro { margin-top: 1rem; color: var(--text-muted); font-size: var(--fs-lg); }
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding-block: 2rem;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+.site-footer__inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 2rem; }
+.site-footer__tech { font-family: var(--font-mono); font-size: var(--fs-xs); }

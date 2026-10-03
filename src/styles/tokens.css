@@ -1,0 +1,41 @@
+/* Design tokens: única fuente de colores, tipografía y espaciado. */
+:root {
+  /* Color — contraste verificado sobre --bg (WCAG AA mínimo, la mayoría AAA) */
+  --bg: #0a0a0f;
+  --bg-raised: #12121a;
+  --line: #24243a;
+  --line-strong: #3a3a58;
+  --text: #ecedf4;
+  --text-muted: #a3a5bb;
+  --accent: #00f0ff;        /* cian: acción e interacción */
+  --accent-ink: #001417;    /* texto sobre --accent */
+  --accent-2: #ff3daa;      /* magenta: solo detalles, nunca texto largo */
+  --ok: #3dffa2;
+
+  /* Tipografía */
+  --font-sans: 'Space Grotesk Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+  --fs-xs: 0.78rem;
+  --fs-sm: 0.9rem;
+  --fs-base: 1.0625rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: clamp(1.6rem, 1.2rem + 1.6vw, 2.4rem);
+  --fs-hero: clamp(2.6rem, 1.4rem + 6vw, 6.25rem);
+
+  /* Espaciado y forma */
+  --gutter: 16px;
+  --space-section: clamp(5rem, 3rem + 8vw, 9rem);
+  --radius: 14px;
+  --header-h: 64px;
+
+  /* Movimiento */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 220ms;
+}
+
+@media (min-width: 640px) { :root { --gutter: 24px; } }
+@media (min-width: 1024px) { :root { --gutter: 32px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur: 0ms; }
+}
