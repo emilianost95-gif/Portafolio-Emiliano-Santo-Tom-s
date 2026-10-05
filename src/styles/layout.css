@@ -6,8 +6,8 @@
 }
 
 /* ---------- Capa gráfica ----------
-   Sin GPU (o antes de que cargue) esto ES la experiencia: una grilla tipo
-   plano técnico y dos luces. Costo: un solo layer fijo, sin animación. */
+   Sin GPU (o antes de que cargue) esto ES la experiencia: la chapa y el calor
+   de la forja abajo a la derecha. Costo: un solo layer fijo, sin animación. */
 .stage {
   position: fixed;
   top: 0;
@@ -20,19 +20,8 @@
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(60vmax 50vmax at 85% -10%, rgb(0 240 255 / 0.13), transparent 60%),
-    radial-gradient(50vmax 40vmax at -10% 110%, rgb(255 61 170 / 0.08), transparent 60%),
+    radial-gradient(55vmax 45vmax at 92% 108%, rgb(255 140 38 / 0.1), transparent 62%),
     var(--bg);
-}
-.stage::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse at 50% 30%, #000 20%, transparent 75%);
 }
 
 /* El canvas entra con fundido recién cuando ya tiene un frame dibujado. */
@@ -55,9 +44,9 @@
   margin: 0;
   padding: 10px 12px;
   border: 1px solid var(--line-strong);
-  border-radius: 8px;
-  background: rgb(10 10 15 / 0.92);
-  color: var(--ok);
+  border-radius: var(--radius);
+  background: rgb(21 23 26 / 0.94);
+  color: var(--text);
   font: 12px/1.45 var(--font-mono);
   pointer-events: none;
 }
@@ -70,8 +59,7 @@
   height: var(--header-h);
   /* Fondo sólido semitransparente, SIN backdrop-filter: con un canvas animado
      detrás, el blur obliga a recomponer cada frame y es caro en GPU modestas. */
-  /* 96 %: con 88 % el texto que pasa por debajo se leía a través del header (visto en pruebas). */
-  background: rgb(10 10 15 / 0.96);
+  background: rgb(21 23 26 / 0.96);
   border-bottom: 1px solid var(--line);
 }
 .nav {
@@ -82,24 +70,25 @@
   height: 100%;
 }
 .nav__brand {
-  font-family: var(--font-mono);
-  font-weight: 400;
-  letter-spacing: 0.2em;
+  font-size: 1.6rem;
+  letter-spacing: 0.02em;
+  line-height: 1;
   text-decoration: none;
-  padding: 0.4rem 0.6rem;
-  border: 1px solid var(--line-strong);
-  border-radius: 6px;
+  padding: 0.5rem 0;
 }
 .nav__list { display: flex; gap: clamp(0.25rem, 2vw, 1.75rem); }
 .nav__list a {
   display: inline-block;
   padding: 0.5rem 0.4rem;           /* objetivo táctil ≥ 40px de alto con line-height */
   font-size: var(--fs-sm);
+  font-weight: 500;
   color: var(--text-muted);
   text-decoration: none;
   transition: color var(--dur) var(--ease-out);
 }
-.nav__list a:hover { color: var(--text); }
+@media (hover: hover) and (pointer: fine) {
+  .nav__list a:hover { color: var(--text); }
+}
 .nav__list a[aria-current='location'] {
   color: var(--text);
   box-shadow: inset 0 -2px 0 var(--accent);
@@ -109,15 +98,15 @@
   .nav__list a { padding-inline: 0.35rem; font-size: var(--fs-xs); }
 }
 
-/* Barra de progreso de lectura. Va atada al scroll nativo por el compositor:
-   no usa JS ni puede desincronizarse del scroll. */
+/* Progreso de lectura: un cordón que avanza. Va atado al scroll nativo por el
+   compositor: no usa JS ni puede desincronizarse del scroll. */
 .scroll-progress {
   position: absolute;
   left: 0;
   bottom: -1px;
   width: 100%;
   height: 2px;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  background: var(--accent);
   transform-origin: 0 50%;
   transform: scaleX(0);
   display: none;
@@ -133,19 +122,53 @@
   to { transform: scaleX(1); }
 }
 
-/* ---------- Secciones ---------- */
-.section { padding-block: var(--space-section); }
-.section__head { max-width: 46rem; margin-bottom: clamp(2rem, 4vw, 3.5rem); }
-.section__head h2 { font-size: var(--fs-xl); margin-top: 0.75rem; }
-.section__intro { margin-top: 1rem; color: var(--text-muted); font-size: var(--fs-lg); }
-
-.eyebrow {
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--accent);
+/* ---------- Secciones ----------
+   Cada sección se une a la anterior con un cordón: una línea que se "suelda" de
+   izquierda a derecha mientras entra en pantalla, con la punta al rojo, y queda
+   fría (color acero) al terminar. Sin soporte o con reduced motion es una línea fija. */
+@property --seam {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 100%;
 }
+@property --seam-tip {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: #474d55;
+}
+.section { position: relative; padding-block: var(--space-section); }
+.section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: var(--gutter);
+  right: var(--gutter);
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--line-strong) calc(var(--seam) - 14%),
+    var(--seam-tip) var(--seam),
+    transparent var(--seam)
+  );
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .section::before {
+      animation: seam linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 38%;
+    }
+  }
+}
+@keyframes seam {
+  0% { --seam: 0%; --seam-tip: #ff8c26; }
+  88% { --seam-tip: #ff8c26; }
+  100% { --seam: 100%; --seam-tip: #474d55; }
+}
+
+.section__head { max-width: 46rem; margin-bottom: clamp(2.5rem, 5vw, 4rem); }
+.section__head h2 { font-size: var(--fs-section); }
+.section__intro { margin-top: 1.25rem; max-width: 60ch; color: var(--text-muted); font-size: var(--fs-lg); }
 
 /* ---------- Footer ---------- */
 .site-footer {
@@ -155,4 +178,4 @@
   color: var(--text-muted);
 }
 .site-footer__inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 2rem; }
-.site-footer__tech { font-family: var(--font-mono); font-size: var(--fs-xs); }
+.site-footer__tech { font-size: var(--fs-xs); }

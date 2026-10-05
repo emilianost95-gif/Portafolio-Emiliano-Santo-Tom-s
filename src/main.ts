@@ -1,5 +1,5 @@
-// index.css trae los subsets con unicode-range: el navegador baja solo el latino.
-import '@fontsource-variable/space-grotesk/index.css';
+// wdth.css trae los ejes de peso y ancho, en subsets con unicode-range: el navegador baja solo el latino.
+import '@fontsource-variable/archivo/wdth.css';
 import '@fontsource/jetbrains-mono/latin-400.css';
 import './styles/tokens.css';
 import './styles/base.css';
@@ -9,7 +9,6 @@ import './styles/components.css';
 import { detectCapabilities, type GpuBackend } from './core/capabilities';
 import { initialQuality, readOverride, type QualityLevel } from './core/quality';
 import { initCards } from './ui/cards';
-import { initHScroll } from './ui/hscroll';
 import { initActiveNav } from './ui/nav';
 
 /**
@@ -71,7 +70,6 @@ function main(): void {
   });
   initActiveNav();
   initCards();
-  initHScroll();
 
   whenIdle(() => {
     bootEnhancements().catch((error: unknown) => {

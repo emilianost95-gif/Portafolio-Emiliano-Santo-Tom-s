@@ -9,7 +9,7 @@
       content="Desarrollador front-end en Chillán, Chile. Construyo aplicaciones web con TypeScript y React: inventario para almacenes, gestión educativa full-stack, IoT y sitios para clientes reales."
     />
     <meta name="author" content="Emiliano Santo Tomás" />
-    <meta name="theme-color" content="#0a0a0f" />
+    <meta name="theme-color" content="#15171a" />
     <meta name="color-scheme" content="dark" />
     <link rel="canonical" href="%VITE_SITE_URL%" />
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
@@ -55,15 +55,14 @@
     <a class="skip-link" href="#contenido">Saltar al contenido</a>
 
     <!--
-      Capa gráfica. Hoy (Fase 0) es un fondo estático en CSS, que además es
-      la "experiencia estática accesible" definitiva cuando no hay GPU.
-      En la Fase 1 el motor monta su <canvas> acá. Es decorativa: aria-hidden.
+      Capa gráfica. Sin GPU es un fondo estático en CSS (la "experiencia estática
+      accesible"); con GPU el motor monta su <canvas> acá. Es decorativa: aria-hidden.
     -->
     <div class="stage" id="stage" aria-hidden="true"></div>
 
     <header class="site-header">
       <nav class="nav container" aria-label="Principal">
-        <a class="nav__brand" href="#inicio">EST<span class="sr-only">: Emiliano Santo Tomás, ir al inicio</span></a>
+        <a class="nav__brand display" href="#inicio">EST<span class="sr-only">: Emiliano Santo Tomás, ir al inicio</span></a>
         <ul class="nav__list" role="list">
           <li><a href="#proyectos">Proyectos</a></li>
           <li><a href="#stack">Stack</a></li>
@@ -78,229 +77,213 @@
     <main id="contenido" tabindex="-1">
       <!-- ===================== HERO ===================== -->
       <section class="hero container" id="inicio" aria-labelledby="hero-title" data-section>
-        <p class="eyebrow">Desarrollador Front-End · Chillán, Chile</p>
-        <h1 class="hero__title" id="hero-title">
+        <h1 class="hero__title display" id="hero-title">
           Emiliano Santo Tomás
-          <span class="hero__subtitle">Construyo aplicaciones web que resuelven problemas concretos, con TypeScript y React.</span>
+          <span class="hero__role">Desarrollador Front-End</span>
         </h1>
+        <p class="hero__subtitle">Construyo aplicaciones web que resuelven problemas concretos, con TypeScript y React.</p>
         <p class="hero__lead">
           Antes de programar fui soldador. De ese oficio me traje lo que más uso hoy: medir antes de cortar,
           trabajar con planos y entregar algo que aguante el uso real.
         </p>
         <div class="hero__actions">
-          <a class="btn btn--primary" href="#proyectos">Ver proyectos</a>
-          <a class="btn btn--ghost" href="#contacto">Contactarme</a>
+          <div class="hero__buttons">
+            <a class="btn btn--primary" href="#proyectos">Ver proyectos</a>
+            <a class="btn btn--ghost" href="#contacto">Contactarme</a>
+          </div>
+          <p class="hero__status">Disponible para puesto Junior / Trainee y proyectos freelance</p>
         </div>
-        <p class="hero__status"><span class="dot" aria-hidden="true"></span> Disponible para puesto Junior / Trainee y proyectos freelance</p>
       </section>
 
       <!-- ===================== PROYECTOS ===================== -->
       <section class="section container" id="proyectos" aria-labelledby="proyectos-title" data-section>
         <header class="section__head">
-          <p class="eyebrow">01 — Proyectos</p>
-          <h2 id="proyectos-title">Qué construí y por qué</h2>
+          <h2 class="display" id="proyectos-title">Qué construí y por qué</h2>
           <p class="section__intro">
             Cada proyecto cuenta el problema, la decisión técnica y el resultado. Los separo en productos
             propios y trabajo para clientes reales.
           </p>
         </header>
 
-        <!--
-          Carrusel horizontal: en escritorio la sección se fija y el scroll vertical
-          desplaza las tarjetas (src/ui/hscroll.ts). En pantallas angostas o con
-          reduced motion es una lista normal: el HTML es el mismo.
-        -->
-        <div class="hscroll" data-hscroll>
-          <div class="hscroll__sticky">
-            <div class="hscroll__track">
-              <div class="hscroll__divider">
-                <h3 class="group-title">Productos y aplicaciones</h3>
-                <p class="hscroll__divider-text">Aplicaciones propias, de la idea al deploy.</p>
-              </div>
+        <!-- Fichas a lo ancho: una fila por proyecto. Con captura solo donde hay un sitio publicado. -->
+        <div class="group">
+          <h3 class="group-title">Productos y aplicaciones</h3>
+          <p class="group__text">Aplicaciones propias, de la idea al deploy.</p>
+        </div>
 
-            <article class="case" aria-labelledby="case-stock">
-              <header class="case__head">
-                <p class="case__index" aria-hidden="true">P-01</p>
-                <h4 class="case__title" id="case-stock">Gestor de Precios y Stock</h4>
-                <p class="case__tagline">Inventario para almacenes y minimarkets, con un asistente que analiza los datos reales.</p>
-              </header>
+        <article class="case" aria-labelledby="case-stock">
+          <div class="case__head">
+            <h4 class="case__title display" id="case-stock">Gestor de Precios y Stock</h4>
+            <p class="case__tagline">Inventario para almacenes y minimarkets, con un asistente que analiza los datos reales.</p>
+            <ul class="tags" aria-label="Tecnologías"><li>React</li><li>TypeScript</li><li>Vite</li><li>Tailwind</li><li>IndexedDB</li><li>PWA</li><li>Capacitor</li></ul>
+            <p class="case__links">
+              <a href="https://emilianost95-gif.github.io/gestor-precios-stock/" rel="noopener">Ver demo<span class="sr-only"> de Gestor de Precios y Stock</span></a>
+              <a href="https://github.com/emilianost95-gif/gestor-precios-stock" rel="noopener">Código<span class="sr-only"> de Gestor de Precios y Stock</span></a>
+            </p>
+          </div>
+          <div class="case__detail">
+              <figure class="case__shot">
+                <img src="/src/assets/proyectos/gestor-stock.jpg" alt="Pantalla de inicio del Gestor de Precios y Stock en modo demostración" width="1280" height="800" loading="lazy" decoding="async" />
+              </figure>
+            <dl class="case__body">
+              <div><dt>Problema</dt><dd>Los almacenes de barrio llevan precios y stock en cuaderno o planilla, y se enteran de que algo se agotó cuando el cliente lo pide.</dd></div>
+              <div><dt>Resultado</dt><dd>Publicado como PWA y empaquetado para Android con Capacitor, con build automatizado en GitHub Actions.</dd></div>
+            </dl>
+            <details class="case__more">
+              <summary>Cómo lo hice <span class="case__more-hint">enfoque e implementación</span></summary>
               <dl class="case__body">
-                <div><dt>Problema</dt><dd>Los almacenes de barrio llevan precios y stock en cuaderno o planilla, y se enteran de que algo se agotó cuando el cliente lo pide.</dd></div>
-              </dl>
-              <details class="case__more">
-                <summary>Cómo lo hice <span class="case__more-hint">enfoque e implementación</span></summary>
-                <dl class="case__body">
                 <div><dt>Enfoque</dt><dd>Un MVP estable antes que muchas funciones. Funciona sin backend ni conexión, con la arquitectura lista para sumar Supabase y sincronización más adelante.</dd></div>
                 <div><dt>Implementación</dt><dd>Dashboard, alertas de stock, historial, proveedores, importación/exportación CSV y respaldo JSON. "Stock Copilot" analiza el inventario en local; las acciones masivas siempre muestran vista previa y piden confirmación. Modo demo aislado en su propio espacio de almacenamiento para que nunca toque datos reales. La API key de IA vive solo en una función serverless.</dd></div>
-                </dl>
-              </details>
-              <dl class="case__body">
-                <div><dt>Resultado</dt><dd>Publicado como PWA y empaquetado para Android con Capacitor, con build automatizado en GitHub Actions.</dd></div>
               </dl>
-              <ul class="tags" aria-label="Tecnologías">
-                <li>React</li><li>TypeScript</li><li>Vite</li><li>Tailwind</li><li>IndexedDB</li><li>PWA</li><li>Capacitor</li>
-              </ul>
-              <p class="case__links">
-                <a href="https://emilianost95-gif.github.io/gestor-precios-stock/" rel="noopener">Ver demo<span class="sr-only"> de Gestor de Precios y Stock</span></a>
-                <a href="https://github.com/emilianost95-gif/gestor-precios-stock" rel="noopener">Código<span class="sr-only"> de Gestor de Precios y Stock</span></a>
-              </p>
-            </article>
+            </details>
+          </div>
+        </article>
 
-            <article class="case" aria-labelledby="case-oa">
-              <header class="case__head">
-                <p class="case__index" aria-hidden="true">P-02</p>
-                <h4 class="case__title" id="case-oa">OA Manager</h4>
-                <p class="case__tagline">Gestor de Objetivos de Aprendizaje. Aplicación full-stack desplegada de punta a punta.</p>
-              </header>
+        <article class="case" aria-labelledby="case-oa">
+          <!-- PENDIENTE (Emiliano): ajustar el "Problema" con tus palabras: quién la usa y qué reemplaza. -->
+          <div class="case__head">
+            <h4 class="case__title display" id="case-oa">OA Manager</h4>
+            <p class="case__tagline">Gestor de Objetivos de Aprendizaje. Aplicación full-stack desplegada de punta a punta.</p>
+            <ul class="tags" aria-label="Tecnologías"><li>React</li><li>Vite</li><li>Tailwind</li><li>Express</li><li>Prisma</li><li>PostgreSQL</li><li>Netlify</li><li>Render</li></ul>
+            <p class="case__links">
+              <a href="https://github.com/emilianost95-gif/oa-manager-app" rel="noopener">Código<span class="sr-only"> de OA Manager</span></a>
+            </p>
+          </div>
+          <div class="case__detail">
+            <dl class="case__body">
+              <div><dt>Problema</dt><dd>Hacer seguimiento de los Objetivos de Aprendizaje del currículum sin depender de planillas sueltas.</dd></div>
+              <div><dt>Resultado</dt><dd>En producción: frontend en Netlify con proxy <code>/api/*</code> hacia el backend en Render y la base en PostgreSQL.</dd></div>
+            </dl>
+            <details class="case__more">
+              <summary>Cómo lo hice <span class="case__more-hint">enfoque e implementación</span></summary>
               <dl class="case__body">
-                <!-- PENDIENTE (Emiliano): ajustar el "Problema" con tus palabras: quién la usa y qué reemplaza. -->
-                <div><dt>Problema</dt><dd>Hacer seguimiento de los Objetivos de Aprendizaje del currículum sin depender de planillas sueltas.</dd></div>
-              </dl>
-              <details class="case__more">
-                <summary>Cómo lo hice <span class="case__more-hint">enfoque e implementación</span></summary>
-                <dl class="case__body">
                 <div><dt>Enfoque</dt><dd>Separar frontend y backend, y servir la API detrás de un proxy en el mismo dominio para usar cookies de sesión first-party, sin pelear con CORS ni con cookies de terceros.</dd></div>
                 <div><dt>Implementación</dt><dd>API REST con Express y Prisma sobre PostgreSQL. Autenticación con recuperación de contraseña por enlace (correo vía Resend). Para el primer uso: modo demo con datos ficticios, tutorial inicial y ayuda contextual.</dd></div>
-                </dl>
-              </details>
-              <dl class="case__body">
-                <div><dt>Resultado</dt><dd>En producción: frontend en Netlify con proxy <code>/api/*</code> hacia el backend en Render y la base en PostgreSQL.</dd></div>
               </dl>
-              <ul class="tags" aria-label="Tecnologías">
-                <li>React</li><li>Vite</li><li>Tailwind</li><li>Express</li><li>Prisma</li><li>PostgreSQL</li><li>Netlify</li><li>Render</li>
-              </ul>
-              <p class="case__links">
-                <a href="https://github.com/emilianost95-gif/oa-manager-app" rel="noopener">Código<span class="sr-only"> de OA Manager</span></a>
-              </p>
-            </article>
+            </details>
+          </div>
+        </article>
 
-            <article class="case" aria-labelledby="case-geri">
-              <header class="case__head">
-                <p class="case__index" aria-hidden="true">P-03</p>
-                <h4 class="case__title" id="case-geri">Registro Geriátrico</h4>
-                <p class="case__tagline">Registro diario de pacientes para un hogar de adultos mayores, pensado para alguien que no es técnico.</p>
-              </header>
+        <article class="case" aria-labelledby="case-geri">
+          <!-- PENDIENTE (Emiliano): estado real del "Resultado" (¿en uso?, ¿desde cuándo?). No inventar métricas. -->
+          <div class="case__head">
+            <h4 class="case__title display" id="case-geri">Registro Geriátrico</h4>
+            <p class="case__tagline">Registro diario de pacientes para un hogar de adultos mayores, pensado para alguien que no es técnico.</p>
+            <ul class="tags" aria-label="Tecnologías"><li>React</li><li>TypeScript</li><li>Vite</li><li>Tailwind</li><li>Excel</li><li>PWA</li></ul>
+            <p class="case__links">
+              <a href="https://github.com/emilianost95-gif/geriatrico-app" rel="noopener">Código<span class="sr-only"> de Registro Geriátrico</span></a>
+            </p>
+          </div>
+          <div class="case__detail">
+            <dl class="case__body">
+              <div><dt>Problema</dt><dd>Los controles diarios (signos vitales, glucemia, alimentación, sueño y más) se anotaban en papel y no había forma simple de revisarlos ni compartirlos.</dd></div>
+              <div><dt>Resultado</dt><dd>Aplicación PWA instalable que funciona offline.</dd></div>
+            </dl>
+            <details class="case__more">
+              <summary>Cómo lo hice <span class="case__more-hint">enfoque e implementación</span></summary>
               <dl class="case__body">
-                <div><dt>Problema</dt><dd>Los controles diarios (signos vitales, glucemia, alimentación, sueño y más) se anotaban en papel y no había forma simple de revisarlos ni compartirlos.</dd></div>
-              </dl>
-              <details class="case__more">
-                <summary>Cómo lo hice <span class="case__more-hint">enfoque e implementación</span></summary>
-                <dl class="case__body">
                 <div><dt>Enfoque</dt><dd>La usuaria principal no es técnica, así que el diseño manda: botones grandes, texto legible, colores suaves y uso sin conexión.</dd></div>
                 <div><dt>Implementación</dt><dd>Exportación a Excel e importación inteligente: mapeo flexible de columnas, validación y vista previa antes de confirmar si se crea o se actualiza cada registro.</dd></div>
-                </dl>
-              </details>
-              <dl class="case__body">
-                <!-- PENDIENTE (Emiliano): estado real (¿en uso?, ¿desde cuándo?). No inventar métricas. -->
-                <div><dt>Resultado</dt><dd>Aplicación PWA instalable que funciona offline.</dd></div>
               </dl>
-              <ul class="tags" aria-label="Tecnologías">
-                <li>React</li><li>TypeScript</li><li>Vite</li><li>Tailwind</li><li>Excel</li><li>PWA</li>
-              </ul>
-              <p class="case__links">
-                <a href="https://github.com/emilianost95-gif/geriatrico-app" rel="noopener">Código<span class="sr-only"> de Registro Geriátrico</span></a>
-              </p>
-            </article>
+            </details>
+          </div>
+        </article>
 
-            <article class="case" aria-labelledby="case-grow">
-              <header class="case__head">
-                <p class="case__index" aria-hidden="true">P-04</p>
-                <h4 class="case__title" id="case-grow">SmartGrow</h4>
-                <p class="case__tagline">Proyecto personal de IoT: hardware, API y dashboard para un cultivo indoor.</p>
-              </header>
+        <article class="case" aria-labelledby="case-grow">
+          <!-- Repo verificado (público). Página de GitHub Pages activa al capturar la portada. -->
+          <div class="case__head">
+            <h4 class="case__title display" id="case-grow">SmartGrow</h4>
+            <p class="case__tagline">Proyecto personal de IoT: hardware, API y dashboard para un cultivo indoor.</p>
+            <ul class="tags" aria-label="Tecnologías"><li>ESP32</li><li>Arduino</li><li>React</li><li>Fastify</li><li>TimescaleDB</li></ul>
+            <p class="case__links">
+              <a href="https://emilianost95-gif.github.io/smart-grow/" rel="noopener">Ver sitio<span class="sr-only"> de SmartGrow</span></a>
+              <a href="https://github.com/emilianost95-gif/smart-grow" rel="noopener">Código<span class="sr-only"> de SmartGrow</span></a>
+            </p>
+          </div>
+          <div class="case__detail">
+              <figure class="case__shot">
+                <img src="/src/assets/proyectos/smart-grow.jpg" alt="Portada del sitio de SmartGrow" width="1280" height="800" loading="lazy" decoding="async" />
+              </figure>
+            <dl class="case__body">
+              <div><dt>Problema</dt><dd>Controlar temperatura y humedad de un cultivo indoor sin tener que estar presente.</dd></div>
+              <div><dt>Resultado</dt><dd>Landing publicada y dashboard MVP funcional.</dd></div>
+            </dl>
+            <details class="case__more">
+              <summary>Cómo lo hice <span class="case__more-hint">enfoque e implementación</span></summary>
               <dl class="case__body">
-                <div><dt>Problema</dt><dd>Controlar temperatura y humedad de un cultivo indoor sin tener que estar presente.</dd></div>
-              </dl>
-              <details class="case__more">
-                <summary>Cómo lo hice <span class="case__more-hint">enfoque e implementación</span></summary>
-                <dl class="case__body">
                 <div><dt>Enfoque</dt><dd>Llevar el proyecto completo de punta a punta: sensores, actuadores, almacenamiento de series de tiempo y una interfaz para leerlos.</dd></div>
                 <div><dt>Implementación</dt><dd>ESP32/Arduino con sensores DHT22 y módulos de relé, API en Fastify, TimescaleDB para series de tiempo y dashboard en React con controles, analítica, terminal y documentación de la API.</dd></div>
-                </dl>
-              </details>
-              <dl class="case__body">
-                <div><dt>Resultado</dt><dd>Landing publicada y dashboard MVP funcional.</dd></div>
               </dl>
-              <ul class="tags" aria-label="Tecnologías">
-                <li>ESP32</li><li>Arduino</li><li>React</li><li>Fastify</li><li>TimescaleDB</li>
-              </ul>
-              <p class="case__links">
-                <!-- Repo verificado (público). PENDIENTE: confirmar que la página de GitHub Pages esté activa. -->
-                <a href="https://emilianost95-gif.github.io/smart-grow/" rel="noopener">Ver sitio<span class="sr-only"> de SmartGrow</span></a>
-                <a href="https://github.com/emilianost95-gif/smart-grow" rel="noopener">Código<span class="sr-only"> de SmartGrow</span></a>
-              </p>
-            </article>
-              <div class="hscroll__divider">
-                <h3 class="group-title">Clientes reales</h3>
-                <p class="hscroll__divider-text">Sitios en producción para negocios de la región.</p>
-              </div>
-
-            <article class="case" aria-labelledby="case-vik">
-              <header class="case__head">
-                <p class="case__index" aria-hidden="true">C-01</p>
-                <h4 class="case__title" id="case-vik">VIKINGO'S Barbería</h4>
-                <p class="case__tagline">Sitio para una barbería, con reservas por WhatsApp.</p>
-              </header>
-              <dl class="case__body">
-                <div><dt>Problema</dt><dd>Las reservas llegaban por mensajes sueltos, sin datos ordenados.</dd></div>
-              </dl>
-              <details class="case__more">
-                <summary>Cómo lo hice <span class="case__more-hint">enfoque e implementación</span></summary>
-                <dl class="case__body">
-                <div><dt>Implementación</dt><dd>Formulario que arma el mensaje de reserva para WhatsApp con los datos completos, galería con lightbox, datos estructurados Schema.org y 17 ilustraciones SVG propias.</dd></div>
-                </dl>
-              </details>
-              <dl class="case__body">
-                <div><dt>Resultado</dt><dd>En producción.</dd></div>
-              </dl>
-              <ul class="tags" aria-label="Tecnologías"><li>HTML</li><li>CSS</li><li>JavaScript</li><li>Canvas</li><li>Schema.org</li></ul>
-              <p class="case__links">
-                <!-- Repo verificado (público). PENDIENTE: confirmar que la página de GitHub Pages esté activa. -->
-                <a href="https://emilianost95-gif.github.io/VIKINGO-S-BarberShop/" rel="noopener">Ver sitio<span class="sr-only"> de VIKINGO'S</span></a>
-                <a href="https://github.com/emilianost95-gif/VIKINGO-S-BarberShop" rel="noopener">Código<span class="sr-only"> de VIKINGO'S</span></a>
-              </p>
-            </article>
-
-            <article class="case" aria-labelledby="case-roble">
-              <header class="case__head">
-                <p class="case__index" aria-hidden="true">C-02</p>
-                <h4 class="case__title" id="case-roble">ROBLE NEGRO</h4>
-                <p class="case__tagline">Sitio para una mueblería de Concepción.</p>
-              </header>
-              <dl class="case__body">
-                <div><dt>Problema</dt><dd>El negocio necesitaba mostrar su trabajo con fotos reales y una identidad propia.</dd></div>
-              </dl>
-              <details class="case__more">
-                <summary>Cómo lo hice <span class="case__more-hint">enfoque e implementación</span></summary>
-                <dl class="case__body">
-                <div><dt>Implementación</dt><dd>Identidad visual (paleta arena, dorado y tinta), galería con fotografías del cliente e informe técnico en PDF entregado junto al sitio.</dd></div>
-                </dl>
-              </details>
-              <dl class="case__body">
-                <div><dt>Resultado</dt><dd>En producción.</dd></div>
-              </dl>
-              <ul class="tags" aria-label="Tecnologías"><li>HTML</li><li>CSS</li><li>JavaScript</li></ul>
-              <p class="case__links">
-                <a href="https://emilianost95-gif.github.io/RobleNegro/" rel="noopener">Ver sitio<span class="sr-only"> de ROBLE NEGRO</span></a>
-                <a href="https://github.com/emilianost95-gif/RobleNegro" rel="noopener">Código<span class="sr-only"> de ROBLE NEGRO</span></a>
-              </p>
-            </article>
-              <!-- PENDIENTE (Emiliano): tarjeta C-03 Santa Cecilia Construcciones — el repo existe (emilianost95-gif/stacecilia, público); falta el problema, qué hiciste y la URL publicada. -->
-            </div>
-            <div class="hscroll__hud" aria-hidden="true">
-              <span class="hscroll__count"><span data-hscroll-current>01</span> / <span data-hscroll-total>06</span></span>
-              <span class="hscroll__bar"><span class="hscroll__bar-fill"></span></span>
-              <span class="hscroll__hint">Seguí bajando →</span>
-            </div>
+            </details>
           </div>
+        </article>
+
+        <div class="group">
+          <h3 class="group-title">Clientes reales</h3>
+          <p class="group__text">Sitios en producción para negocios de la región.</p>
         </div>
+
+        <article class="case" aria-labelledby="case-vik">
+          <!-- Repo verificado (público). Página de GitHub Pages activa al capturar la portada. -->
+          <div class="case__head">
+            <h4 class="case__title display" id="case-vik">VIKINGO'S Barbería</h4>
+            <p class="case__tagline">Sitio para una barbería, con reservas por WhatsApp.</p>
+            <ul class="tags" aria-label="Tecnologías"><li>HTML</li><li>CSS</li><li>JavaScript</li><li>Canvas</li><li>Schema.org</li></ul>
+            <p class="case__links">
+              <a href="https://emilianost95-gif.github.io/VIKINGO-S-BarberShop/" rel="noopener">Ver sitio<span class="sr-only"> de VIKINGO'S</span></a>
+              <a href="https://github.com/emilianost95-gif/VIKINGO-S-BarberShop" rel="noopener">Código<span class="sr-only"> de VIKINGO'S</span></a>
+            </p>
+          </div>
+          <div class="case__detail">
+              <figure class="case__shot">
+                <img src="/src/assets/proyectos/vikingos.jpg" alt="Portada del sitio de VIKINGO'S Barbería" width="1280" height="800" loading="lazy" decoding="async" />
+              </figure>
+            <dl class="case__body">
+              <div><dt>Problema</dt><dd>Las reservas llegaban por mensajes sueltos, sin datos ordenados.</dd></div>
+              <div><dt>Resultado</dt><dd>En producción.</dd></div>
+            </dl>
+            <details class="case__more">
+              <summary>Cómo lo hice <span class="case__more-hint">implementación</span></summary>
+              <dl class="case__body">
+                <div><dt>Implementación</dt><dd>Formulario que arma el mensaje de reserva para WhatsApp con los datos completos, galería con lightbox, datos estructurados Schema.org y 17 ilustraciones SVG propias.</dd></div>
+              </dl>
+            </details>
+          </div>
+        </article>
+
+        <article class="case" aria-labelledby="case-roble">
+          <div class="case__head">
+            <h4 class="case__title display" id="case-roble">ROBLE NEGRO</h4>
+            <p class="case__tagline">Sitio para una mueblería de Concepción.</p>
+            <ul class="tags" aria-label="Tecnologías"><li>HTML</li><li>CSS</li><li>JavaScript</li></ul>
+            <p class="case__links">
+              <a href="https://emilianost95-gif.github.io/RobleNegro/" rel="noopener">Ver sitio<span class="sr-only"> de ROBLE NEGRO</span></a>
+              <a href="https://github.com/emilianost95-gif/RobleNegro" rel="noopener">Código<span class="sr-only"> de ROBLE NEGRO</span></a>
+            </p>
+          </div>
+          <div class="case__detail">
+              <figure class="case__shot">
+                <img src="/src/assets/proyectos/roble-negro.jpg" alt="Portada del sitio de ROBLE NEGRO" width="1280" height="800" loading="lazy" decoding="async" />
+              </figure>
+            <dl class="case__body">
+              <div><dt>Problema</dt><dd>El negocio necesitaba mostrar su trabajo con fotos reales y una identidad propia.</dd></div>
+              <div><dt>Resultado</dt><dd>En producción.</dd></div>
+            </dl>
+            <details class="case__more">
+              <summary>Cómo lo hice <span class="case__more-hint">implementación</span></summary>
+              <dl class="case__body">
+                <div><dt>Implementación</dt><dd>Identidad visual (paleta arena, dorado y tinta), galería con fotografías del cliente e informe técnico en PDF entregado junto al sitio.</dd></div>
+              </dl>
+            </details>
+          </div>
+        </article>
+        <!-- PENDIENTE (Emiliano): ficha Santa Cecilia Construcciones — el repo existe (emilianost95-gif/stacecilia, público); falta el problema, qué hiciste y la URL publicada. -->
       </section>
 
       <!-- ===================== STACK ===================== -->
       <section class="section container" id="stack" aria-labelledby="stack-title" data-section>
         <header class="section__head">
-          <p class="eyebrow">02 — Stack</p>
-          <h2 id="stack-title">Con qué trabajo</h2>
+          <h2 class="display" id="stack-title">Con qué trabajo</h2>
           <p class="section__intro">Agrupado por dónde lo usé en proyectos reales, no por porcentajes inventados.</p>
         </header>
         <div class="stack">
@@ -328,10 +311,9 @@
       </section>
 
       <!-- ===================== SOBRE MÍ ===================== -->
-      <section class="section container" id="sobre-mi" aria-labelledby="about-title" data-section>
+      <section class="section section--about container" id="sobre-mi" aria-labelledby="about-title" data-section>
         <header class="section__head">
-          <p class="eyebrow">03 — Sobre mí</p>
-          <h2 id="about-title">Del metal al código</h2>
+          <h2 class="display" id="about-title">Del metal al código</h2>
         </header>
         <div class="about">
           <div class="about__text">
@@ -353,8 +335,8 @@
           <dl class="facts">
             <div><dt>Base</dt><dd>Chillán Viejo, Ñuble</dd></div>
             <div><dt>Busco</dt><dd>Junior / Trainee Front-End</dd></div>
-            <div><dt>Idiomas</dt><dd>Español nativo · Inglés avanzado</dd></div>
-            <div><dt>Formación</dt><dd>Autodidacta en desarrollo web · Soldadura (Escuela Newton, 2022)</dd></div>
+            <div><dt>Idiomas</dt><dd>Español nativo, inglés avanzado</dd></div>
+            <div><dt>Formación</dt><dd>Autodidacta en desarrollo web. Soldadura (Escuela Newton, 2022)</dd></div>
           </dl>
         </div>
       </section>
@@ -362,8 +344,7 @@
       <!-- ===================== CONTACTO ===================== -->
       <section class="section section--contact container" id="contacto" aria-labelledby="contact-title" data-section>
         <header class="section__head">
-          <p class="eyebrow">04 — Contacto</p>
-          <h2 id="contact-title">Hablemos</h2>
+          <h2 class="display" id="contact-title">Hablemos</h2>
           <p class="section__intro">Si tienes un puesto o un proyecto, escríbeme. Respondo dentro de 24 horas.</p>
         </header>
         <ul class="contact" role="list">

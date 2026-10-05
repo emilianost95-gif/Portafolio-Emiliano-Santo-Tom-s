@@ -47,10 +47,10 @@ export interface ForgeOptions {
 
 // Colores en espacio de pantalla (el motor no convierte la salida).
 const c = (hex: number): THREE.Color => new THREE.Color().setHex(hex, THREE.LinearSRGBColorSpace);
-const CYAN = c(0x00f0ff);
-const MAGENTA = c(0xff3daa);
-const CODE_WHITE = c(0xd8e0f2);
-const CODE_GREEN = c(0x3dffa2);
+const STEEL = c(0x8fa0b3);
+const EMBER = c(0xff6a1a);
+const CODE_WHITE = c(0xe4e3dd);
+const CHALK = c(0xf4f2ea);
 const STEEL_WARM = c(0xff8a3d);
 const HOT_WHITE = c(0xfff3d6);
 const HOT_ORANGE = c(0xff8c26);
@@ -262,14 +262,14 @@ export class ForgeScene implements SceneModule {
       color(HOT_WHITE),
       smoothstep(float(0.65), float(1), heat),
     ).mul(heat.add(0.5)); // hasta 1,5 al nacer: lo justo para que el bloom tome solo las chispas jóvenes
-    const trussColor = mix(color(CYAN), color(CODE_WHITE), step(float(0.9), aSeed)).mul(0.9);
+    const trussColor = mix(color(STEEL), color(CODE_WHITE), step(float(0.9), aSeed)).mul(0.9);
     const codeColor = mix(
-      mix(mix(color(CYAN), color(MAGENTA), step(float(0.45), aSeed)), color(CODE_WHITE), step(float(0.65), aSeed)),
-      color(CODE_GREEN),
+      mix(mix(color(STEEL), color(EMBER), step(float(0.45), aSeed)), color(CODE_WHITE), step(float(0.65), aSeed)),
+      color(CHALK),
       step(float(0.9), aSeed),
     );
     const mergeColor = mix(color(STEEL_WARM).mul(0.85), codeColor, step(float(0.5), aSeed));
-    const fieldColor = mix(color(CYAN), color(MAGENTA), step(float(0.85), aSeed));
+    const fieldColor = mix(color(STEEL), color(EMBER), step(float(0.85), aSeed));
     const finalColor = sparkColor
       .mul(w0)
       .add(trussColor.mul(w1))
