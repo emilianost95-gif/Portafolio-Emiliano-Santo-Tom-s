@@ -1,5 +1,5 @@
 # Publica el sitio en GitHub Pages en cada push a main.
-# Si fallan el typecheck o los tests, NO se publica: nunca sube una versión rota.
+# Si fallan los tests o el build, NO se publica: nunca sube una versión rota.
 name: Deploy a GitHub Pages
 
 on:
@@ -24,14 +24,19 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22 # los tests usan el type stripping de Node 22.18+
+          node-version: 24 # los tests usan el type stripping nativo de Node
           cache: npm
+      - id: pages
+        uses: actions/configure-pages@v5
       - run: npm ci
       - run: npm test
       - run: npm run build # incluye el typecheck
+        env:
+          NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          NEXT_PUBLIC_SITE_URL: ${{ steps.pages.outputs.base_url }}/
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: out
 
   deploy:
     needs: build

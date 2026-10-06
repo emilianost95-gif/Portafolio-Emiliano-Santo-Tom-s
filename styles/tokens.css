@@ -1,0 +1,79 @@
+/* Design tokens: única fuente de color, tipografía, espacio y movimiento.
+   Mundo "banco de pruebas": grafito como superficie, tiza como tinta y un solo
+   acento, el naranja del arco. El acento nunca decora: señala lo activo. */
+:root {
+  /* Color — contraste verificado sobre --bg (AA como mínimo) */
+  --bg: #0e0f11;
+  --bg-deep: #0a0b0c;
+  --bg-raised: #15171a;
+  --line: #24272c;
+  --line-strong: #474d55;
+  --text: #ecebe6;
+  --text-muted: #a6a9ab;
+  --text-dim: #7f8791;
+  --accent: #ff8c26;
+  --accent-ink: #1c0d00;
+
+  /* Tipografía: dos familias. Display = Archivo condensada; técnica = JetBrains Mono. */
+  --font-sans: 'Archivo Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+  --display-stretch: 64%;
+  --fs-micro: 0.6875rem;
+  --fs-small: 0.8125rem;
+  --fs-base: 1.0625rem;
+  --fs-lead: clamp(1.125rem, 1rem + 0.6vw, 1.5rem);
+  --fs-row: clamp(2.1rem, 0.6rem + 6.6vw, 6.75rem);
+  --fs-hero: clamp(3.2rem, 1rem + 8.6vw, 10.5rem);
+
+  /* Espacio */
+  --gutter: 16px;
+  --hud-h: 56px;
+  /* Carril del riel de posición: el contenido no entra ahí. */
+  --rail: 0px;
+  --gutter-end: calc(var(--gutter) + var(--rail));
+  --section-pad: clamp(6rem, 4rem + 10vw, 12rem);
+
+  /* Movimiento — cuatro clases, cuatro duraciones */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-shutter: cubic-bezier(0.76, 0, 0.24, 1);
+  --dur-micro: 160ms; /* MICRO: hover, foco, pulsación */
+  --dur-system: 420ms; /* SYSTEM: cambios de estado */
+  --dur-transition: 800ms; /* TRANSITION: entrada de contenido */
+  --dur-cinematic: 900ms; /* CINEMATIC: intro */
+  --stagger: 26ms;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --gutter: 24px;
+  }
+}
+
+@media (min-width: 900px) {
+  :root {
+    --rail: 52px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --gutter: 36px;
+    --hud-h: 64px;
+  }
+}
+
+@media (min-width: 1800px) {
+  :root {
+    --gutter: 56px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-micro: 0ms;
+    --dur-system: 0ms;
+    --dur-transition: 0ms;
+    --dur-cinematic: 0ms;
+    --stagger: 0ms;
+  }
+}

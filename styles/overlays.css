@@ -1,0 +1,433 @@
+/* ───────── Intro: contador + dos persianas. CINEMATIC. ───────── */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+}
+
+.intro__shutter {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50.5%;
+  background: var(--bg-deep);
+  transition: transform var(--dur-cinematic) var(--ease-shutter);
+}
+
+.intro__shutter--top {
+  top: 0;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.intro__shutter--bottom {
+  bottom: 0;
+}
+
+.intro[data-phase='open'] .intro__shutter--top {
+  transform: translateY(-101%);
+}
+
+.intro[data-phase='open'] .intro__shutter--bottom {
+  transform: translateY(101%);
+}
+
+.intro__readout {
+  position: absolute;
+  top: 50%;
+  left: var(--gutter);
+  right: var(--gutter);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  transition: opacity var(--dur-micro);
+}
+
+.intro__bar {
+  flex: 1;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(var(--progress));
+  transform-origin: 0 50%;
+}
+
+.intro__count {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.intro__place {
+  position: absolute;
+  left: var(--gutter);
+  bottom: 20px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  transition: opacity var(--dur-micro);
+}
+
+.intro[data-phase='open'] .intro__readout,
+.intro[data-phase='open'] .intro__place {
+  opacity: 0;
+}
+
+/* ───────── Project viewer ───────── */
+.viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.viewer__panel {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 12px var(--gutter) 48px;
+  background: rgba(10, 11, 12, 0.9);
+  border-left: 1px solid var(--line-strong);
+  animation: panel-in var(--dur-transition) var(--ease-out);
+}
+
+/* El contenido entra por etapas: cada bloque con su --i. */
+.viewer__panel > *,
+.viewer__case > div,
+.viewer__head > .viewer__status {
+  animation: rise var(--dur-transition) var(--ease-out) backwards;
+  animation-delay: calc(200ms + var(--i, 0) * 70ms);
+}
+
+.viewer__head {
+  position: sticky;
+  top: -12px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 calc(var(--gutter) * -1);
+  padding: 8px var(--gutter);
+  background: var(--bg-deep);
+  border-bottom: 1px solid var(--line);
+  animation: none;
+}
+
+.viewer__status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.08em;
+}
+
+.viewer__title {
+  margin-top: clamp(32px, 7vh, 72px);
+  font-stretch: var(--display-stretch);
+  font-weight: 800;
+  font-size: clamp(2.6rem, 1.2rem + 5.4vw, 6rem);
+  line-height: 0.9;
+}
+
+.viewer__lead {
+  max-width: 40ch;
+  margin-top: 20px;
+  font-size: var(--fs-lead);
+  line-height: 1.35;
+  color: var(--text-muted);
+}
+
+.viewer__block {
+  margin-top: 36px;
+}
+
+.viewer__block h3,
+.viewer__case dt {
+  margin-bottom: 10px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+}
+
+.viewer__tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+}
+
+.viewer__tech li {
+  padding: 4px 10px;
+  border: 1px solid var(--line-strong);
+}
+
+.viewer__case {
+  display: grid;
+  gap: 28px;
+  margin-top: 36px;
+}
+
+.viewer__case div {
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.viewer__case dd {
+  max-width: 58ch;
+}
+
+.viewer__pending {
+  margin-top: 28px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--text-dim);
+}
+
+.viewer__block .viewer__pending {
+  margin-top: 0;
+}
+
+.viewer__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-top: 44px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-strong);
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  letter-spacing: 0.06em;
+}
+
+.viewer__links,
+.viewer__pager {
+  display: flex;
+  gap: 24px;
+}
+
+.viewer__links a,
+.viewer__pager button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  letter-spacing: inherit;
+  transition: color var(--dur-micro);
+}
+
+.viewer__links a {
+  color: var(--accent);
+}
+
+.viewer__links a:hover,
+.viewer__pager button:hover {
+  color: var(--text);
+}
+
+.viewer__pager {
+  color: var(--text-muted);
+}
+
+@media (min-width: 900px) {
+  .viewer__panel {
+    width: min(56vw, 60rem);
+    padding-inline: clamp(28px, 4vw, 64px);
+  }
+
+  .viewer__head {
+    margin-inline: calc(clamp(28px, 4vw, 64px) * -1);
+    padding-inline: clamp(28px, 4vw, 64px);
+  }
+
+  .viewer__case {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .viewer__case div:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@keyframes panel-in {
+  from {
+    clip-path: inset(0 0 0 100%);
+  }
+
+  to {
+    clip-path: inset(0);
+  }
+}
+
+/* ───────── Índice ───────── */
+.index {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  padding: 6px var(--gutter) 32px;
+  background: rgba(10, 11, 12, 0.96);
+  overflow-y: auto;
+}
+
+.index > .close {
+  align-self: flex-end;
+}
+
+.index__list {
+  margin-top: auto;
+}
+
+.index__list li {
+  border-top: 1px solid var(--line);
+  animation: rise var(--dur-transition) var(--ease-out) backwards;
+  animation-delay: calc(var(--i) * 50ms);
+}
+
+.index__list button {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  width: 100%;
+  padding: 14px 0;
+  font-stretch: var(--display-stretch);
+  font-weight: 800;
+  font-size: clamp(2.2rem, 11vw, 4.5rem);
+  line-height: 0.95;
+  text-align: left;
+}
+
+.index__list button[aria-current] {
+  color: var(--accent);
+}
+
+.index__n {
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+}
+
+/* ───────── Terminal ───────── */
+.terminal {
+  position: fixed;
+  left: var(--gutter);
+  bottom: var(--gutter);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  width: min(640px, calc(100vw - 2 * var(--gutter)));
+  height: min(440px, 62svh);
+  background: var(--bg-deep);
+  border: 1px solid var(--line-strong);
+  border-top: 2px solid var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  animation: rise var(--dur-system) var(--ease-out);
+}
+
+.terminal__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px 0 14px;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.terminal__log {
+  flex: 1;
+  padding: 12px 14px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  line-height: 1.6;
+}
+
+.terminal__log p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--text-muted);
+}
+
+.terminal__log p[data-kind='in'] {
+  color: var(--text);
+}
+
+.terminal__prompt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  border-top: 1px solid var(--line);
+}
+
+.terminal__prompt label {
+  color: var(--accent);
+}
+
+.terminal__prompt input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  background: none;
+  border: 0;
+  outline: 0;
+  color: var(--text);
+  font: inherit;
+  /* 16px en táctil: evita el zoom automático de iOS al enfocar. */
+  font-size: max(var(--fs-small), 16px);
+  caret-color: var(--accent);
+}
+
+.terminal:focus-within {
+  border-color: var(--text-muted);
+  border-top-color: var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viewer__panel,
+  .viewer__panel *,
+  .index__list li,
+  .terminal,
+  .telemetry,
+  .hud__forge {
+    animation: none;
+  }
+}
+
+/* Con un diálogo abierto la página se retira: queda el núcleo y el diálogo. SYSTEM. */
+main,
+.hud__nav,
+.hud__rail,
+.hud__status,
+.hud__status--end {
+  transition: opacity var(--dur-system) var(--ease-out);
+}
+
+html[data-locked] main,
+html[data-locked] .hud__nav,
+html[data-locked] .hud__rail,
+html[data-locked] .hud__status--end {
+  opacity: 0;
+}
+
+@media (max-width: 899px) {
+  html[data-locked] .hud__status {
+    opacity: 0;
+  }
+}
