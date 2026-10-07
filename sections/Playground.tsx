@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { type Experiment, EXPERIMENT_CATEGORIES, type ExperimentCategory, EXPERIMENTS } from '@/data/experiments';
 
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+
 interface TileProps {
   readonly experiment: Experiment;
   readonly index: number;
@@ -45,9 +47,13 @@ function Tile({ experiment, index, running, onToggle }: TileProps) {
       <div className="tile__screen">
         <canvas ref={canvas} aria-hidden="true" />
         {!running && (
-          <span className="tile__idle display" aria-hidden="true">
-            {String(index + 1).padStart(2, '0')}
-          </span>
+          <>
+            {/* Captura real del experimento (scripts/playground-posters.mjs). Decorativa: el título está al lado. */}
+            <img className="tile__poster" src={`${BASE_PATH}/playground/${experiment.id}.jpg`} alt="" width={866} height={540} loading="lazy" decoding="async" />
+            <span className="tile__idle mono" aria-hidden="true">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+          </>
         )}
         {running && <span className="tile__hint mono">{experiment.hint}</span>}
       </div>
@@ -56,7 +62,7 @@ function Tile({ experiment, index, running, onToggle }: TileProps) {
           <h3 className="tile__title mono">{experiment.title}</h3>
           <p className="tile__tags mono">{experiment.categories.join(' / ')}</p>
         </div>
-        <button className="tile__run mono" type="button" aria-pressed={running} onClick={() => onToggle(!running)} data-cursor="secret">
+        <button className="tile__run mono" type="button" aria-pressed={running} data-experiment={experiment.id} onClick={() => onToggle(!running)} data-cursor="secret">
           {running ? 'STOP' : 'RUN'}
           <span className="sr-only"> {experiment.title}</span>
         </button>
