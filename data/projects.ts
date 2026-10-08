@@ -101,6 +101,41 @@ export const PROJECTS: readonly Project[] = [
     },
     draft: true,
   },
+  {
+    id: 'registro-geriatrico',
+    title: 'REGISTRO GERIÁTRICO',
+    description: 'Registro diario de los pacientes de un hogar de adultos mayores, pensado para personas no técnicas.',
+    category: 'Health',
+    stack: ['React', 'TypeScript', 'Vite', 'Tailwind', 'Dexie', 'IndexedDB', 'ExcelJS', 'jsPDF', 'PWA', 'Capacitor'],
+    status: 'online',
+    url: 'https://emilianost95-gif.github.io/geriatrico-app/',
+    repo: 'https://github.com/emilianost95-gif/geriatrico-app',
+    visual: { formation: 'graph' },
+    details: {
+      problem:
+        'El registro diario de un hogar se lleva en planillas armadas a mano, y quien las completa no es técnico ni tiene siempre conexión.',
+      solution:
+        'Letra y botones grandes, opciones que se completan con un toque. Pantalla "Hoy" con avance del día y alertas, ronda de signos, gráficos de evolución e informes PDF. Importa planillas de Excel existentes, incluida la migración de todo el hogar de una vez. Los datos quedan en el dispositivo, con copias de seguridad.',
+      result: 'Publicado como PWA y como APK de Android compilado en GitHub Actions, con 133 pruebas automatizadas.',
+    },
+  },
+  {
+    id: 'oa-manager',
+    title: 'OA MANAGER',
+    description: 'Gestor de Objetivos de Aprendizaje para que una profesora organice y siga su planificación.',
+    category: 'Education',
+    stack: ['React', 'TypeScript', 'Vite', 'Tailwind', 'TanStack Query', 'Express', 'Prisma', 'PostgreSQL', 'Zod', 'Docker'],
+    status: 'mvp',
+    repo: 'https://github.com/emilianost95-gif/oa-manager-app',
+    visual: { formation: 'code' },
+    details: {
+      problem:
+        'Los objetivos de cada asignatura, curso y unidad se reparten entre planillas, y no hay una vista de qué está pendiente, en curso o logrado.',
+      solution:
+        'Asignaturas, cursos, unidades y objetivos con estado y prioridad. Reordenamiento con arrastrar y soltar, filtros combinables y dashboard con indicadores. Importa desde Excel/CSV y exporta a CSV, Excel y PDF. API REST con sesión por cookie y datos aislados por cuenta.',
+      result: 'Funciona de punta a punta contra PostgreSQL en local. Sin demo pública todavía.',
+    },
+  },
 ];
 
 export const projectIndex = (id: string): number => PROJECTS.findIndex((project) => project.id === id);
