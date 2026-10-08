@@ -11,6 +11,7 @@ export const STACK_PROJECTS = [
   { id: 'oa', label: 'OA Manager' },
   { id: 'geri', label: 'Registro Geriátrico' },
   { id: 'grow', label: 'SmartGrow' },
+  { id: 'trig', label: 'Lab. Trigonometría' },
   { id: 'site', label: 'Este sitio' },
 ] as const;
 
@@ -30,8 +31,8 @@ const UNPUBLISHED = 'Sin proyecto publicado todavía';
 
 export const STACK: readonly Tech[] = [
   { id: 'js', name: 'JavaScript', group: 'LANG', use: 'Sitios sin framework y la base de todo lo demás.', experience: 'En sitios publicados', projects: ['grow'] },
-  { id: 'ts', name: 'TypeScript', group: 'LANG', use: 'Modo estricto por defecto: los errores aparecen antes que el usuario.', experience: 'En aplicaciones publicadas', projects: ['stock', 'geri', 'site'] },
-  { id: 'react', name: 'React', group: 'FRONT', use: 'Interfaces de aplicación: dashboards, formularios, estado.', experience: 'En aplicaciones publicadas', projects: ['stock', 'oa', 'geri', 'grow', 'site'] },
+  { id: 'ts', name: 'TypeScript', group: 'LANG', use: 'Modo estricto por defecto: los errores aparecen antes que el usuario.', experience: 'En aplicaciones publicadas', projects: ['stock', 'geri', 'trig', 'site'] },
+  { id: 'react', name: 'React', group: 'FRONT', use: 'Interfaces de aplicación: dashboards, formularios, estado.', experience: 'En aplicaciones publicadas', projects: ['stock', 'oa', 'geri', 'grow', 'trig', 'site'] },
   { id: 'next', name: 'Next.js', group: 'FRONT', use: 'Estructura y build de este sitio, exportado como estático.', experience: 'Primer proyecto: este sitio', projects: ['site'] },
   { id: 'node', name: 'Node.js', group: 'BACK', use: 'APIs REST con Express y Fastify.', experience: 'En producción, en OA Manager', projects: ['oa', 'grow'] },
   { id: 'nest', name: 'NestJS', group: 'BACK', use: 'Backend estructurado por módulos.', experience: UNPUBLISHED, projects: [], draft: true },
@@ -40,8 +41,8 @@ export const STACK: readonly Tech[] = [
   { id: 'three', name: 'Three.js', group: 'GFX', use: 'El núcleo de este sitio: partículas, cámara y postproceso.', experience: 'Aprendiendo: este sitio y su versión anterior', projects: ['site'] },
   { id: 'webgl', name: 'WebGL', group: 'GFX', use: 'Shaders GLSL: la forma del núcleo se calcula en la GPU.', experience: 'Aprendiendo: este sitio', projects: ['site'] },
   { id: 'gsap', name: 'GSAP', group: 'FRONT', use: 'Secuencias de animación en sitios de contenido.', experience: UNPUBLISHED, projects: [], draft: true },
-  { id: 'git', name: 'Git', group: 'OPS', use: 'Historial por fases, una rama por cambio.', experience: 'En todos los proyectos', projects: ['stock', 'oa', 'geri', 'grow', 'site'] },
-  { id: 'github', name: 'GitHub', group: 'OPS', use: 'Repositorios, Pages y Actions para build y deploy automáticos.', experience: 'En todos los proyectos', projects: ['stock', 'oa', 'geri', 'grow', 'site'] },
+  { id: 'git', name: 'Git', group: 'OPS', use: 'Historial por fases, una rama por cambio.', experience: 'En todos los proyectos', projects: ['stock', 'oa', 'geri', 'grow', 'trig', 'site'] },
+  { id: 'github', name: 'GitHub', group: 'OPS', use: 'Repositorios, Pages y Actions para build y deploy automáticos.', experience: 'En todos los proyectos', projects: ['stock', 'oa', 'geri', 'grow', 'trig', 'site'] },
   { id: 'ai', name: 'AI', group: 'AI', use: 'Asistente que analiza inventario real; la clave vive solo en una función serverless.', experience: 'En una aplicación publicada', projects: ['stock'] },
   { id: 'arduino', name: 'Arduino', group: 'HW', use: 'Lectura de sensores y control de relés.', experience: 'En un proyecto propio', projects: ['grow'] },
   { id: 'esp32', name: 'ESP32', group: 'HW', use: 'Microcontrolador con Wi-Fi: el puente entre los sensores y la API.', experience: 'En un proyecto propio', projects: ['grow'] },

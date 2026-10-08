@@ -121,6 +121,25 @@ export const PROJECTS: readonly Project[] = [
       result: 'Funciona de punta a punta contra PostgreSQL en local. Sin demo pública todavía.',
     },
   },
+  {
+    id: 'lab-trigonometria',
+    title: 'LABORATORIO DE TRIGONOMETRÍA',
+    description: 'Laboratorio interactivo para llegar a la trigonometría desde cero: primero se experimenta, después aparece la fórmula.',
+    category: 'Education',
+    stack: ['React', 'TypeScript', 'Vite', 'Tailwind', 'KaTeX', 'SVG', 'Vitest', 'Playwright'],
+    status: 'online',
+    url: 'https://emilianost95-gif.github.io/laboratorio-trigonometria/',
+    repo: 'https://github.com/emilianost95-gif/laboratorio-trigonometria',
+    visual: { formation: 'rings' },
+    details: {
+      problem:
+        'La trigonometría suele enseñarse como fórmulas para memorizar, y cuando un ejercicio sale mal el estudiante no sabe en qué se equivocó.',
+      solution:
+        '18 módulos, del plano cartesiano a la ley del coseno y las gráficas, donde se arrastran puntos y se mide antes de formalizar. Un generador crea ejercicios distintos cada vez en 5 niveles y un detector reconoce los errores típicos (seno por coseno, grados por radianes) y los explica. Suma modo examen, calculadora DEG/RAD y progreso guardado en el navegador.',
+      result:
+        'Publicado en GitHub Pages como un único archivo HTML. Toda la matemática está en funciones puras con pruebas unitarias, más pruebas end-to-end con Playwright.',
+    },
+  },
 ];
 
 export const projectIndex = (id: string): number => PROJECTS.findIndex((project) => project.id === id);
