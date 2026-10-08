@@ -87,21 +87,6 @@ export const PROJECTS: readonly Project[] = [
     },
   },
   {
-    id: 'luca-pizza',
-    title: 'LUCA PIZZA',
-    description: 'Stock, recetas, costos y automatización para una pizzería.',
-    category: 'Operations',
-    stack: [],
-    status: 'pending',
-    visual: { formation: 'rings' },
-    details: {
-      problem: 'El costo real de cada producto depende de recetas e insumos que cambian de precio todo el tiempo.',
-      solution: 'Stock, recetas y costos conectados, para que un cambio de precio se refleje solo en todo lo demás.',
-      result: 'Pendiente de documentar.',
-    },
-    draft: true,
-  },
-  {
     id: 'registro-geriatrico',
     title: 'REGISTRO GERIÁTRICO',
     description: 'Registro diario de los pacientes de un hogar de adultos mayores, pensado para personas no técnicas.',

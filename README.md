@@ -78,8 +78,7 @@ El vertex shader hace la mezcla; la CPU solo actualiza uniforms.
 
 ## Pendiente de completar (contenido)
 
-- `data/projects.ts`: **CONSTRUCT-OS** y **LUCA PIZZA** tienen texto provisional (`draft: true`),
-  sin stack ni links.
+- `data/projects.ts`: **CONSTRUCT-OS** tiene texto provisional (`draft: true`), sin stack ni links.
 - `data/stack.ts`: **NestJS**, **MongoDB** y **GSAP** no tienen un proyecto publicado que los
   respalde (`draft: true`). Completar o quitar.
 
