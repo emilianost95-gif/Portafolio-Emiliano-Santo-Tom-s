@@ -69,7 +69,7 @@ export const PROJECTS: readonly Project[] = [
       solution:
         'Monolito modular multiempresa: clientes y cotizaciones con PDF y aceptación por enlace, obras con avance ponderado y fotos desde el teléfono, inventario por bodega con costo promedio, partes de horas con aprobación, cobros y flujo de caja. Todo escribe en un libro de costos inmutable que proyecta la rentabilidad y alerta cuando una obra gasta más rápido de lo que avanza.',
       result:
-        'En producción en Render con base y archivos en Supabase, más APK de Android compilado en GitHub Actions. 175 pruebas automatizadas. El acceso es con cuenta; no hay demo abierta.',
+        'En producción en Render con base y archivos en Supabase, más APK de Android compilado en GitHub Actions. 197 pruebas automatizadas. Demo abierta: "Probar la demo" crea una empresa ficticia propia por 24 horas, para recorrerla como la dueña, el encargado o el maestro.',
     },
   },
   {
